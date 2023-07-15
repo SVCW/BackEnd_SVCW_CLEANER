@@ -91,7 +91,7 @@ namespace SVCW.Services
 
                 if (db != null)
                 {
-                    db.Status = false;
+                    this._context.Like.Remove(db);
                     this._context.SaveChanges();
                 }
                 var check = await this._context.Activity.Where(x => x.ActivityId.Equals(likeInfo.ActivityId)).FirstOrDefaultAsync();

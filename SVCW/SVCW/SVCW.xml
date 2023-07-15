@@ -57,7 +57,7 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:SVCW.Controllers.ActivityController.getall">
+        <member name="M:SVCW.Controllers.ActivityController.getall(System.Int32,System.Int32)">
             <summary>
             admin, moderator
             </summary>
@@ -213,6 +213,27 @@
             admin
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SVCW.Controllers.UserController.validateLoginUser(SVCW.DTOs.Users.Req.LoginReq)">
+            <summary>
+            Required{email} -- nếu là new user -> userdata
+            </summary>
+            <param name="LoginReq"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SVCW.Controllers.UserController.createUser(SVCW.DTOs.Users.Req.CreateUserReq)">
+            <summary>
+            Required{email}
+            </summary>
+            <param name="req"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SVCW.Controllers.UserController.updateUser(SVCW.DTOs.Users.Req.UpdateUserReq)">
+            <summary>
+            Required{userId, >= 1 thông tin update}
+            </summary>
+            <param name="req"></param>
             <returns></returns>
         </member>
         <member name="M:SVCW.Controllers.VNPayController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,SVCW.Models.SVCWContext)">

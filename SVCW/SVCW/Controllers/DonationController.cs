@@ -60,6 +60,23 @@ namespace SVCW.Controllers
             }
         }
 
+        [Route("get-Donation-User")]
+        [HttpGet]
+        public async Task<IActionResult> getDonationUser(string id)
+        {
+            ResponseAPI<List<Donation>> responseAPI = new ResponseAPI<List<Donation>>();
+            try
+            {
+                responseAPI.Data = await this.service.GetDonationsUser(id);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("create-Donation-activity")]
         [HttpPost]
         public async Task<IActionResult> createDonationActivity(DonationDTO dto)

@@ -34,6 +34,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("get-history-user")]
+        [HttpGet]
+        public async Task<IActionResult> getHistoryUser(string userId)
+        {
+            ResponseAPI<List<FollowJoinAvtivity>> responseAPI = new ResponseAPI<List<FollowJoinAvtivity>>();
+            try
+            {
+                responseAPI.Data = await this.service.historyUserJoin(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         /// <summary>
         /// Required{email} -- nếu là new user -> userdata
         /// </summary>

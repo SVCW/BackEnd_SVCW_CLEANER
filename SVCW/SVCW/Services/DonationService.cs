@@ -86,5 +86,26 @@ namespace SVCW.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<Donation>> GetDonationsUser(string id)
+        {
+            try
+            {
+                var check = await this.context.Donation.Where(x=>x.UserId.Equals(id))
+                    .Include(x=>x.Activity)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not have data");
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
