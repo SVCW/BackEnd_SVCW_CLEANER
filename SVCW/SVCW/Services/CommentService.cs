@@ -120,7 +120,7 @@ namespace SVCW.Services
                 var rep = new Comment();
 
                 rep.Status = true;
-                rep.ActivityId = reply.ActivityiId;
+                rep.ActivityId = reply.ActivityId;
                 rep.CommentContent = reply.CommentContent;
                 rep.CommentId = "CMT" + Guid.NewGuid().ToString().Substring(0, 7);
                 rep.Datetime = DateTime.Now;
