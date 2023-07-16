@@ -69,6 +69,10 @@ namespace SVCW.Services
                 var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id)).FirstOrDefaultAsync();
                 if (check != null)
                 {
+                    if(check.RealDonation > 0)
+                    {
+                        throw new Exception("activity have donate can't remove");
+                    }
                     check.Status= "0";
                     return check;
                 }
@@ -77,6 +81,27 @@ namespace SVCW.Services
                     throw new Exception("not found activity");
                 }
             }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Activity> deleteAdmin(string id)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.Status = "0";
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not found activity");
+                }
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

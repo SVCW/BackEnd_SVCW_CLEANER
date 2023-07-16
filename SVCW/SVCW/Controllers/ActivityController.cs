@@ -126,6 +126,23 @@ namespace SVCW.Controllers
         /// <returns></returns>
         [Route("delete-activity")]
         [HttpDelete]
+        public async Task<IActionResult> deleteAdmin(string id)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.deleteAdmin(id);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("delete-activity-user")]
+        [HttpDelete]
         public async Task<IActionResult> delete(string id)
         {
             ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
