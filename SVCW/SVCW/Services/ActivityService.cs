@@ -32,6 +32,7 @@ namespace SVCW.Services
                 activity.TargetDonation = dto.TargetDonation;
                 activity.UserId= dto.UserId;
                 activity.Status = "1";
+                activity.RealDonation = 0;
                 if (dto.isFanpageAvtivity)
                 {
                     activity.FanpageId = dto.UserId;
