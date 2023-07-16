@@ -133,6 +133,13 @@ namespace SVCW.Services
         {
             try
             {
+                var check = await this.context.FollowJoinAvtivity
+                    .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if(check != null)
+                {
+                    check.IsFollow = true;
+                    return await this.context.SaveChangesAsync() > 0;
+                }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
@@ -162,11 +169,11 @@ namespace SVCW.Services
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
                     .Include(x => x.Process)
-                    //.Include(x => x.Donation)
+                    .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
-                    //.Include(x => x.BankAccount)
+                    .Include(x => x.BankAccount)
                     .OrderByDescending(x => x.CreateAt)
                     .Take(pageSize);
                     foreach(var x in check)
@@ -183,11 +190,11 @@ namespace SVCW.Services
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
                     .Include(x => x.Process)
-                    //.Include(x => x.Donation)
+                    .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
-                    //.Include(x => x.BankAccount)
+                    .Include(x => x.BankAccount)
                     .OrderByDescending(x => x.CreateAt)
                     .Take(PageLoad*pageSize - pageSize);
                     foreach (var x in check)
@@ -300,6 +307,13 @@ namespace SVCW.Services
         {
             try
             {
+                var check = await this.context.FollowJoinAvtivity
+                    .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.IsJoin = true;
+                    return await this.context.SaveChangesAsync() > 0;
+                }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
@@ -309,8 +323,8 @@ namespace SVCW.Services
 
                 await this.context.FollowJoinAvtivity.AddAsync(follow);
 
-                var check = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
-                check.NumberJoin += 1;
+                var check2 = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                check2.NumberJoin += 1;
                 return await this.context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
