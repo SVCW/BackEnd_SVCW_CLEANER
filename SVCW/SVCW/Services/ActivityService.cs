@@ -170,8 +170,11 @@ namespace SVCW.Services
                 if(PageLoad == 1)
                 {
                      var check = this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -225,8 +228,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b=>b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -255,8 +261,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -285,8 +294,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
