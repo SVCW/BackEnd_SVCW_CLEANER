@@ -90,6 +90,7 @@ namespace SVCW.Services
             try
             {
                 var db = await this._context.Comment
+                    .Where(x => x.ReplyId == null)
                     .Include(x=>x.User)
                     .Include(x=>x.InverseReply)
                     .ToListAsync();
@@ -105,7 +106,7 @@ namespace SVCW.Services
         {
             try
             {
-                var db = await this._context.Comment.Where(x => x.Status)
+                var db = await this._context.Comment.Where(x => x.Status && x.ReplyId == null)
                     .Include(x => x.User)
                     .Include(x => x.InverseReply)
                     .ToListAsync();
