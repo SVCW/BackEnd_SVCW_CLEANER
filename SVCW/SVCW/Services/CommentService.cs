@@ -90,7 +90,9 @@ namespace SVCW.Services
             try
             {
                 var db = await this._context.Comment
+                    .Where(x => x.ReplyId == null)
                     .Include(x=>x.User)
+                    .Include(x=>x.InverseReply)
                     .ToListAsync();
                 return db;
             }
@@ -104,7 +106,10 @@ namespace SVCW.Services
         {
             try
             {
-                var db = await this._context.Comment.Where(x => x.Status).ToListAsync();
+                var db = await this._context.Comment.Where(x => x.Status && x.ReplyId == null)
+                    .Include(x => x.User)
+                    .Include(x => x.InverseReply)
+                    .ToListAsync();
                 return db;
             }
             catch (Exception ex)
@@ -120,7 +125,7 @@ namespace SVCW.Services
                 var rep = new Comment();
 
                 rep.Status = true;
-                rep.ActivityId = reply.ActivityiId;
+                rep.ActivityId = reply.ActivityId;
                 rep.CommentContent = reply.CommentContent;
                 rep.CommentId = "CMT" + Guid.NewGuid().ToString().Substring(0, 7);
                 rep.Datetime = DateTime.Now;

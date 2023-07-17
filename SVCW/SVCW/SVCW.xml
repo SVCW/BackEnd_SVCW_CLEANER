@@ -50,7 +50,7 @@
             <param name="achivementId"></param>
             <returns></returns>
         </member>
-        <member name="M:SVCW.Controllers.ActivityController.delete(System.String)">
+        <member name="M:SVCW.Controllers.ActivityController.deleteAdmin(System.String)">
             <summary>
             admin, moderator
             </summary>

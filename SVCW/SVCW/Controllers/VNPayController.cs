@@ -144,6 +144,10 @@ namespace SVCW.Controllers
                 check.PayDate= DateTime.Now;
                 
                 await this.context.SaveChangesAsync();
+                var activity = await this.context.Activity.Where(x=>x.ActivityId.Equals(check.ActivityId)).FirstOrDefaultAsync();
+                activity.RealDonation += check.Amount;
+
+                await this.context.SaveChangesAsync();
             }
 
             return Redirect(returnUrl + "?amount=" + amount + "&status=" + status);

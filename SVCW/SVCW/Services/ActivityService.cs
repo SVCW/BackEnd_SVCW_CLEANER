@@ -32,6 +32,7 @@ namespace SVCW.Services
                 activity.TargetDonation = dto.TargetDonation;
                 activity.UserId= dto.UserId;
                 activity.Status = "1";
+                activity.RealDonation = 0;
                 if (dto.isFanpageAvtivity)
                 {
                     activity.FanpageId = dto.UserId;
@@ -68,6 +69,10 @@ namespace SVCW.Services
                 var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id)).FirstOrDefaultAsync();
                 if (check != null)
                 {
+                    if(check.RealDonation > 0)
+                    {
+                        throw new Exception("activity have donate can't remove");
+                    }
                     check.Status= "0";
                     return check;
                 }
@@ -81,6 +86,27 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<Activity> deleteAdmin(string id)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.Status = "0";
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not found activity");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> disJoinActivity(string activityId, string userId)
         {
             try
@@ -89,10 +115,14 @@ namespace SVCW.Services
                 if(check != null)
                 {
                     check.IsJoin = false;
+                    check.IsFollow = false;
+                    this.context.FollowJoinAvtivity.Update(check);
+                    await this.context.SaveChangesAsync();
                     var ac = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                     if (ac != null)
                     {
                         ac.NumberJoin -= 1;
+                        await this.context.SaveChangesAsync();
                         return true;
                     }
                 }
@@ -107,6 +137,15 @@ namespace SVCW.Services
         {
             try
             {
+                var check = await this.context.FollowJoinAvtivity
+                    .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if(check != null)
+                {
+                    check.IsFollow = true;
+                    this.context.FollowJoinAvtivity.Update(check);
+                    await this.context.SaveChangesAsync();
+                    return true;
+                }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
@@ -115,7 +154,8 @@ namespace SVCW.Services
                 follow.Datetime = DateTime.Now;
 
                 await this.context.FollowJoinAvtivity.AddAsync(follow);
-                return await this.context.SaveChangesAsync() > 0;
+                await this.context.SaveChangesAsync();
+                return true;
             }catch(Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -130,17 +170,20 @@ namespace SVCW.Services
                 if(PageLoad == 1)
                 {
                      var check = this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
                     .Include(x => x.Process)
-                    //.Include(x => x.Donation)
+                    .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
-                    //.Include(x => x.BankAccount)
+                    .Include(x => x.BankAccount)
                     .OrderByDescending(x => x.CreateAt)
                     .Take(pageSize);
                     foreach(var x in check)
@@ -157,11 +200,11 @@ namespace SVCW.Services
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
                     .Include(x => x.Process)
-                    //.Include(x => x.Donation)
+                    .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
-                    //.Include(x => x.BankAccount)
+                    .Include(x => x.BankAccount)
                     .OrderByDescending(x => x.CreateAt)
                     .Take(PageLoad*pageSize - pageSize);
                     foreach (var x in check)
@@ -185,8 +228,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b=>b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -215,8 +261,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -245,8 +294,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment)
-                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -274,6 +326,15 @@ namespace SVCW.Services
         {
             try
             {
+                var check = await this.context.FollowJoinAvtivity
+                    .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.IsJoin = true;
+                    check.IsFollow = true;
+                    this.context.FollowJoinAvtivity.Update(check);
+                    return await this.context.SaveChangesAsync() > 0;
+                }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
@@ -283,8 +344,8 @@ namespace SVCW.Services
 
                 await this.context.FollowJoinAvtivity.AddAsync(follow);
 
-                var check = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
-                check.NumberJoin += 1;
+                var check2 = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                check2.NumberJoin += 1;
                 return await this.context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
@@ -302,6 +363,8 @@ namespace SVCW.Services
                 {
                     check.IsFollow = false;
                 }
+                this.context.FollowJoinAvtivity.Update(check);
+
                 return await this.context.SaveChangesAsync() >0;
             }
             catch (Exception ex)

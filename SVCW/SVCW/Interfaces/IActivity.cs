@@ -12,6 +12,7 @@ namespace SVCW.Interfaces
         Task<List<Activity>> getByTitle(string title);
         Task<List<Activity>> getForUser();
         Task<Activity> delete(string id);
+        Task<Activity> deleteAdmin(string id);
         Task<bool> followActivity(string activityId, string userId);
         Task<bool> unFollowActivity(string activityId, string userId);
         Task<bool> joinActivity(string activityId, string userId);
