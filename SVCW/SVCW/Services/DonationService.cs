@@ -21,7 +21,8 @@ namespace SVCW.Services
                 donate.DonationId = "DNT"+Guid.NewGuid().ToString().Substring(0,7);
                 donate.Title= dto.Title;
                 donate.Datetime = DateTime.Now;
-                donate.Amount= dto.Amount;
+                //donate.Amount= dto.Amount;
+                donate.Amount = Decimal.Floor(dto.Amount);
                 donate.Email=dto.Email;
                 donate.Phone=dto.Phone;
                 donate.Name= dto.Name;

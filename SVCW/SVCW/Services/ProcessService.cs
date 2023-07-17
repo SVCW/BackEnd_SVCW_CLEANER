@@ -88,6 +88,7 @@ namespace SVCW.Services
                 var check = await this._context.Process
                     .Where(x=>x.ActivityId.Equals(activityId) && x.Status)
                     .Include(x => x.Media)
+                    .OrderByDescending(x => x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -119,6 +120,8 @@ namespace SVCW.Services
                 data.ActivityId = process.ActivityId;
                 data.ProcessTypeId = process.ProcessTypeId;
                 data.ActivityResultId = null;
+                data.ProcessNo = process.ProcessNo;
+                data.IsKeyProcess = process.IsKeyProcess;
 
                 await this._context.Process.AddAsync(data);
                 if(await this._context.SaveChangesAsync() > 0)
