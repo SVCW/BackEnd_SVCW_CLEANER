@@ -115,10 +115,14 @@ namespace SVCW.Services
                 if(check != null)
                 {
                     check.IsJoin = false;
+                    check.IsFollow = false;
+                    this.context.FollowJoinAvtivity.Update(check);
+                    await this.context.SaveChangesAsync();
                     var ac = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                     if (ac != null)
                     {
                         ac.NumberJoin -= 1;
+                        await this.context.SaveChangesAsync();
                         return true;
                     }
                 }
@@ -138,7 +142,9 @@ namespace SVCW.Services
                 if(check != null)
                 {
                     check.IsFollow = true;
-                    return await this.context.SaveChangesAsync() > 0;
+                    this.context.FollowJoinAvtivity.Update(check);
+                    await this.context.SaveChangesAsync();
+                    return true;
                 }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
@@ -148,7 +154,8 @@ namespace SVCW.Services
                 follow.Datetime = DateTime.Now;
 
                 await this.context.FollowJoinAvtivity.AddAsync(follow);
-                return await this.context.SaveChangesAsync() > 0;
+                await this.context.SaveChangesAsync();
+                return true;
             }catch(Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -312,6 +319,8 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     check.IsJoin = true;
+                    check.IsFollow = true;
+                    this.context.FollowJoinAvtivity.Update(check);
                     return await this.context.SaveChangesAsync() > 0;
                 }
                 var follow = new FollowJoinAvtivity();
@@ -342,6 +351,8 @@ namespace SVCW.Services
                 {
                     check.IsFollow = false;
                 }
+                this.context.FollowJoinAvtivity.Update(check);
+
                 return await this.context.SaveChangesAsync() >0;
             }
             catch (Exception ex)
