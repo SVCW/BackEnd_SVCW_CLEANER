@@ -17,7 +17,7 @@ namespace SVCW.Models
         [Required]
         [Column("title")]
         public string Title { get; set; }
-        [Column("amount", TypeName = "money")]
+        [Column("amount", TypeName = "decimal(18, 0)")]
         public decimal Amount { get; set; }
         [Column("datetime", TypeName = "datetime")]
         public DateTime Datetime { get; set; }
