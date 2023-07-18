@@ -37,7 +37,7 @@ namespace SVCW.Controllers
 
         [Route("get-user-by-id")]
         [HttpGet]
-        public async Task<IActionResult> getUserById(GetUserByIdReq req)
+        public async Task<IActionResult> getUserById([FromQuery] GetUserByIdReq req)
         {
             ResponseAPI<CommonUserRes> responseAPI = new ResponseAPI<CommonUserRes>();
             try

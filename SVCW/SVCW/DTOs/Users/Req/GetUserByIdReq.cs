@@ -2,7 +2,7 @@
 {
 	public class GetUserByIdReq
 	{
-		public string UserId;
+		public string UserId { get; set; }
 	}
 }
 
