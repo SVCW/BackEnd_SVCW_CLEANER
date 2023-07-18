@@ -182,7 +182,7 @@ namespace SVCW.Services
                     check.StartDate = upProcess.StartDate ?? check.StartDate;
                     check.EndDate = upProcess.EndDate ?? check.EndDate;
                     check.ProcessTypeId = upProcess.ProcessTypeId;
-
+                    this._context.Process.Update(check);
                     if(await this._context.SaveChangesAsync() > 0)
                     {
                         return check;

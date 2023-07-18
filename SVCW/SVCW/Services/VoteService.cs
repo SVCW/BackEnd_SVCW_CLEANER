@@ -118,6 +118,7 @@ namespace SVCW.Services
                         {
                             check1.NumberDislike -= 1;
                             check1.NumberLike += 1;
+                            this._context.User.Update(check1);
                             await this._context.SaveChangesAsync();
                         }
                     }
@@ -130,10 +131,12 @@ namespace SVCW.Services
                         {
                             check1.NumberDislike += 1;
                             check1.NumberLike -= 1;
+                            this._context.User.Update(check1);
                             await this._context.SaveChangesAsync();
                         }
                     }
                 }
+                this._context.Vote.Update(check);
                 await this._context.SaveChangesAsync();
                 return check;
             }catch(Exception ex)
