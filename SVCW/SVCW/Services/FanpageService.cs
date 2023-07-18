@@ -27,6 +27,7 @@ namespace SVCW.Services
                 fanpage.Avatar= dto.Avatar;
                 fanpage.CreateAt = DateTime.Now;
                 fanpage.Mst = dto.Mst;
+                fanpage.NumberFollow = 0;
 
                 await this._context.Fanpage.AddAsync(fanpage);
                 await this._context.SaveChangesAsync();
@@ -185,7 +186,7 @@ namespace SVCW.Services
                     check.Mst = dto.Mst;
                     check.Email = dto.Email;
                     check.Phone = dto.Phone;
-
+                    this._context.Fanpage.Update(check);
                     await this._context.SaveChangesAsync();
                 }
                 return check;

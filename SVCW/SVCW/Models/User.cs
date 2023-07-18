@@ -23,6 +23,7 @@ namespace SVCW.Models
             Like = new HashSet<Like>();
             Notification = new HashSet<Notification>();
             Report = new HashSet<Report>();
+            UserSearch = new HashSet<UserSearch>();
             VoteUser = new HashSet<Vote>();
             VoteUserVote = new HashSet<Vote>();
         }
@@ -96,6 +97,8 @@ namespace SVCW.Models
         public virtual ICollection<Notification> Notification { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<Report> Report { get; set; }
+        [InverseProperty("User")]
+        public virtual ICollection<UserSearch> UserSearch { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<Vote> VoteUser { get; set; }
         [InverseProperty("UserVote")]

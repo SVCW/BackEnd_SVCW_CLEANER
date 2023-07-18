@@ -38,6 +38,7 @@ namespace SVCW.Models
         public virtual DbSet<ReportType> ReportType { get; set; }
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserSearch> UserSearch { get; set; }
         public virtual DbSet<Vote> Vote { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -278,6 +279,15 @@ namespace SVCW.Models
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_Role");
+            });
+
+            modelBuilder.Entity<UserSearch>(entity =>
+            {
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserSearch)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserSearch_User");
             });
 
             modelBuilder.Entity<Vote>(entity =>
