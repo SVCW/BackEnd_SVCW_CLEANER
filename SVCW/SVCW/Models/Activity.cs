@@ -46,9 +46,9 @@ namespace SVCW.Models
         public int? NumberJoin { get; set; }
         [Column("shareLink")]
         public string ShareLink { get; set; }
-        [Column("realDonation", TypeName = "money")]
+        [Column("realDonation", TypeName = "decimal(18, 0)")]
         public decimal? RealDonation { get; set; }
-        [Column("targetDonation", TypeName = "money")]
+        [Column("targetDonation", TypeName = "decimal(18, 0)")]
         public decimal? TargetDonation { get; set; }
         [Required]
         [Column("status")]
