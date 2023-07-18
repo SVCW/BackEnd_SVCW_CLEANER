@@ -71,6 +71,7 @@ namespace SVCW.Controllers
 
                     // update db
                     check.TaxVnpay= taxVNPay;
+                    this.context.Donation.Update(check);
                     if(await this.context.SaveChangesAsync() > 0)
                     {
                         return Ok(paymentUrl);
@@ -142,11 +143,12 @@ namespace SVCW.Controllers
                 var check = await this.context.Donation.Where(x=>x.TaxVnpay.Equals(taxVNPay)).FirstOrDefaultAsync();
                 check.Status = status;
                 check.PayDate= DateTime.Now;
+                this.context.Donation.Update(check);
                 
                 await this.context.SaveChangesAsync();
                 var activity = await this.context.Activity.Where(x=>x.ActivityId.Equals(check.ActivityId)).FirstOrDefaultAsync();
                 activity.RealDonation += check.Amount;
-
+                this.context.Activity.Update(activity);
                 await this.context.SaveChangesAsync();
             }
 
