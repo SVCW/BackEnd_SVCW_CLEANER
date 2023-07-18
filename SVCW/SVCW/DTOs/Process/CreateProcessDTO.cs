@@ -15,6 +15,8 @@ namespace SVCW.DTOs.Process
         public DateTime? EndDate { get; set; }
         public string ActivityId { get; set; }
         public string ProcessTypeId { get; set; }
+        public bool? IsKeyProcess { get; set; }
+        public int? ProcessNo { get; set; }
         public List<MediaDTO>? media { get; set; }
     }
 }

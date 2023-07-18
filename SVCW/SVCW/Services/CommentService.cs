@@ -20,11 +20,11 @@ namespace SVCW.Services
             {
                 var cmt = new Comment();
                 cmt.Status = true;
-                cmt.UserId = comment.UserID;
+                cmt.UserId = comment.UserId;
                 cmt.CommentContent = comment.CommentContent;
                 cmt.CommentId = "CMT" + Guid.NewGuid().ToString().Substring(0, 7);
                 cmt.Datetime = DateTime.Now;
-                cmt.UserId = comment.UserID;
+                //cmt.UserId = comment.UserID;
                 cmt.ActivityId = comment.ActivityId;
 
                 await this._context.Comment.AddAsync(cmt);
@@ -150,6 +150,7 @@ namespace SVCW.Services
                 if (currentComment != null)
                 {
                     currentComment.CommentContent = comment.CommentContent;
+                    this._context.Comment.Update(currentComment);
                     await this._context.SaveChangesAsync();
                 }
                 return currentComment;

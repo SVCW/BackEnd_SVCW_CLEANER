@@ -54,7 +54,7 @@ namespace SVCW.Controllers
                     pay.AddRequestData("vnp_Version", "2.1.0"); //Phiên bản api mà merchant kết nối. Phiên bản hiện tại là 2.0.0
                     pay.AddRequestData("vnp_Command", "pay"); //Mã API sử dụng, mã cho giao dịch thanh toán là 'pay'
                     pay.AddRequestData("vnp_TmnCode", tmnCode); //Mã website của merchant trên hệ thống của VNPAY (khi đăng ký tài khoản sẽ có trong mail VNPAY gửi về)
-                    pay.AddRequestData("vnp_Amount", check.Amount.ToString("F").TrimEnd('0').TrimEnd('.') + "00"); //số tiền cần thanh toán, công thức: số tiền * 100 - ví dụ 10.000 (mười nghìn đồng) --> 1000000
+                    pay.AddRequestData("vnp_Amount", check.Amount.ToString("F").TrimEnd('0').TrimEnd('.').TrimEnd(',') + "00"); //số tiền cần thanh toán, công thức: số tiền * 100 - ví dụ 10.000 (mười nghìn đồng) --> 1000000
                     pay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss")); //ngày thanh toán theo định dạng yyyyMMddHHmmss
                     pay.AddRequestData("vnp_CurrCode", "VND"); //Đơn vị tiền tệ sử dụng thanh toán. Hiện tại chỉ hỗ trợ VND
                     pay.AddRequestData("vnp_IpAddr", ip); //Địa chỉ IP của khách hàng thực hiện giao dịch
@@ -71,6 +71,7 @@ namespace SVCW.Controllers
 
                     // update db
                     check.TaxVnpay= taxVNPay;
+                    this.context.Donation.Update(check);
                     if(await this.context.SaveChangesAsync() > 0)
                     {
                         return Ok(paymentUrl);
@@ -142,11 +143,12 @@ namespace SVCW.Controllers
                 var check = await this.context.Donation.Where(x=>x.TaxVnpay.Equals(taxVNPay)).FirstOrDefaultAsync();
                 check.Status = status;
                 check.PayDate= DateTime.Now;
+                this.context.Donation.Update(check);
                 
                 await this.context.SaveChangesAsync();
                 var activity = await this.context.Activity.Where(x=>x.ActivityId.Equals(check.ActivityId)).FirstOrDefaultAsync();
                 activity.RealDonation += check.Amount;
-
+                this.context.Activity.Update(activity);
                 await this.context.SaveChangesAsync();
             }
 

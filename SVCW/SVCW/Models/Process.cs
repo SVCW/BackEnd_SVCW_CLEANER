@@ -41,6 +41,10 @@ namespace SVCW.Models
         [Column("activityResultId")]
         [StringLength(10)]
         public string ActivityResultId { get; set; }
+        [Column("processNo")]
+        public int? ProcessNo { get; set; }
+        [Column("isKeyProcess")]
+        public bool? IsKeyProcess { get; set; }
 
         [ForeignKey("ActivityId")]
         [InverseProperty("Process")]

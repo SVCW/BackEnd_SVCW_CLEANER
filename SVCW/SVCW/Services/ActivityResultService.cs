@@ -69,7 +69,7 @@ namespace SVCW.Services
                 {
                     check.Title = dto.Title;
                     check.Desciption = dto.Desciption;
-
+                    this._context.ActivityResult.Update(check);
                     await this._context.SaveChangesAsync();
                     return check;
                 }

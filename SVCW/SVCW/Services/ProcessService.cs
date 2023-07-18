@@ -88,6 +88,7 @@ namespace SVCW.Services
                 var check = await this._context.Process
                     .Where(x=>x.ActivityId.Equals(activityId) && x.Status)
                     .Include(x => x.Media)
+                    .OrderByDescending(x => x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -108,6 +109,7 @@ namespace SVCW.Services
         {
             try
             {
+
                 var data = new Process();
                 data.ProcessId = "PRC"+Guid.NewGuid().ToString().Substring(0,7);
                 data.ProcessTitle = process.ProcessTitle;
@@ -119,6 +121,8 @@ namespace SVCW.Services
                 data.ActivityId = process.ActivityId;
                 data.ProcessTypeId = process.ProcessTypeId;
                 data.ActivityResultId = null;
+                data.ProcessNo = process.ProcessNo;
+                data.IsKeyProcess = process.IsKeyProcess;
 
                 await this._context.Process.AddAsync(data);
                 if(await this._context.SaveChangesAsync() > 0)
@@ -178,7 +182,7 @@ namespace SVCW.Services
                     check.StartDate = upProcess.StartDate ?? check.StartDate;
                     check.EndDate = upProcess.EndDate ?? check.EndDate;
                     check.ProcessTypeId = upProcess.ProcessTypeId;
-
+                    this._context.Process.Update(check);
                     if(await this._context.SaveChangesAsync() > 0)
                     {
                         return check;
