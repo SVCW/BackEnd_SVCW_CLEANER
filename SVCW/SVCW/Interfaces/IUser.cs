@@ -7,8 +7,10 @@ namespace SVCW.Interfaces
     public interface IUser
     {
         Task<List<User>> getAllUser();
+        Task<CommonUserRes> getUserById(GetUserByIdReq req);
         Task<CommonUserRes> createUser(CreateUserReq req);
         Task<CommonUserRes> validateLoginUser(LoginReq req);
+        Task<CommonUserRes> changeUserPassword(ChangePwReq req);
         Task<CommonUserRes> updateUser(UpdateUserReq req);
         Task<List<FollowJoinAvtivity>> historyUserJoin(string id);
     }
