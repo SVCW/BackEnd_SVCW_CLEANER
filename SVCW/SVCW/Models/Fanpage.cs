@@ -47,6 +47,8 @@ namespace SVCW.Models
         [Column("status")]
         [StringLength(50)]
         public string Status { get; set; }
+        [Column("numberFollow")]
+        public int? NumberFollow { get; set; }
 
         [ForeignKey("FanpageId")]
         [InverseProperty("Fanpage")]
