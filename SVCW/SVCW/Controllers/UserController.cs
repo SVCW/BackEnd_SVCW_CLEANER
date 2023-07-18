@@ -34,6 +34,24 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+
+        [Route("get-user-by-id")]
+        [HttpGet]
+        public async Task<IActionResult> getUserById(GetUserByIdReq req)
+        {
+            ResponseAPI<CommonUserRes> responseAPI = new ResponseAPI<CommonUserRes>();
+            try
+            {
+                responseAPI.Data = await this.service.getUserById(req);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("get-history-user")]
         [HttpGet]
         public async Task<IActionResult> getHistoryUser(string userId)
@@ -100,7 +118,8 @@ namespace SVCW.Controllers
                 responseAPI.Message = ex.Message;
                 return BadRequest(responseAPI);
             }
-            }
+        }
+
         /// <summary>
         /// Required{email}
         /// </summary>
@@ -135,6 +154,23 @@ namespace SVCW.Controllers
             try
             {
                 responseAPI.Data = await this.service.updateUser(req);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("change-password")]
+        [HttpPut]
+        public async Task<IActionResult> changePassword(ChangePwReq req)
+        {
+            ResponseAPI<CommonUserRes> responseAPI = new ResponseAPI<CommonUserRes>();
+            try
+            {
+                responseAPI.Data = await this.service.changeUserPassword(req);
                 return Ok(responseAPI);
             }
             catch (Exception ex)
