@@ -150,6 +150,7 @@ namespace SVCW.Services
                 if (currentComment != null)
                 {
                     currentComment.CommentContent = comment.CommentContent;
+                    this._context.Comment.Update(currentComment);
                     await this._context.SaveChangesAsync();
                 }
                 return currentComment;

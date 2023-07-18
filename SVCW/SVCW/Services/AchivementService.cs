@@ -117,6 +117,7 @@ namespace SVCW.Services
                     achivement.Description= upAchivement.Description;
                     //achivement.CreateAt= upAchivement.CreateAt;
                     achivement.Status= upAchivement.Status;
+                    context.Achivement.Update(achivement);
                     this.context.SaveChanges();
                     return true;
 

@@ -122,6 +122,7 @@ namespace SVCW.Services
                     _reportType.ReportTypeId = upReportType.ReportTypeId;
                     _reportType.ReportTypeName = upReportType.ReportTypeName;
                     _reportType.Status = upReportType.Status;
+                    this.context.ReportType.Update(_reportType);
                     this.context.SaveChanges();
                     return true;
                 }

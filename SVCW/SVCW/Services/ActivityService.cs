@@ -385,6 +385,7 @@ namespace SVCW.Services
                 check.StartDate = dto.StartDate;
                 check.Location = dto.Location;
                 check.TargetDonation = dto.TargetDonation;
+                this.context.Activity.Update(check);
                 if(await this.context.SaveChangesAsync() >0)
                 {
                     return check;

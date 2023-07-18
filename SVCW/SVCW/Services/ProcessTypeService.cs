@@ -116,6 +116,7 @@ namespace SVCW.Services
                 {
                     processType.ProcessTypeName = upProcessType.ProcessTypeName;
                     processType.Description = upProcessType.Description;
+                    this.context.ProcessType.Update(processType);
                     this.context.SaveChanges();
                     return true;
 

@@ -111,7 +111,9 @@ namespace SVCW.Services
                 var check = await this._context.Role.Where(x => x.RoleId.Equals(role.RoleId)).FirstOrDefaultAsync();
                 check.Description = role.Description;
                 check.RoleName = role.RoleName;
+                this._context.Role.Update(check);
                 await this._context.SaveChangesAsync();
+
                 return check;
             }
             catch(Exception ex)
