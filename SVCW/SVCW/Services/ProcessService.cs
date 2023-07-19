@@ -147,6 +147,50 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<Process>> InsertProcessList(List<CreateProcessDTO> process)
+        {
+            try
+            {
+                var list = new List<Process>();
+                foreach(var p in process)
+                {
+                    var data = new Process();
+                    data.ProcessId = "PRC" + Guid.NewGuid().ToString().Substring(0, 7);
+                    data.ProcessTitle = p.ProcessTitle;
+                    data.Description = p.Description;
+                    data.Status = true;
+                    data.Datetime = DateTime.Now;
+                    data.StartDate = p.StartDate ?? null;
+                    data.EndDate = p.EndDate ?? null;
+                    data.ActivityId = p.ActivityId;
+                    data.ProcessTypeId = p.ProcessTypeId;
+                    data.ActivityResultId = null;
+                    data.ProcessNo = p.ProcessNo;
+                    data.IsKeyProcess = p.IsKeyProcess;
+
+                    await this._context.Process.AddAsync(data);
+                    if (await this._context.SaveChangesAsync() > 0)
+                    {
+                        foreach (var media in p.media)
+                        {
+                            var media2 = new Media();
+                            media2.MediaId = "MED" + Guid.NewGuid().ToString().Substring(0, 7);
+                            media2.Type = media.Type;
+                            media2.LinkMedia = media.LinkMedia;
+                            media2.ProcessId = data.ProcessId;
+                            await this._context.Media.AddAsync(media2);
+                            await this._context.SaveChangesAsync();
+                            media2 = new Media();
+                        }
+                    }
+                    else { throw new Exception("Fail add data"); }
+
+                    list.Add(data);
+                }
+                return list;
+            }catch(Exception ex) { throw new Exception(ex.Message); }
+        }
+
         public async Task<List<Process>> SearchByTitleProcess(string? processTitle)
         {
             try

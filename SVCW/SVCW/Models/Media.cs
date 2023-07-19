@@ -21,7 +21,6 @@ namespace SVCW.Models
         [Column("type")]
         [StringLength(100)]
         public string Type { get; set; }
-        [Required]
         [Column("activityId")]
         [StringLength(10)]
         public string ActivityId { get; set; }
