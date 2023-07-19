@@ -31,6 +31,12 @@ namespace SVCW.DTOs.Common
 
         [Display(Name = "Invalid Email")]
         InvalidEmail = 104,
+
+        [Display(Name = "Invalid User Password")]
+        InvalidPassword = 105,
+
+        [Display(Name = "New Password Invalid")]
+        InvalidNewPassword = 106,
     }
 }
 

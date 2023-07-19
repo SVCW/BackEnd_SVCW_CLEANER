@@ -1,5 +1,6 @@
 
 
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
 using SVCW.DTOs.Common;
@@ -206,6 +207,49 @@ namespace SVCW.Services
             }
         }
 
+    public async Task<CommonUserRes> changeUserPassword(ChangePwReq req)
+        {
+            try
+            {
+                var res = new CommonUserRes();
+                var user = await this._context.User.Where(u => u.UserId.Equals(req.UserId)).FirstOrDefaultAsync();
+
+                if (!user.Password.Equals(req.oldPassword))
+                {
+                    res.resultCode = SVCWCode.InvalidPassword;
+                    res.resultMsg = "Sai mật khẩu!";
+                    return res;
+                }
+
+                if (!isValidPassword(req.newPassword))
+                {
+                    res.resultCode = SVCWCode.InvalidNewPassword;
+                    res.resultMsg = "Mật khẩu mới không hợp lệ!";
+                    return res;
+                }
+                // update pw
+                user.Password = req.newPassword;
+                await this._context.SaveChangesAsync();
+
+                res.resultCode = SVCWCode.SUCCESS;
+                res.resultMsg = "Mật khẩu người đùng đã được cập nhật!";
+                return res;
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Ex:" + ex.Message);
+                var res = new CommonUserRes();
+                res.resultCode = SVCWCode.Unknown;
+                res.resultMsg = "Lỗi hệ thống!";
+                return res;
+            }
+        }
+
+        public bool isValidPassword(string pw)
+        {
+            string pattern = @"^.+$"; // empty pattern
+            return Regex.IsMatch(pw, pattern);
+        }
+
         public async Task<List<FollowJoinAvtivity>> historyUserJoin(string id)
         {
             try
@@ -227,6 +271,35 @@ namespace SVCW.Services
                 throw new Exception(ex.Message);
             }
             
+        }
+
+        public async Task<CommonUserRes> getUserById(GetUserByIdReq req)
+        {
+            try
+            {
+                var res = new CommonUserRes();
+
+                var user = await this._context.User.Where(u => u.UserId.Equals(req.UserId)).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    res.resultCode = SVCWCode.UserNotExist;
+                    res.resultMsg = "User không tồn tại trong hệ thống!";
+                    return res;
+                }
+
+                res.user = user;
+                res.resultCode = SVCWCode.SUCCESS;
+                res.resultMsg = "Success";
+                return res;
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Ex:" + ex.Message);
+                var res = new CommonUserRes();
+                res.resultCode = SVCWCode.Unknown;
+                res.resultMsg = "Lỗi hệ thống!";
+                return res;
+            }
         }
     }
 }
