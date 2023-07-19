@@ -217,7 +217,6 @@ namespace SVCW.Models
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Media)
                     .HasForeignKey(d => d.ActivityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Media_Activity");
 
                 entity.HasOne(d => d.Process)

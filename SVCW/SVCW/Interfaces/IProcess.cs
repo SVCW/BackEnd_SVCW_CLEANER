@@ -14,5 +14,6 @@ namespace SVCW.Interfaces
         Task<Process> UpdateProcess(updateProcessDTO upProcess);
         Task<bool> DeleteProcess(string processId);
         Task<Process> InsertProcess(CreateProcessDTO process);
+        Task<List<Process>> InsertProcessList(List<CreateProcessDTO> process);
     }
 }

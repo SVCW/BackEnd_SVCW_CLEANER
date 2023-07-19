@@ -66,6 +66,11 @@ namespace SVCW.Services
                 check.Status = true;
 
                 await this._context.FollowFanpage.AddAsync(check);
+                await this._context.SaveChangesAsync();
+
+                var fanpage = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
+                fanpage.NumberFollow += 1;
+                this._context.Fanpage.Update(fanpage);
                 return await this._context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
@@ -162,6 +167,12 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     check.Status = false;
+                    this._context.FollowFanpage.Update(check);
+                    await this._context.SaveChangesAsync();
+
+                    var fanpage = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
+                    fanpage.NumberFollow -= 1;
+                    this._context.Fanpage.Update(fanpage);
                     return await this._context.SaveChangesAsync() > 0;
                 }
                 return false;

@@ -122,6 +122,7 @@ namespace SVCW.Services
                     if (ac != null)
                     {
                         ac.NumberJoin -= 1;
+                        this.context.Activity.Update(ac);
                         await this.context.SaveChangesAsync();
                         return true;
                     }

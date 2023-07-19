@@ -103,6 +103,23 @@ namespace SVCW.Controllers
             }
         }
 
+        [Route("Insert-process-list")]
+        [HttpPost]
+        public async Task<IActionResult> InsertList(List<CreateProcessDTO> dto)
+        {
+            ResponseAPI<List<Process>> responseAPI = new ResponseAPI<List<Process>>();
+            try
+            {
+                responseAPI.Data = await this.service.InsertProcessList(dto);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("update-process")]
         [HttpPut]
         public async Task<IActionResult> update(updateProcessDTO dto)
