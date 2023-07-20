@@ -232,5 +232,39 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+
+        [Route("get-activity-by-userId")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityUser(string userId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityUser(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("get-activity-by-fanpageId")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityFanpage(string fanpageId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityFanpage(fanpageId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
     }
 }
