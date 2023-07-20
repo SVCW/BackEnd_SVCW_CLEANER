@@ -163,6 +163,77 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<Activity>> getActivityFanpage(string fanpageId)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.FanpageId.Equals(fanpageId))
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                    .Include(x => x.Process)
+                        .ThenInclude(x=>x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount)
+                    .ToListAsync();
+                if(check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("Fanpage have no activity");
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityUser(string userId)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.UserId.Equals(userId))
+                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                    .Include(x => x.Process)
+                        .ThenInclude(x=>x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("User have no activity");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public List<Activity> getAll(int pageSize, int PageLoad)
         {
             try
