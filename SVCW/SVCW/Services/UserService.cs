@@ -175,6 +175,7 @@ namespace SVCW.Services
                 user.Status = req.Status ?? user.Status;
                 user.RoleId = req.RoleId ?? user.RoleId;
 
+                this._context.User.Update(user);
                 await this._context.SaveChangesAsync();
 
                 //build data return
