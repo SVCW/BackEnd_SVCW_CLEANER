@@ -42,6 +42,8 @@ namespace SVCW.Services
             {
                 var check = await this._context.Process
                     .Include(x=>x.Media)
+                    .Include(x=>x.Activity)
+                    .Include(x=>x.ProcessType)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -65,6 +67,8 @@ namespace SVCW.Services
                 var check = await this._context.Process
                     .Where(x => x.ActivityId.Equals(processId))
                     .Include(x => x.Media)
+                    .Include(x => x.Activity)
+                    .Include(x => x.ProcessType)
                     .FirstOrDefaultAsync();
                 if (check != null)
                 {
@@ -88,6 +92,8 @@ namespace SVCW.Services
                 var check = await this._context.Process
                     .Where(x=>x.ActivityId.Equals(activityId) && x.Status)
                     .Include(x => x.Media)
+                    .Include(x => x.Activity)
+                    .Include(x => x.ProcessType)
                     .OrderByDescending(x => x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
@@ -198,6 +204,9 @@ namespace SVCW.Services
                 var check = await this._context.Process
                     .Where(x => x.ProcessTitle.Contains(processTitle) && x.Status)
                     .Include(x => x.Media)
+                    .Include(x => x.Activity)
+                    .Include(x => x.ProcessType)
+                    .OrderByDescending(x => x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
                 {

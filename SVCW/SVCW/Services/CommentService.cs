@@ -93,6 +93,8 @@ namespace SVCW.Services
                     .Where(x => x.ReplyId == null)
                     .Include(x=>x.User)
                     .Include(x=>x.InverseReply)
+                        .ThenInclude(x=>x.User)
+                    .OrderByDescending(x=>x.Datetime)
                     .ToListAsync();
                 return db;
             }
@@ -109,6 +111,8 @@ namespace SVCW.Services
                 var db = await this._context.Comment.Where(x => x.Status && x.ReplyId == null)
                     .Include(x => x.User)
                     .Include(x => x.InverseReply)
+                        .ThenInclude(x => x.User)
+                    .OrderByDescending(x => x.Datetime)
                     .ToListAsync();
                 return db;
             }
