@@ -199,7 +199,19 @@ namespace SVCW.Services
         {
             try
             {
-                var users = await this._context.User.ToListAsync();
+                var users = await this._context.User
+                    .Include(u => u.Activity)        // Include the related activities
+                    .Include(u => u.Fanpage)        // Include the related fanpage
+                    .Include(u => u.Donation)
+                    .Include(u => u.FollowJoinAvtivity)
+                    .Include(u => u.AchivementUser)
+                    .Include(u => u.Comment)
+                    .Include(u => u.Report)
+                    .Include(u => u.BankAccount)
+                    .Include(u => u.Like)
+                    .Include(u => u.VoteUserVote)// Include the related fanpage
+                    .ToListAsync();
+
                 return users;
             }
             catch (Exception ex)
@@ -280,7 +292,19 @@ namespace SVCW.Services
             {
                 var res = new CommonUserRes();
 
-                var user = await this._context.User.Where(u => u.UserId.Equals(req.UserId)).FirstOrDefaultAsync();
+                var user = await this._context.User
+                    .Include(u => u.Activity)        // Include the related activities
+                    .Include(u => u.Fanpage)        // Include the related fanpage
+                    .Include(u => u.Donation)
+                    .Include(u => u.FollowJoinAvtivity)
+                    .Include(u => u.AchivementUser)
+                    .Include(u => u.Comment)
+                    .Include(u => u.Report)
+                    .Include(u => u.BankAccount)
+                    .Include(u => u.Like)
+                    .Include(u => u.VoteUserVote)
+                    .Where(u => u.UserId.Equals(req.UserId))
+                    .FirstOrDefaultAsync();
 
                 if (user == null)
                 {
