@@ -168,12 +168,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity.Where(x => x.FanpageId.Equals(fanpageId))
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x=>x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -204,17 +203,16 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity.Where(x => x.UserId.Equals(userId))
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
                     .Include(x => x.Process)
-                        .ThenInclude(x=>x.Media)
+                        .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
@@ -236,20 +234,19 @@ namespace SVCW.Services
             }
         }
 
-        public List<Activity> getAll(int pageSize, int PageLoad)
+        public async Task<List<Activity>> getAll(int pageSize, int PageLoad)
         {
             try
             {
                 var result = new List<Activity>();
                 if(PageLoad == 1)
                 {
-                     var check = this.context.Activity
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    var check = this.context.Activity
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -260,22 +257,21 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
-                    .OrderByDescending(x => x.CreateAt)
                     .Take(pageSize);
-                    foreach(var x in check)
+
+                    foreach (var c in check)
                     {
-                        result.Add(x);
+                        result.Add(c);
                     }
                 }
-                if(PageLoad >1)
+                if (PageLoad >1)
                 {
                     var check = this.context.Activity
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -309,12 +305,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -344,12 +339,11 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
@@ -379,16 +373,15 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
-                    .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
-                     .Include(x => x.Comment.Where(b => b.ReplyId == null))
-                            .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime))
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process.OrderByDescending(p=>p.ProcessNo))
+                    .Include(x => x.Process)
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
