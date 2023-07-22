@@ -83,7 +83,17 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.ToListAsync();
+                var check = await this._context.Fanpage
+                    .Include(x=>x.Activity)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime))
+                    .Include(x=>x.FollowFanpage)
+                    .Include(x=>x.FanpageNavigation)
+                    .ToListAsync();
                 return check;
             }
             catch (Exception ex)
@@ -96,7 +106,17 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.Where(x=>x.FanpageId.Equals(id)).FirstOrDefaultAsync();
+                var check = await this._context.Fanpage.Where(x=>x.FanpageId.Equals(id))
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime))
+                    .Include(x => x.FollowFanpage)
+                    .Include(x => x.FanpageNavigation)
+                    .FirstOrDefaultAsync();
                 return check;
             }
             catch (Exception ex)
@@ -109,7 +129,17 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.Where(x=>x.FanpageName.Contains(name)).ToListAsync();
+                var check = await this._context.Fanpage.Where(x=>x.FanpageName.Contains(name))
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime))
+                    .Include(x => x.FollowFanpage)
+                    .Include(x => x.FanpageNavigation)
+                    .ToListAsync();
                 return check;
             }
             catch (Exception ex)
@@ -122,7 +152,17 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.Where(x=>x.Status.Equals("2")).ToListAsync();
+                var check = await this._context.Fanpage.Where(x=>x.Status.Equals("2"))
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.InverseReply)
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null))
+                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime))
+                    .Include(x => x.FollowFanpage)
+                    .Include(x => x.FanpageNavigation)
+                    .ToListAsync();
                 return check;
             }
             catch (Exception ex)
