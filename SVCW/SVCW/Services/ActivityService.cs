@@ -176,13 +176,14 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x=>x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .OrderByDescending(x=>x.CreateAt)
                     .ToListAsync();
                 if(check != null)
                 {
@@ -211,13 +212,14 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -250,13 +252,14 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .OrderByDescending(x => x.CreateAt)
                     .Take(pageSize);
 
                     foreach (var c in check)
@@ -275,7 +278,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
@@ -313,14 +316,13 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
-                    .Where(x=>x.ActivityId== id)
                     .FirstOrDefaultAsync();
                 if (check != null)
                 {
@@ -347,7 +349,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
@@ -355,6 +357,7 @@ namespace SVCW.Services
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
                     .Where(x=>x.Title.Contains(title))
+                    .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -381,7 +384,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
-                    .Include(x => x.Process)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
@@ -389,6 +392,7 @@ namespace SVCW.Services
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
                     .Where(x=>x.Status =="1")
+                    .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
                 {

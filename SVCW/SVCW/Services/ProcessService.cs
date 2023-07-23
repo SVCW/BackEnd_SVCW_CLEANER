@@ -44,6 +44,7 @@ namespace SVCW.Services
                     .Include(x=>x.Media)
                     .Include(x=>x.Activity)
                     .Include(x=>x.ProcessType)
+                    .OrderBy(x=>x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -94,7 +95,7 @@ namespace SVCW.Services
                     .Include(x => x.Media)
                     .Include(x => x.Activity)
                     .Include(x => x.ProcessType)
-                    .OrderByDescending(x => x.ProcessNo)
+                    .OrderBy(x => x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
                 {
@@ -206,7 +207,7 @@ namespace SVCW.Services
                     .Include(x => x.Media)
                     .Include(x => x.Activity)
                     .Include(x => x.ProcessType)
-                    .OrderByDescending(x => x.ProcessNo)
+                    .OrderBy(x => x.ProcessNo)
                     .ToListAsync();
                 if (check != null)
                 {
