@@ -270,6 +270,7 @@ namespace SVCW.Services
                 var check = await this._context.FollowJoinAvtivity.Where(x=>x.UserId.Equals(id))
                     .Include(x=>x.Activity)
                         .ThenInclude(x=>x.Media)
+                    .Include(x=>x.User)
                     .OrderByDescending(x=>x.Datetime)
                     .ToListAsync();
                 if(check != null)
