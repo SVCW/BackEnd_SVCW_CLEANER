@@ -46,6 +46,7 @@ namespace SVCW.Services
             {
                 var check = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageID)).FirstOrDefaultAsync();
                 check.Status = "0";
+                this._context.Fanpage.Update(check);
                 await this._context.SaveChangesAsync();
                 return check;
             }
@@ -59,6 +60,13 @@ namespace SVCW.Services
         {
             try
             {
+                var db = await this._context.FollowFanpage.Where(x => x.UserId.Equals(userId) && x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
+                if(db != null) 
+                {
+                    db.Status = true;
+                    this._context.FollowFanpage.Update(db);
+                    return await this._context.SaveChangesAsync() > 0;
+                }
                 var check = new FollowFanpage();
                 check.UserId = userId;
                 check.FanpageId = fanpageId;
@@ -92,6 +100,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
                     .Include(x=>x.FollowFanpage)
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x=>x.User)
                     //.Include(x=>x.FanpageNavigation)
                     .ToListAsync();
                 return check;
@@ -115,6 +125,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
                     .Include(x => x.FollowFanpage)
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x => x.User)
                     //.Include(x => x.FanpageNavigation)
                     .FirstOrDefaultAsync();
                 return check;
@@ -138,6 +150,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
                     .Include(x => x.FollowFanpage)
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x => x.User)
                     //.Include(x => x.FanpageNavigation)
                     .ToListAsync();
                 return check;
@@ -161,6 +175,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
                     .Include(x => x.FollowFanpage)
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x => x.User)
                     //.Include(x => x.FanpageNavigation)
                     .ToListAsync();
                 return check;
@@ -207,14 +223,21 @@ namespace SVCW.Services
                 var check = await this._context.FollowFanpage.Where(x=>x.UserId.Equals(userId)&&x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
                 if (check != null)
                 {
-                    check.Status = false;
-                    this._context.FollowFanpage.Update(check);
-                    await this._context.SaveChangesAsync();
+                    if (check.Status)
+                    {
+                        check.Status = false;
+                        this._context.FollowFanpage.Update(check);
+                        await this._context.SaveChangesAsync();
 
-                    var fanpage = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
-                    fanpage.NumberFollow -= 1;
-                    this._context.Fanpage.Update(fanpage);
-                    return await this._context.SaveChangesAsync() > 0;
+                        var fanpage = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
+                        fanpage.NumberFollow -= 1;
+                        this._context.Fanpage.Update(fanpage);
+                        return await this._context.SaveChangesAsync() > 0;
+                    }
+                    else
+                    {
+                        throw new Exception("unfollowed");
+                    }
                 }
                 return false;
             }
