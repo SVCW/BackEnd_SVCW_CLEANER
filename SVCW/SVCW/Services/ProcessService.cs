@@ -23,7 +23,7 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     check.Status = false;
-
+                    this._context.Process.Update(check);
                     return await this._context.SaveChangesAsync() >0;
                 }
                 else
