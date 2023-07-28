@@ -19,5 +19,6 @@ namespace SVCW.Interfaces
         Task<bool> unFollowActivity(string activityId, string userId);
         Task<bool> joinActivity(string activityId, string userId);
         Task<bool> disJoinActivity(string activityId, string userId);
+        Task<List<Activity>> getDataLoginPage();
     }
 }

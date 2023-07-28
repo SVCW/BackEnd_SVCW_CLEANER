@@ -168,9 +168,9 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity.Where(x => x.FanpageId.Equals(fanpageId))
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.InverseReply.OrderByDescending(x=>x.Datetime))
                             .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
@@ -181,6 +181,7 @@ namespace SVCW.Services
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
+                        .ThenInclude(x=>x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
                     .OrderByDescending(x=>x.CreateAt)
@@ -244,9 +245,9 @@ namespace SVCW.Services
                 if(PageLoad == 1)
                 {
                     var check = this.context.Activity
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.User)
                     .Include(x => x.Fanpage)
@@ -257,6 +258,7 @@ namespace SVCW.Services
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
                     .OrderByDescending(x => x.CreateAt)
@@ -366,6 +368,25 @@ namespace SVCW.Services
                 return null;
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getDataLoginPage()
+        {
+            try
+            {
+                var check = await this.context.Activity.OrderByDescending(x => x.NumberLike).Take(3).ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    return null;
+                }
+            }catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }

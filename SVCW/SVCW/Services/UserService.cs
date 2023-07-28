@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 
 using SVCW.DTOs.Common;
+using SVCW.DTOs.Users;
 using SVCW.DTOs.Users.Req;
 using SVCW.DTOs.Users.Res;
 using SVCW.Interfaces;
@@ -325,6 +326,43 @@ namespace SVCW.Services
                 res.resultCode = SVCWCode.Unknown;
                 res.resultMsg = "Lỗi hệ thống!";
                 return res;
+            }
+        }
+
+        public async Task<User> Login(LoginDTO dto)
+        {
+            try
+            {
+                var check = await this._context.User.Where(x=>x.Username.Equals(dto.username))
+                    .Include(u => u.Activity)        // Include the related activities
+                    .Include(u => u.Fanpage)        // Include the related fanpage
+                    .Include(u => u.Donation)
+                    .Include(u => u.FollowJoinAvtivity)
+                    .Include(u => u.AchivementUser)
+                    .Include(u => u.Comment)
+                    .Include(u => u.Report)
+                    .Include(u => u.BankAccount)
+                    .Include(u => u.Like)
+                    .Include(u => u.VoteUserVote)
+                    .FirstOrDefaultAsync();
+                if (check == null)
+                {
+                    throw new Exception("username is not valid");
+                }
+                else
+                {
+                    if(check.Password.Equals(dto.password))
+                    {
+                        return check;
+                    }
+                    else
+                    {
+                        throw new Exception("password is not valid");
+                    }
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }
