@@ -232,7 +232,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
-
+        [Route("get-activity-login-page")]
+        [HttpGet]
+        public async Task<IActionResult> GetActivityLogin()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getDataLoginPage();
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         [Route("get-activity-by-userId")]
         [HttpGet]
         public async Task<IActionResult> getActivityUser(string userId)

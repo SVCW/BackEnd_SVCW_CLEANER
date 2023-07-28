@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SVCW.DTOs;
 using SVCW.DTOs.Common;
+using SVCW.DTOs.Users;
 using SVCW.DTOs.Users.Req;
 using SVCW.DTOs.Users.Res;
 using SVCW.Interfaces;
@@ -133,6 +134,23 @@ namespace SVCW.Controllers
             try
             {
                 responseAPI.Data = await this.service.createUser(req);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("login-username-password")]
+        [HttpPost]
+        public async Task<IActionResult> lognUser(LoginDTO dto)
+        {
+            ResponseAPI<User> responseAPI = new ResponseAPI<User>();
+            try
+            {
+                responseAPI.Data = await this.service.Login(dto);
                 return Ok(responseAPI);
             }
             catch (Exception ex)
