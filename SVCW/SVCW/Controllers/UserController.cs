@@ -19,6 +19,23 @@ namespace SVCW.Controllers
             this.service = service;
         }
 
+        [Route("get-statistic-profile")]
+        [HttpGet]
+        public async Task<IActionResult> géttatistic(string userId)
+        {
+            ResponseAPI<ProfileDTO> responseAPI = new ResponseAPI<ProfileDTO>();
+            try
+            {
+                responseAPI.Data = await this.service.checkProfile(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("get-all-user")]
         [HttpGet]
         public async Task<IActionResult> getAllUser()

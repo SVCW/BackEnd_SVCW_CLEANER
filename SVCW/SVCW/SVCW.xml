@@ -70,6 +70,24 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:SVCW.Controllers.ActivityController.getActivityBeforeStartDate">
+            <summary>
+            chiến dịch sắp diễn ra
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SVCW.Controllers.ActivityController.getActivityBeforeEndDate">
+            <summary>
+            chiến dịch đang diễn ra
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SVCW.Controllers.ActivityController.getActivityAfterEndDate">
+            <summary>
+            chiến dịch đã diễn ra
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SVCW.Controllers.CommentController.getComment">
             <summary>
             admin, moderator
@@ -120,6 +138,13 @@
             admin, moderator
             </summary>
             <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SVCW.Controllers.ModeratorController.dreate(SVCW.DTOs.Admin_Moderator.Moderator.CreateModerator)">
+            <summary>
+            require: nhập hết nha
+            </summary>
+            <param name="dto"></param>
             <returns></returns>
         </member>
         <member name="T:SVCW.Controllers.NotificationController">
