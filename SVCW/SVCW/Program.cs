@@ -38,6 +38,8 @@ builder.Services.AddScoped<IReport, ReportService>();
 builder.Services.AddScoped<IConfig, ConfigService>();
 builder.Services.AddScoped<IUser, UserService>();
 builder.Services.AddScoped<IProcess, ProcessService>();
+builder.Services.AddScoped<IAdmin, AdminService>();
+builder.Services.AddScoped<IModerator, ModeratorService>();
 
 
 

@@ -248,6 +248,54 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("get-activity-before-startdate")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityBeforeStartDate()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityBeforeStartDate();
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("get-activity-before-enddate")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityBeforeEndDate()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityBeforeEndDate();
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("get-activity-after-enddate")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityAfterEndDate()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityAfterEndDate();
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         [Route("get-activity-by-userId")]
         [HttpGet]
         public async Task<IActionResult> getActivityUser(string userId)

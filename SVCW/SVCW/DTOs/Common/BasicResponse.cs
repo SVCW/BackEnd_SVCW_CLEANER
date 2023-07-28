@@ -5,6 +5,7 @@
 		public string data;
 		public SVCWCode resultCode;
 		public string resultMsg;
+		public bool? isModer;
     }
 }
 
