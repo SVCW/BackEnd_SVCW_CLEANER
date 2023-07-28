@@ -248,6 +248,10 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        /// <summary>
+        /// chiến dịch sắp diễn ra
+        /// </summary>
+        /// <returns></returns>
         [Route("get-activity-before-startdate")]
         [HttpGet]
         public async Task<IActionResult> getActivityBeforeStartDate()
@@ -264,6 +268,10 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        /// <summary>
+        /// chiến dịch đang diễn ra
+        /// </summary>
+        /// <returns></returns>
         [Route("get-activity-before-enddate")]
         [HttpGet]
         public async Task<IActionResult> getActivityBeforeEndDate()
@@ -280,6 +288,10 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        /// <summary>
+        /// chiến dịch đã diễn ra
+        /// </summary>
+        /// <returns></returns>
         [Route("get-activity-after-enddate")]
         [HttpGet]
         public async Task<IActionResult> getActivityAfterEndDate()
