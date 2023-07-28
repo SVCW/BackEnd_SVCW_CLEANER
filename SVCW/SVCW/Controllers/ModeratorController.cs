@@ -66,6 +66,11 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        /// <summary>
+        /// require: nhập hết nha
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [Route("create")]
         [HttpPost]
         public async Task<IActionResult> dreate(CreateModerator dto)
