@@ -163,6 +163,56 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<Activity>> getActivityAfterEndDate()
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.EndDate < DateTime.Now).ToListAsync();
+                if(check != null)
+                {
+                    return check;
+                }
+                return null;
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityBeforeEndDate()
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.EndDate > DateTime.Now && x.StartDate<DateTime.Now).ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityBeforeStartDate()
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now).ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<List<Activity>> getActivityFanpage(string fanpageId)
         {
             try
@@ -176,6 +226,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x=>x.User)
                     .Include(x => x.Process.OrderBy(x=>x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
@@ -213,6 +264,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
@@ -253,6 +305,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
@@ -280,6 +333,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
@@ -318,6 +372,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x=>x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
@@ -351,6 +406,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
@@ -405,6 +461,7 @@ namespace SVCW.Services
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
                     .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)

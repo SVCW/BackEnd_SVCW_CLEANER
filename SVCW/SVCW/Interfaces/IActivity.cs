@@ -20,5 +20,8 @@ namespace SVCW.Interfaces
         Task<bool> joinActivity(string activityId, string userId);
         Task<bool> disJoinActivity(string activityId, string userId);
         Task<List<Activity>> getDataLoginPage();
+        Task<List<Activity>> getActivityAfterEndDate();
+        Task<List<Activity>> getActivityBeforeEndDate();
+        Task<List<Activity>> getActivityBeforeStartDate();
     }
 }

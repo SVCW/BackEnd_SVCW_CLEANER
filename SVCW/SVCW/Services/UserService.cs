@@ -32,8 +32,12 @@ namespace SVCW.Services
 
                 // check if email existed
                 var check = await this._context.User.Where(x => x.Email.Equals(email)).FirstOrDefaultAsync();
-                if (check != null)
+                if (check != null )
                 {
+                    if (check.UserId.Contains("MDR"))
+                    {
+                        res.isModer = true;
+                    }
                     res.resultCode = SVCWCode.EmailExisted;
                     res.resultMsg = "Email đã được đăng ký!";
                     return res;
@@ -201,6 +205,7 @@ namespace SVCW.Services
             try
             {
                 var users = await this._context.User
+                    .Where(x=>!x.UserId.Contains("MDR"))
                     .Include(u => u.Activity)        // Include the related activities
                     .Include(u => u.Fanpage)        // Include the related fanpage
                     .Include(u => u.Donation)
