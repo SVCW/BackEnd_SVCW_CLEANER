@@ -370,5 +370,53 @@ namespace SVCW.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<ProfileDTO> checkProfile(string userId)
+        {
+            try
+            {
+                var result = new ProfileDTO();
+                int count = 0;
+                result.total = 0;
+                var check = await this._context.User.Where(x => x.UserId.Equals(userId)).FirstOrDefaultAsync();
+                if(check!= null)
+                {
+                    if(check.Username !=null) count++;
+                    result.Username = check.Username;result.total++;
+                    if(check.Password !=null) count++;
+                    result.Password = check.Password; result.total++;
+                    if (check.Email !=null) count++;
+                    result.Email = check.Email; result.total++;
+                    if (check.Phone !=null) count++;
+                    result.Phone = check.Phone; result.total++;
+                    if (check.Image!=null) count++;
+                    result.Image = check.Image; result.total++;
+                    if (check.DateOfBirth!= null) count++;
+                    result.DateOfBirth = check.DateOfBirth; result.total++;
+                    if (check.FullName != null) count++;
+                    result.FullName = check.FullName; result.total++;
+                    if (check.Gender!= null) count++;
+                    result.Gender = check.Gender; result.total++;
+                    result.total = count%result.total;
+                    if (result.total == 0)
+                    {
+                        result.total = 100;
+                    }
+                    else
+                    {
+                        result.total *= 10;
+                    }
+                   
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

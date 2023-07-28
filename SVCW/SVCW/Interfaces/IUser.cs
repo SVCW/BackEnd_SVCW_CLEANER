@@ -15,5 +15,6 @@ namespace SVCW.Interfaces
         Task<CommonUserRes> updateUser(UpdateUserReq req);
         Task<List<FollowJoinAvtivity>> historyUserJoin(string id);
         Task<User> Login(LoginDTO dto);
+        Task<ProfileDTO> checkProfile(string userId);
     }
 }
