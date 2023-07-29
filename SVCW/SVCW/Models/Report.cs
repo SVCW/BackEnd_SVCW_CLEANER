@@ -33,7 +33,16 @@ namespace SVCW.Models
         [Column("userId")]
         [StringLength(10)]
         public string UserId { get; set; }
+        [Required]
+        [Column("activityId")]
+        [StringLength(10)]
+        public string ActivityId { get; set; }
+        [Column("datetime", TypeName = "datetime")]
+        public DateTime Datetime { get; set; }
 
+        [ForeignKey("ActivityId")]
+        [InverseProperty("Report")]
+        public virtual Activity Activity { get; set; }
         [ForeignKey("ReportTypeId")]
         [InverseProperty("Report")]
         public virtual ReportType ReportType { get; set; }

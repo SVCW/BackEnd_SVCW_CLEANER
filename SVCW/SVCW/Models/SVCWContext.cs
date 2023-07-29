@@ -254,6 +254,12 @@ namespace SVCW.Models
 
             modelBuilder.Entity<Report>(entity =>
             {
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.Report)
+                    .HasForeignKey(d => d.ActivityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Report_Activity");
+
                 entity.HasOne(d => d.ReportType)
                     .WithMany(p => p.Report)
                     .HasForeignKey(d => d.ReportTypeId)

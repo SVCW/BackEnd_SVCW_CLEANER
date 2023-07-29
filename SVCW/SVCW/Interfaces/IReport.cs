@@ -10,6 +10,7 @@ namespace SVCW.Interfaces
 		Task<Report> newReport(ReportDTO newReport);
 		Task<Report> updateReport(ReportDTO updatedReport);
 		Task<bool> deleteReport(string rpID);
+		Task<List<Report>> GetReportByType(string reportType);
 	}
 }
 
