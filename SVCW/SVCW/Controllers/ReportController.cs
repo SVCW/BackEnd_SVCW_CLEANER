@@ -34,6 +34,23 @@ namespace SVCW.Controllers
             }
         }
 
+        [Route("get-all-report-by-type")]
+        [HttpGet]
+        public async Task<IActionResult> GetReportByType(string reportType)
+        {
+            ResponseAPI<List<Report>> responseAPI = new ResponseAPI<List<Report>>();
+            try
+            {
+                responseAPI.Data = await this.service.GetReportByType(reportType);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("new-report")]
         [HttpPost]
         public async Task<IActionResult> newReport(ReportDTO rp)

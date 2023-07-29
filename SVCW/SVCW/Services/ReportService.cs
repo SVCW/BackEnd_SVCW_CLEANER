@@ -36,7 +36,31 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Report.ToListAsync();
+                var check = await this._context.Report
+                    .Include(x=>x.Activity)
+                    .Include(x=>x.ReportType)
+                    .Include(x=>x.User)
+                    .OrderByDescending(x=>x.Datetime).ThenBy(x=>x.ReportTypeId)
+                    .ToListAsync();
+                return check;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Report>> GetReportByType(string reportType)
+        {
+            try
+            {
+                var check = await this._context.Report
+                    .Where(x=>x.ReportTypeId.Equals(reportType))
+                    .Include(x => x.Activity)
+                    .Include(x => x.ReportType)
+                    .Include(x => x.User)
+                    .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
+                    .ToListAsync();
                 return check;
             }
             catch (Exception ex)
@@ -58,6 +82,8 @@ namespace SVCW.Services
                 report.Description = newReport.Description;
                 report.Status = false;
                 report.UserId = newReport.UserId;
+                report.ActivityId = newReport.ActivityId;
+                report.Datetime = DateTime.Now;
 
                 await this._context.Report.AddAsync(report);
                 await this._context.SaveChangesAsync();
@@ -88,7 +114,7 @@ namespace SVCW.Services
                     report.Status = updatedReport.Status;
                     if (updatedReport.UserId != null)
                         report.UserId = updatedReport.UserId;
-
+                    this._context.Report.Update(report);
                     await this._context.SaveChangesAsync();
                 }
                 return report;
