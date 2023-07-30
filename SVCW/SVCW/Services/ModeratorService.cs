@@ -16,21 +16,23 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.User.Where(x=>x.Email.Equals(dto.Email) || x.Username.Equals(dto.Username) || x.Phone.Equals(dto.Phone)).FirstOrDefaultAsync(); 
-                if (check != null)
+                var check = await this._context.User.Where(x=>x.Email.Equals(dto.Email) ).FirstOrDefaultAsync(); 
+                if (check == null)
                 {
-                    if(check.Email.Equals(dto.Email))
+                    check = await this._context.User.Where(x => x.Username.Equals(dto.Username)).FirstOrDefaultAsync();
+                    if (check != null)
                     {
-                        throw new Exception("Duplicate email");
+                        throw new Exception("trùng username");
                     }
-                    if (check.Username.Equals(dto.Username))
+                    check = await this._context.User.Where(x => x.Phone.Equals(dto.Phone)).FirstOrDefaultAsync();
+                    if (check!=null)
                     {
-                        throw new Exception("Duplicate username");
+                        throw new Exception("trùng số điện thoại");
                     }
-                    if (check.Phone.Equals(dto.Phone))
-                    {
-                        throw new Exception("Duplicate phone");
-                    }
+                }
+                else
+                {
+                    throw new Exception("trùng email");
                 }
                 var user = new User();
                 user.UserId = "MDR" + Guid.NewGuid().ToString().Substring(0, 7);

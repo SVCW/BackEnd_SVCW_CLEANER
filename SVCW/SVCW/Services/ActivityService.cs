@@ -22,31 +22,32 @@ namespace SVCW.Services
                 var ad = new adminConfig();
                 var config = new ConfigService();
                 ad = config.GetAdminConfig();
-                decimal donate = -1;
+                decimal donate = 0;
                 var user = await this.context.User.Where(x=>x.UserId.Equals(dto.UserId)).Include(x=>x.Fanpage).FirstOrDefaultAsync();
-                if (user.Fanpage == null)
+                if (!dto.isFanpageAvtivity)
                 {
-                    if (user.NumberActivityJoin < ad.NumberActivityJoinSuccess1)
+                    if (user.NumberActivityJoin >= ad.NumberActivityJoinSuccess1)
                     {
                         donate = (decimal)ad.maxTargetDonate1;
                     }
-                    if (user.NumberActivityJoin < ad.NumberActivityJoinSuccess2)
+                    if (user.NumberActivityJoin >= ad.NumberActivityJoinSuccess2)
                     {
                         donate = (decimal)ad.maxTargetDonate2;
                     }
-                    if (user.NumberActivityJoin < ad.NumberActivityJoinSuccess3 && user.NumberActivityJoin > ad.NumberActivityJoinSuccess2)
+                    if (user.NumberActivityJoin >= ad.NumberActivityJoinSuccess3)
                     {
                         donate = (decimal)ad.maxTargetDonate3;
                     }
+                    if (dto.TargetDonation > donate)
+                    {
+                        throw new Exception("số tiền quyên góp tối đa bạn có thể kêu gọi là: " + donate);
+                    }
                 }
-                else
+                else if(user.Fanpage != null)
                 {
                     donate = (decimal)ad.maxTargetDonate3;
                 }
-                if (dto.TargetDonation > donate)
-                {
-                    throw new Exception("target donate max: " + donate);
-                }
+                
 
                 var activity = new Activity();
                 activity.ActivityId = "ACT" + Guid.NewGuid().ToString().Substring(0,7);

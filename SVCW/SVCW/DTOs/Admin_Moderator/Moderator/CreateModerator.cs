@@ -8,7 +8,6 @@ namespace SVCW.DTOs.Admin_Moderator.Moderator
         public string Password { get; set; }
         public string Image { get; set; }
         public bool? Gender { get; set; }
-        [Phone]
         public string Phone { get; set; }
         public string FullName { get; set; }
         [EmailAddress]
