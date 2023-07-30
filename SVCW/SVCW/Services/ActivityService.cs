@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SVCW.DTOs.Activities;
+using SVCW.DTOs.Config;
 using SVCW.Interfaces;
 using SVCW.Models;
 using System.Collections.Immutable;
@@ -18,6 +19,35 @@ namespace SVCW.Services
         {
             try
             {
+                var ad = new adminConfig();
+                var config = new ConfigService();
+                ad = config.GetAdminConfig();
+                decimal donate = -1;
+                var user = await this.context.User.Where(x=>x.UserId.Equals(dto.UserId)).Include(x=>x.Fanpage).FirstOrDefaultAsync();
+                if (user.Fanpage == null)
+                {
+                    if (user.NumberActivityJoin < ad.NumberActivityJoinSuccess1)
+                    {
+                        donate = (decimal)ad.maxTargetDonate1;
+                    }
+                    if (user.NumberActivityJoin < ad.NumberActivityJoinSuccess2)
+                    {
+                        donate = (decimal)ad.maxTargetDonate2;
+                    }
+                    if (user.NumberActivityJoin < ad.NumberActivityJoinSuccess3 && user.NumberActivityJoin > ad.NumberActivityJoinSuccess2)
+                    {
+                        donate = (decimal)ad.maxTargetDonate3;
+                    }
+                }
+                else
+                {
+                    donate = (decimal)ad.maxTargetDonate3;
+                }
+                if (dto.TargetDonation > donate)
+                {
+                    throw new Exception("target donate max: " + donate);
+                }
+
                 var activity = new Activity();
                 activity.ActivityId = "ACT" + Guid.NewGuid().ToString().Substring(0,7);
                 activity.Title= dto.Title;
@@ -31,7 +61,7 @@ namespace SVCW.Services
                 activity.ShareLink = "chưa làm dc";
                 activity.TargetDonation = dto.TargetDonation;
                 activity.UserId= dto.UserId;
-                activity.Status = "1";
+                activity.Status = "Active";
                 activity.RealDonation = 0;
                 if (dto.isFanpageAvtivity)
                 {
@@ -73,7 +103,7 @@ namespace SVCW.Services
                     {
                         throw new Exception("activity have donate can't remove");
                     }
-                    check.Status= "0";
+                    check.Status= "InActive";
                     return check;
                 }
                 else
@@ -93,7 +123,7 @@ namespace SVCW.Services
                 var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id)).FirstOrDefaultAsync();
                 if (check != null)
                 {
-                    check.Status = "0";
+                    check.Status = "InActive";
                     return check;
                 }
                 else
@@ -526,7 +556,7 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
-                    .Where(x=>x.Status =="1")
+                    .Where(x=>x.Status == "Active")
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
