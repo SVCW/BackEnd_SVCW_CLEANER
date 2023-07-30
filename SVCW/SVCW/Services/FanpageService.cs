@@ -17,7 +17,7 @@ namespace SVCW.Services
             try
             {
                 var fanpage = new Fanpage();
-                fanpage.Status = "1";
+                fanpage.Status = "Pending";
                 fanpage.Email = dto.Email;
                 fanpage.Description = dto.Description;
                 fanpage.CoverImage = dto.CoverImage;
@@ -45,7 +45,7 @@ namespace SVCW.Services
             try
             {
                 var check = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageID)).FirstOrDefaultAsync();
-                check.Status = "0";
+                check.Status = "InActive";
                 this._context.Fanpage.Update(check);
                 await this._context.SaveChangesAsync();
                 return check;
@@ -141,7 +141,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.Where(x=>x.FanpageName.Contains(name))
+                var check = await this._context.Fanpage.Where(x=>x.FanpageName.Contains(name) && x.Status.Equals("Active"))
                     .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.InverseReply)
@@ -166,7 +166,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.Where(x=>x.Status.Equals("2"))
+                var check = await this._context.Fanpage.Where(x=>x.Status.Equals("Active"))
                     .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.InverseReply)
@@ -191,7 +191,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Fanpage.Where(x => x.Status.Equals("1")).ToListAsync();
+                var check = await this._context.Fanpage.Where(x => x.Status.Equals("Pending")).ToListAsync();
                 return check;
             }
             catch (Exception ex)
@@ -205,7 +205,7 @@ namespace SVCW.Services
             try
             {
                 var check = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageID)).FirstOrDefaultAsync();
-                check.Status = "2";
+                check.Status = "Active";
                 this._context.Fanpage.Update(check);
                 await this._context.SaveChangesAsync();
                 return check;

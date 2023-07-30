@@ -17,6 +17,18 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this.context.Activity.Where(x=>x.ActivityId.Equals(dto.ActivityId)).FirstOrDefaultAsync();
+                if(activity!= null)
+                {
+                    if(activity.EndDate < DateTime.Now)
+                    {
+                        throw new Exception("chiến dịch quyên góp đã kết thúc");
+                    }
+                    if(activity.RealDonation > activity.TargetDonation)
+                    {
+                        throw new Exception("chiến dịch đã nhận đủ số tiền");
+                    }
+                }
                 var donate = new Donation();
                 donate.DonationId = "DNT"+Guid.NewGuid().ToString().Substring(0,7);
                 donate.Title= dto.Title;
@@ -60,7 +72,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Donation.ToListAsync();
+                var check = await this.context.Donation.Where(x=>x.Status.Equals("success")).ToListAsync();
                 if(check !=null)
                 {
                     return check;
