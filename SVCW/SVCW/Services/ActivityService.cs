@@ -105,6 +105,9 @@ namespace SVCW.Services
                         throw new Exception("activity have donate can't remove");
                     }
                     check.Status= "InActive";
+
+                    this.context.Activity.Update(check);
+
                     await this.context.SaveChangesAsync();
                     return check;
                 }
@@ -126,6 +129,9 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     check.Status = "InActive";
+
+                    this.context.Activity.Update(check);
+
                     await this.context.SaveChangesAsync();
                     return check;
                 }
@@ -454,16 +460,16 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
+                    .Where(x=>x.ActivityId.Equals(id))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
-                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
-                            .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime)).ThenInclude(x=>x.User)
                     .Include(x => x.Fanpage)
                     .Include(x => x.User)
                     .Include(x => x.Like.Where(a => a.Status))
                         .ThenInclude(x => x.User)
-                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x=>x.Status))
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                         .ThenInclude(x => x.Media)
                     .Include(x => x.Donation)
                     .Include(x => x.ActivityResult)
@@ -471,6 +477,7 @@ namespace SVCW.Services
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
                     .FirstOrDefaultAsync();
+
                 if (check != null)
                 {
                     return check;
@@ -488,6 +495,7 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Activity
+                    .Where(x => x.Title.Contains(title) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
@@ -504,7 +512,7 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
-                    .Where(x=>x.Title.Contains(title))
+                    
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
@@ -538,11 +546,43 @@ namespace SVCW.Services
             }
         }
 
-        public async Task<List<Activity>> getForUser()
+        public async Task<List<Activity>> getForUser(int pageSize, int PageLoad)
         {
             try
             {
-                var check = await this.context.Activity
+                var result = new List<Activity>();
+                if (PageLoad == 1)
+                {
+                    var check = this.context.Activity
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount)
+                    .OrderByDescending(x => x.CreateAt)
+                    .Where(x=> x.Status.Equals("Active"))
+                    .Take(pageSize);
+
+                    foreach (var c in check)
+                    {
+                        result.Add(c);
+                    }
+                }
+                if (PageLoad > 1)
+                {
+                    var check = this.context.Activity
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
@@ -559,12 +599,17 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
-                    .Where(x=>x.Status == "Active")
                     .OrderByDescending(x => x.CreateAt)
-                    .ToListAsync();
-                if (check != null)
+                    .Where(x => x.Status.Equals("Active"))
+                    .Take(PageLoad * pageSize - pageSize);
+                    foreach (var x in check)
+                    {
+                        result.Add(x);
+                    }
+                }
+                if (result != null)
                 {
-                    return check;
+                    return result;
                 }
                 return null;
             }

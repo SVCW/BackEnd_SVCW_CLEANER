@@ -10,7 +10,7 @@ namespace SVCW.Interfaces
         Task<Activity> getById(string id);
         Task<List<Activity>> getAll(int pageSize, int PageLoad);
         Task<List<Activity>> getByTitle(string title);
-        Task<List<Activity>> getForUser();
+        Task<List<Activity>> getForUser(int pageSize, int PageLoad);
         Task<List<Activity>> getActivityUser(string userId);
         Task<List<Activity>> getActivityFanpage(string fanpageId);
         Task<Activity> delete(string id);
