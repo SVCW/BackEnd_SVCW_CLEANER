@@ -218,12 +218,12 @@ namespace SVCW.Controllers
         }
         [Route("get-activity-user")]
         [HttpGet]
-        public async Task<IActionResult> getUser()
+        public async Task<IActionResult> getUser(int pageSize, int PageLoad)
         {
             ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
             try
             {
-                responseAPI.Data = await this.service.getForUser();
+                responseAPI.Data = await this.service.getForUser(pageSize, PageLoad);
                 return Ok(responseAPI);
             }
             catch (Exception ex)
