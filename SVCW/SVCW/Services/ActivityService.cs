@@ -105,6 +105,7 @@ namespace SVCW.Services
                         throw new Exception("activity have donate can't remove");
                     }
                     check.Status= "InActive";
+                    await this.context.SaveChangesAsync();
                     return check;
                 }
                 else
@@ -125,6 +126,7 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     check.Status = "InActive";
+                    await this.context.SaveChangesAsync();
                     return check;
                 }
                 else
