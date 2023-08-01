@@ -10,6 +10,6 @@
         public string FullName { get; set; }
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public int total { get; set; }
+        public string total { get; set; }
     }
 }
