@@ -71,11 +71,6 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
 app.UseHttpsRedirection();
 
 app.UseRouting();
