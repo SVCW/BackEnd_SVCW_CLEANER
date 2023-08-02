@@ -71,6 +71,8 @@ namespace SVCW.Models
         [Column("roleId")]
         [StringLength(10)]
         public string RoleId { get; set; }
+        [Column("coverImage")]
+        public string CoverImage { get; set; }
 
         [ForeignKey("RoleId")]
         [InverseProperty("User")]

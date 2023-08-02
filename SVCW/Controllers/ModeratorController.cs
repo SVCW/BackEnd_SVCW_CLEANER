@@ -88,7 +88,7 @@ namespace SVCW.Controllers
             }
         }
         [Route("update")]
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> update(updateModerator dto)
         {
             ResponseAPI<List<User>> responseAPI = new ResponseAPI<List<User>>();

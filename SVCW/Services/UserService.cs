@@ -55,6 +55,7 @@ namespace SVCW.Services
                 user.Gender = req.Gender ?? true;
                 user.DateOfBirth = req.DateOfBirth ?? DateTime.MinValue;
                 user.Image = req.Image ?? "none";
+                user.CoverImage = req.coverImage ?? "none";
                 user.CreateAt = req.CreateAt ?? DateTime.Now;
                 user.NumberLike = 0;
                 user.NumberDislike = 0;
@@ -377,34 +378,37 @@ namespace SVCW.Services
             {
                 var result = new ProfileDTO();
                 int count = 0;
-                result.total = 0;
+                int total = 0;
                 var check = await this._context.User.Where(x => x.UserId.Equals(userId)).FirstOrDefaultAsync();
                 if(check!= null)
                 {
                     if(check.Username !=null) count++;
-                    result.Username = check.Username;result.total++;
+                    result.Username = check.Username; total++;
                     if(check.Password !=null) count++;
-                    result.Password = check.Password; result.total++;
+                    result.Password = check.Password; total++;
                     if (check.Email !=null) count++;
-                    result.Email = check.Email; result.total++;
-                    if (check.Phone !=null) count++;
-                    result.Phone = check.Phone; result.total++;
-                    if (check.Image!=null) count++;
-                    result.Image = check.Image; result.total++;
-                    if (check.DateOfBirth!= null) count++;
-                    result.DateOfBirth = check.DateOfBirth; result.total++;
-                    if (check.FullName != null) count++;
-                    result.FullName = check.FullName; result.total++;
+                    result.Email = check.Email; total++;
+                    if (check.Phone != null && !check.Phone.Equals("none")) count++;
+                    result.Phone = check.Phone; total++;
+                    if (check.Image != null && !check.Image.Equals("none")) count++;
+                    result.Image = check.Image; total++;
+                    if (check.DateOfBirth != null && check.DateOfBirth > DateTime.MinValue) count++;
+                    result.DateOfBirth = check.DateOfBirth; total++;
+                    if (check.FullName != null && !check.FullName.Equals("none")) count++;
+                    result.FullName = check.FullName; total++;
+                    if (check.CoverImage != null && !check.CoverImage.Equals("none")) count++;
+                    result.CoverImage = check.CoverImage; total++;
                     if (check.Gender!= null) count++;
-                    result.Gender = check.Gender; result.total++;
-                    result.total = count%result.total;
-                    if (result.total == 0)
+                    result.Gender = check.Gender; total++;
+                    double hihi = (double)count / (double)total;
+                    result.total = hihi.ToString();
+                    if (hihi == 0)
                     {
-                        result.total = 100;
+                        result.total = "1";
                     }
                     else
                     {
-                        result.total *= 10;
+                        result.total = hihi.ToString();
                     }
                    
                     return result;
