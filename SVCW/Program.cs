@@ -59,10 +59,16 @@ builder.Services.AddSwaggerGen(option =>
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/SVCW/swagger.json", "SVCWApi v1"));
+}
+
+//test  thu xem cai gi
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
