@@ -301,12 +301,12 @@ namespace SVCW.Services
                 var res = new CommonUserRes();
 
                 var user = await this._context.User
-                    .Include(u => u.Activity)        // Include the related activities
-                    .Include(u => u.Fanpage)        // Include the related fanpage
+                    .Include(u => u.Activity.OrderByDescending(x=>x.CreateAt))  
+                        .ThenInclude(x=>x.Comment.Where(x=>x.UserId.Equals(req.UserId)))// Include the related activities
+                    .Include(u => u.Fanpage)                                            // Include the related fanpage
                     .Include(u => u.Donation)
                     .Include(u => u.FollowJoinAvtivity)
                     .Include(u => u.AchivementUser)
-                    .Include(u => u.Comment)
                     .Include(u => u.Report)
                     .Include(u => u.BankAccount)
                     .Include(u => u.Like)
