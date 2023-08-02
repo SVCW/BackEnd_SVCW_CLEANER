@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SVCW.DTOs;
 using SVCW.DTOs.Common;
+using SVCW.DTOs.JWT;
 using SVCW.DTOs.Users;
 using SVCW.DTOs.Users.Req;
 using SVCW.DTOs.Users.Res;
@@ -168,6 +169,28 @@ namespace SVCW.Controllers
             try
             {
                 responseAPI.Data = await this.service.Login(dto);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        /// <summary>
+        /// này là có hàm băm j đó của Ước
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [Route("login-username")]
+        [HttpPost]
+        public async Task<IActionResult> LoginUserName(LoginDTO dto)
+        {
+            ResponseAPI<JwtTokenDto> responseAPI = new ResponseAPI<JwtTokenDto>();
+            try
+            {
+                responseAPI.Data = await this.service.LoginUserName(dto);
                 return Ok(responseAPI);
             }
             catch (Exception ex)
