@@ -254,6 +254,13 @@
             <param name="req"></param>
             <returns></returns>
         </member>
+        <member name="M:SVCW.Controllers.UserController.LoginUserName(SVCW.DTOs.Users.LoginDTO)">
+            <summary>
+            generate Token
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
         <member name="M:SVCW.Controllers.UserController.updateUser(SVCW.DTOs.Users.Req.UpdateUserReq)">
             <summary>
             Required{userId, >= 1 thông tin update}

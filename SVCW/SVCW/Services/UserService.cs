@@ -1,8 +1,12 @@
 
 
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Text.RegularExpressions;
+using FamilyEventt.Dto;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.IdentityModel.Tokens;
 using SVCW.DTOs.Common;
 using SVCW.DTOs.Users;
 using SVCW.DTOs.Users.Req;
@@ -15,12 +19,69 @@ namespace SVCW.Services
     public class UserService : IUser
     {
         private readonly SVCWContext _context;
-
-        public UserService(SVCWContext context)
+        private readonly IConfiguration _config;
+        public UserService(SVCWContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
         }
+        public string GenerateJSONWebToken(User user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claims = new[]
+            {
+
+                new Claim(JwtRegisteredClaimNames.Sub, user.Username ?? ""),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Email, user.Email ?? ""),
+                //new Claim(ClaimTypes.MobilePhone, account.Phone ?? ""),
+                new Claim(ClaimTypes.Role, user.RoleId),
+            };
+
+            var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddMinutes(120), signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public async Task<JwtTokenDto> LoginUserName(LoginDTO dto)
+        {
+            //hàm bâm
+            /*var a = BCrypt.Net.BCrypt.HashPassword("PWDf37157e");
+            Console.WriteLine(a);
+            , StringComparison.InvariantCultureIgnoreCase
+             */
+
+            try
+            {
+                var account = await this._context.User.Where(x => x.Username.Equals(dto.username) && x.Status.Equals("Active")).FirstOrDefaultAsync();
+                if (account == null)
+                {
+                    throw new Exception("Không tìm thấy tài khoản");
+                }
+                if (!(BCrypt.Net.BCrypt.Verify(dto.password, account.Password)))
+                {
+                    throw new Exception("Tài khoản hoặc mật khẩu không đúng!");
+                }
+
+                string token = GenerateJSONWebToken(account);
+
+                var response = new JwtTokenDto
+                {
+                    accountid = account.UserId,
+                    Username = account.Username,
+                    Email = account.Email,
+                    // Phone = account.Phone,
+                    jwtToken = token
+                };
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<CommonUserRes> createUser(CreateUserReq req)
         {
             try
