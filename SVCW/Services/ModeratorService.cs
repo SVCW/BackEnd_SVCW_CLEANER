@@ -45,6 +45,7 @@ namespace SVCW.Services
                 user.Gender = dto.Gender ?? true;
                 user.DateOfBirth = dto.DateOfBirth ?? DateTime.MinValue;
                 user.Image = dto.Image ?? "none";
+                user.CoverImage = dto.CoverImage ?? "none";
                 user.CreateAt = DateTime.Now;
                 user.NumberLike = 0;
                 user.NumberDislike = 0;
@@ -151,6 +152,7 @@ namespace SVCW.Services
                     check.Status = check.Status;
                     check.Gender = dto.Gender ?? check.Gender;
                     check.Image = dto.Image ?? check.Image;
+                    check.CoverImage = dto.CoverImage ?? check.CoverImage;
                     check.DateOfBirth = dto.DateOfBirth ?? check.DateOfBirth;
                     check.Status = check.Status;
                     check.RoleId = check.RoleId;

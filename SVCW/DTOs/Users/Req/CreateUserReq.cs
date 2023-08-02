@@ -18,5 +18,6 @@ namespace SVCW.DTOs.Users.Req
         public DateTime? CreateAt { get; set; }
         public string? Status { get; set; }
         public string? RoleId { get; set; }
+        public string? coverImage { get; set; }
     }
 }

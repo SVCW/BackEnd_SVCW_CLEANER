@@ -1,4 +1,5 @@
-﻿using SVCW.DTOs.UserSearchHistory;
+﻿using Microsoft.EntityFrameworkCore;
+using SVCW.DTOs.UserSearchHistory;
 using SVCW.Interfaces;
 using SVCW.Models;
 
@@ -32,14 +33,51 @@ namespace SVCW.Services
             }
         }
 
-        public Task<List<Activity>> recommendActivity(string userId)
+        public async Task<List<Activity>> recommendActivity(string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var li = new List<Activity>();
+                var check = await this._context.UserSearch.Where(x => x.UserId.Equals(userId)).OrderByDescending(x => x.Datetime).ToListAsync();
+                foreach (var activity in check)
+                {
+                    var recommend = this._context.Activity.Where(x => x.Title.Contains(activity.SearchContent)).OrderByDescending(x => x.CreateAt).Take(1);
+                    foreach (var lix in recommend)
+                    {
+                        li.Add(lix);
+                    }
+                }
+                return li;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public Task<List<Fanpage>> recommendFanpage(string userId)
+        public async Task<List<Fanpage>> recommendFanpage(string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var li = new List<Fanpage>();
+                var check = await this._context.UserSearch.Where(x => x.UserId.Equals(userId)).OrderByDescending(x => x.Datetime).ToListAsync();
+                foreach (var activity in check)
+                {
+                    var recommend = this._context.Activity.Where(x => x.Title.Contains(activity.SearchContent) && x.FanpageId != null)
+                        .Include(x => x.Fanpage)
+                        .OrderByDescending(x => x.CreateAt).Take(2);
+                    foreach (var lix in recommend)
+                    {
+                        //var fanpage = await this._context.Fanpage.Where(x => x.FanpageId.Equals(lix.FanpageId)).FirstOrDefaultAsync();
+                        li.Add(lix.Fanpage);
+                    }
+                }
+                return li;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

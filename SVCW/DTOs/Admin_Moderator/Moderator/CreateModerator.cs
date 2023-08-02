@@ -12,6 +12,7 @@ namespace SVCW.DTOs.Admin_Moderator.Moderator
         public string FullName { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+        public string CoverImage { get; set; }
         public DateTime? DateOfBirth { get; set; }
     }
 }
