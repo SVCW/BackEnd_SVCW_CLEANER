@@ -254,6 +254,7 @@
             <param name="req"></param>
             <returns></returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:SVCW.Controllers.UserController.LoginUserName(SVCW.DTOs.Users.LoginDTO)" -->
         <member name="M:SVCW.Controllers.UserController.updateUser(SVCW.DTOs.Users.Req.UpdateUserReq)">
             <summary>
             Required{userId, >= 1 thông tin update}
