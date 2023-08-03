@@ -63,9 +63,23 @@ namespace SVCW.Services
                 var db = await this._context.FollowFanpage.Where(x => x.UserId.Equals(userId) && x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
                 if(db != null) 
                 {
-                    db.Status = true;
-                    this._context.FollowFanpage.Update(db);
-                    return await this._context.SaveChangesAsync() > 0;
+                    if(db.Status == false)
+                    {
+                        db.Status = true;
+                        this._context.FollowFanpage.Update(db);
+                        await this._context.SaveChangesAsync();
+                        var fanpage1 = await this._context.Fanpage.Where(x => x.FanpageId.Equals(fanpageId)).FirstOrDefaultAsync();
+                        fanpage1.NumberFollow += 1;
+                        this._context.Fanpage.Update(fanpage1);
+                        return await this._context.SaveChangesAsync() > 0;
+                    }
+                    else
+                    {
+                        db.Status = true;
+                        this._context.FollowFanpage.Update(db);
+                        await this._context.SaveChangesAsync();
+                    }
+                    
                 }
                 var check = new FollowFanpage();
                 check.UserId = userId;
