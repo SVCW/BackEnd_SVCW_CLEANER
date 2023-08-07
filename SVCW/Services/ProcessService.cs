@@ -116,6 +116,14 @@ namespace SVCW.Services
         {
             try
             {
+                var check = await this._context.Activity.Where(x => x.ActivityId.Equals(process.ActivityId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    if(process.StartDate< check.CreateAt || process.EndDate > check.EndDate)
+                    {
+                        throw new Exception("datetime is not valid");
+                    }
+                }
 
                 var data = new Process();
                 data.ProcessId = "PRC"+Guid.NewGuid().ToString().Substring(0,7);
@@ -159,6 +167,14 @@ namespace SVCW.Services
             try
             {
                 var list = new List<Process>();
+                foreach(var item in process)
+                {
+                    var actmp = await this._context.Activity.Where(x => x.ActivityId.Equals(item.ActivityId)).FirstOrDefaultAsync();
+                    if(item.StartDate < actmp.CreateAt || item.EndDate > actmp.EndDate)
+                    {
+                        throw new Exception("date time is not valid");
+                    }
+                }
                 foreach(var p in process)
                 {
                     var data = new Process();

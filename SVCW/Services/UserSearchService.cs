@@ -41,7 +41,23 @@ namespace SVCW.Services
                 var check = await this._context.UserSearch.Where(x => x.UserId.Equals(userId)).OrderByDescending(x => x.Datetime).ToListAsync();
                 foreach (var activity in check)
                 {
-                    var recommend = this._context.Activity.Where(x => x.Title.Contains(activity.SearchContent)).OrderByDescending(x => x.CreateAt).Take(1);
+                    var recommend = this._context.Activity.Where(x => x.Title.Contains(activity.SearchContent))
+                        .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount).OrderByDescending(x => x.CreateAt).Take(1);
                     foreach (var lix in recommend)
                     {
                         li.Add(lix);
