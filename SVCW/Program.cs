@@ -41,6 +41,7 @@ builder.Services.AddScoped<IProcess, ProcessService>();
 builder.Services.AddScoped<IAdmin, AdminService>();
 builder.Services.AddScoped<IModerator, ModeratorService>();
 builder.Services.AddScoped<ISearchContent, UserSearchService>();
+builder.Services.AddScoped<IStatistical, StatisticalService>();
 
 
 
