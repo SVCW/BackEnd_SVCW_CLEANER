@@ -45,6 +45,20 @@ namespace SVCW.Models
         public int? ProcessNo { get; set; }
         [Column("isKeyProcess")]
         public bool? IsKeyProcess { get; set; }
+        [Column("location")]
+        public string Location { get; set; }
+        [Column("targetParticipant")]
+        public int? TargetParticipant { get; set; }
+        [Column("realParticipant")]
+        public int? RealParticipant { get; set; }
+        [Column("isDonateProcess")]
+        public bool? IsDonateProcess { get; set; }
+        [Column("isParticipant")]
+        public bool? IsParticipant { get; set; }
+        [Column("realDonation", TypeName = "decimal(18, 0)")]
+        public decimal? RealDonation { get; set; }
+        [Column("targetDonation", TypeName = "decimal(18, 0)")]
+        public decimal? TargetDonation { get; set; }
 
         [ForeignKey("ActivityId")]
         [InverseProperty("Process")]

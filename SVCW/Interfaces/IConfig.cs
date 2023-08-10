@@ -7,5 +7,6 @@ namespace SVCW.Interfaces
         adminConfig GetAdminConfig();
         adminConfig updateAdminConfig(adminConfig update);
         userCreateActivityConfig getConfig(configDTO dto);
+        Task<ProcessConfigDTO> getConfigForUser(configDTO dto);
     }
 }

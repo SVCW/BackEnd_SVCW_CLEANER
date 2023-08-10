@@ -33,5 +33,37 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("statistical-activity")]
+        [HttpPost]
+        public async Task<IActionResult> getActivity(DateTime start, DateTime end)
+        {
+            ResponseAPI<StatisticalActivityDTO> responseAPI = new ResponseAPI<StatisticalActivityDTO>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityBytime( start, end);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("statistical-donate")]
+        [HttpPost]
+        public async Task<IActionResult> getDonate(DateTime start, DateTime end)
+        {
+            ResponseAPI<StatisticalDonateDTO> responseAPI = new ResponseAPI<StatisticalDonateDTO>();
+            try
+            {
+                responseAPI.Data = await this.service.getDonateByTime(start, end);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
     }
 }

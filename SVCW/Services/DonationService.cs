@@ -17,16 +17,19 @@ namespace SVCW.Services
         {
             try
             {
-                var activity = await this.context.Activity.Where(x=>x.ActivityId.Equals(dto.ActivityId)).FirstOrDefaultAsync();
-                if(activity!= null)
+                var pro = await this.context.Process.Where(x=>x.ActivityId.Equals(dto.ActivityId)).ToListAsync();
+                foreach (var p in pro)
                 {
-                    if(activity.EndDate < DateTime.Now)
+                    if (p.ProcessTypeId.Equals("pt001"))
                     {
-                        throw new Exception("chiến dịch quyên góp đã kết thúc");
-                    }
-                    if(activity.RealDonation > activity.TargetDonation)
-                    {
-                        throw new Exception("chiến dịch đã nhận đủ số tiền");
+                        if(DateTime.Now < p.StartDate || DateTime.Now >= p.EndDate)
+                        {
+                            throw new Exception("bạn chưa thể quyên góp cho chiến dịch này");
+                        }
+                        if((p.RealDonation + dto.Amount) > p.TargetDonation)
+                        {
+                            throw new Exception("bạn chỉ có thể quyên góp tối đa: " + (p.TargetDonation - p.RealDonation));
+                        }
                     }
                 }
                 var donate = new Donation();

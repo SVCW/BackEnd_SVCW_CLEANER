@@ -623,6 +623,32 @@ namespace SVCW.Services
         {
             try
             {
+                var ac = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
+                if (ac != null)
+                {
+                    foreach(var x in ac)
+                    {
+                        if (x.ProcessTypeId.Equals("pt002"))
+                        {
+                            if(DateTime.Now >= x.StartDate && DateTime.Now <= x.EndDate)
+                            {
+                                if(x.RealParticipant >= x.TargetParticipant)
+                                {
+                                    throw new Exception("đã đủ người tham gia hoạt động, bạn hãy chờ hoạt động lần sau (nếu có)");
+                                }
+
+                            }
+                            else
+                            {
+                                throw new Exception("chưa tới hạn tham gia hoặc đã quá hạn");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("chiến dịch không có tuyển người tham gia");
+                        }
+                    }
+                }
                 var check = await this.context.FollowJoinAvtivity
                     .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (check != null)
@@ -630,6 +656,31 @@ namespace SVCW.Services
                     check.IsJoin = true;
                     check.IsFollow = true;
                     this.context.FollowJoinAvtivity.Update(check);
+                    await this.context.SaveChangesAsync();
+                    var c2 = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                    c2.NumberJoin += 1;
+
+                    var ac1 = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
+                    if (ac1 != null)
+                    {
+                        foreach (var x in ac1)
+                        {
+                            if (x.ProcessTypeId.Equals("pt002"))
+                            {
+                                if (DateTime.Now >= x.StartDate && DateTime.Now <= x.EndDate)
+                                {
+                                    if (x.RealParticipant <= x.TargetParticipant)
+                                    {
+                                        x.RealParticipant += 1;
+                                        this.context.Process.Update(x);
+                                        await this.context.SaveChangesAsync();
+                                    }
+
+                                }
+                            }   
+                        }
+                    }
+
                     return await this.context.SaveChangesAsync() > 0;
                 }
                 var follow = new FollowJoinAvtivity();

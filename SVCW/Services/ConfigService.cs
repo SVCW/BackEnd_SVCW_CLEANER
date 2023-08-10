@@ -134,5 +134,35 @@ namespace SVCW.Services
 
             return adminConfig;
         }
+
+        public async Task<ProcessConfigDTO> getConfigForUser(configDTO dto)
+        {
+            try
+            {
+                var result = new ProcessConfigDTO();
+
+                var admin = getConfig(dto);
+                var check = await this.context.ProcessType.Where(x => x.ProcessTypeId.Equals(dto.processTypeId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    if (dto.processTypeId.Equals("pt001"))
+                    {
+                        result.IsDonateProcess = true;
+                        result.MaxDonation = (decimal?)admin.maxDonate;
+                    }
+                    if (dto.processTypeId.Equals("pt002"))
+                    {
+                        result.IsParticipant = true;
+                    }
+                }
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
+        }
     }
 }

@@ -11,6 +11,7 @@ using SVCW.Interfaces;
 using SVCW.Models;
 using Microsoft.IdentityModel.Tokens;
 using SVCW.DTOs.JWT;
+using System.Security.Principal;
 
 namespace SVCW.Services
 {
@@ -112,6 +113,7 @@ namespace SVCW.Services
                 user.FullName = req.FullName ?? "none";
                 user.Username = req.Email.Split("@")[0];
                 user.Password = req.Password ?? "PWD" + Guid.NewGuid().ToString().Substring(0, 7);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 user.Phone = req.Phone;
                 user.Gender = req.Gender ?? true;
                 user.DateOfBirth = req.DateOfBirth ?? DateTime.MinValue;
@@ -232,7 +234,7 @@ namespace SVCW.Services
                     return res;
                 }
                 user.Username = req.Username ?? user.Username;
-                user.Password = req.Password ?? user.Password;
+                user.Password = BCrypt.Net.BCrypt.HashPassword(req.Password) ?? user.Password;
                 user.FullName = req.FullName ?? user.FullName;
                 user.Phone = req.Phone ?? user.Phone;
                 user.Status = req.Status ?? user.Status;
@@ -241,6 +243,7 @@ namespace SVCW.Services
                 user.DateOfBirth = req.DateOfBirth ?? user.DateOfBirth;
                 user.Status = req.Status ?? user.Status;
                 user.RoleId = req.RoleId ?? user.RoleId;
+                user.CoverImage = req.CoverImage ?? user.CoverImage;
 
                 this._context.User.Update(user);
                 await this._context.SaveChangesAsync();
@@ -294,7 +297,12 @@ namespace SVCW.Services
             {
                 var res = new CommonUserRes();
                 var user = await this._context.User.Where(u => u.UserId.Equals(req.UserId)).FirstOrDefaultAsync();
-
+                if (!(BCrypt.Net.BCrypt.Verify(req.oldPassword, user.Password)))
+                {
+                    res.resultCode = SVCWCode.InvalidPassword;
+                    res.resultMsg = "Sai mật khẩu!";
+                    return res;
+                }
                 if (!user.Password.Equals(req.oldPassword))
                 {
                     res.resultCode = SVCWCode.InvalidPassword;
@@ -309,7 +317,8 @@ namespace SVCW.Services
                     return res;
                 }
                 // update pw
-                user.Password = req.newPassword;
+                user.Password = BCrypt.Net.BCrypt.HashPassword(req.newPassword);
+                this._context.User.Update(user);
                 await this._context.SaveChangesAsync();
 
                 res.resultCode = SVCWCode.SUCCESS;
@@ -372,6 +381,10 @@ namespace SVCW.Services
                     .Include(u => u.BankAccount)
                     .Include(u => u.Like)
                     .Include(u => u.VoteUserVote)
+                    .Include(u=>u.AchivementUser)
+                        .ThenInclude(u=>u.Achivement)
+                    .Include(u=>u.FollowFanpage)
+                        .ThenInclude(u=>u.Fanpage)
                     .Where(u => u.UserId.Equals(req.UserId))
                     .FirstOrDefaultAsync();
 
@@ -418,10 +431,11 @@ namespace SVCW.Services
                 }
                 else
                 {
-                    if(check.Password.Equals(dto.password))
+                    if (BCrypt.Net.BCrypt.Verify(dto.password, check.Password))
                     {
                         return check;
                     }
+
                     else
                     {
                         throw new Exception("password is not valid");

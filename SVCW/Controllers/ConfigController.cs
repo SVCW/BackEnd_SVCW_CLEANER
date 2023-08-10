@@ -53,6 +53,24 @@ namespace SVCW.Controllers
             }
         }
 
+        [Route("get-process-config")]
+        [HttpPost]
+        public async Task<IActionResult> getConfigForUser(configDTO dto)
+        {
+
+            ResponseAPI<ProcessConfigDTO> responseAPI = new ResponseAPI<ProcessConfigDTO>();
+            try
+            {
+                responseAPI.Data = this.Service.getConfig(dto);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("update-adminConfig")]
         [HttpPut]
         public async Task<IActionResult> updateAdminConfig(adminConfig update)
