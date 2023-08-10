@@ -16,6 +16,7 @@ namespace SVCW.Models
             Comment = new HashSet<Comment>();
             Donation = new HashSet<Donation>();
             FollowJoinAvtivity = new HashSet<FollowJoinAvtivity>();
+            InverseReActivityNavigation = new HashSet<Activity>();
             Like = new HashSet<Like>();
             Media = new HashSet<Media>();
             Process = new HashSet<Process>();
@@ -62,10 +63,16 @@ namespace SVCW.Models
         [Column("fanpageId")]
         [StringLength(10)]
         public string FanpageId { get; set; }
+        [Column("reActivity")]
+        [StringLength(10)]
+        public string ReActivity { get; set; }
 
         [ForeignKey("FanpageId")]
         [InverseProperty("Activity")]
         public virtual Fanpage Fanpage { get; set; }
+        [ForeignKey("ReActivity")]
+        [InverseProperty("InverseReActivityNavigation")]
+        public virtual Activity ReActivityNavigation { get; set; }
         [ForeignKey("UserId")]
         [InverseProperty("Activity")]
         public virtual User User { get; set; }
@@ -77,6 +84,8 @@ namespace SVCW.Models
         public virtual ICollection<Donation> Donation { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<FollowJoinAvtivity> FollowJoinAvtivity { get; set; }
+        [InverseProperty("ReActivityNavigation")]
+        public virtual ICollection<Activity> InverseReActivityNavigation { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<Like> Like { get; set; }
         [InverseProperty("Activity")]

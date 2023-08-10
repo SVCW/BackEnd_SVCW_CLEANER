@@ -13,6 +13,7 @@ namespace SVCW.DTOs.Users.Req
         public string? Phone { get; set; }
         public bool? Gender { get; set; }
         public string? Image { get; set; }
+        public string? CoverImage { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? Status { get; set; }
         public string? RoleId { get; set; }

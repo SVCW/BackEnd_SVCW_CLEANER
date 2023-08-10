@@ -78,6 +78,11 @@ namespace SVCW.Models
                     .HasForeignKey(d => d.FanpageId)
                     .HasConstraintName("FK_Activity_Fanpage");
 
+                entity.HasOne(d => d.ReActivityNavigation)
+                    .WithMany(p => p.InverseReActivityNavigation)
+                    .HasForeignKey(d => d.ReActivity)
+                    .HasConstraintName("FK_Activity_Activity");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.UserId)

@@ -150,6 +150,17 @@ namespace SVCW.Controllers
                 activity.RealDonation += check.Amount;
                 this.context.Activity.Update(activity);
                 await this.context.SaveChangesAsync();
+
+                var process = await this.context.Process.Where(x=>x.ActivityId.Equals(check.ActivityId) && x.ProcessTypeId.Equals("pt001")).ToListAsync();
+                foreach(var x in process)
+                {
+                    if(DateTime.Now >= x.StartDate && DateTime.Now <= x.EndDate)
+                    {
+                        x.RealDonation += check.Amount;
+                        this.context.Process.Update(x);
+                        await this.context.SaveChangesAsync();
+                    }
+                }
             }
 
             return Redirect(returnUrl + "?amount=" + amount + "&status=" + status);
