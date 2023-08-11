@@ -135,7 +135,7 @@ namespace SVCW.Services
                 //res.user.CreateAt = user.CreateAt;
 
                 //!response data
-                user.Status = req.Status ?? "Active";
+                user.Status = "Active";
                 user.RoleId = req.RoleId ?? "role1";/////////////
 
                 await this._context.User.AddAsync(user);

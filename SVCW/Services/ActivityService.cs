@@ -157,6 +157,26 @@ namespace SVCW.Services
                     check.IsFollow = false;
                     this.context.FollowJoinAvtivity.Update(check);
                     await this.context.SaveChangesAsync();
+                    var ac1 = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
+                    if (ac1 != null)
+                    {
+                        foreach (var x in ac1)
+                        {
+                            if (x.ProcessTypeId.Equals("pt002"))
+                            {
+                                if (DateTime.Now >= x.StartDate && DateTime.Now <= x.EndDate)
+                                {
+                                    if (x.RealParticipant <= x.TargetParticipant)
+                                    {
+                                        x.RealParticipant += 1;
+                                        this.context.Process.Update(x);
+                                        await this.context.SaveChangesAsync();
+                                    }
+
+                                }
+                            }
+                        }
+                    }
                     var ac = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                     if (ac != null)
                     {
@@ -643,10 +663,6 @@ namespace SVCW.Services
                                 throw new Exception("chưa tới hạn tham gia hoặc đã quá hạn");
                             }
                         }
-                        else
-                        {
-                            throw new Exception("chiến dịch không có tuyển người tham gia");
-                        }
                     }
                 }
                 var check = await this.context.FollowJoinAvtivity
@@ -659,6 +675,8 @@ namespace SVCW.Services
                     await this.context.SaveChangesAsync();
                     var c2 = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                     c2.NumberJoin += 1;
+                    this.context.Activity.Update(c2);
+                    await this.context.SaveChangesAsync();
 
                     var ac1 = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
                     if (ac1 != null)
@@ -694,6 +712,28 @@ namespace SVCW.Services
 
                 var check2 = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 check2.NumberJoin += 1;
+                this.context.Activity.Update(check2);
+
+                var acc = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
+                if (acc != null)
+                {
+                    foreach (var x in acc)
+                    {
+                        if (x.ProcessTypeId.Equals("pt002"))
+                        {
+                            if (DateTime.Now >= x.StartDate && DateTime.Now <= x.EndDate)
+                            {
+                                if (x.RealParticipant <= x.TargetParticipant)
+                                {
+                                    x.RealParticipant += 1;
+                                    this.context.Process.Update(x);
+                                    await this.context.SaveChangesAsync();
+                                }
+
+                            }
+                        }
+                    }
+                }
                 return await this.context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)

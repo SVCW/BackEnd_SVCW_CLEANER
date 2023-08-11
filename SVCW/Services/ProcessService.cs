@@ -204,6 +204,20 @@ namespace SVCW.Services
                     data.ActivityResultId = null;
                     data.ProcessNo = p.ProcessNo;
                     data.IsKeyProcess = p.IsKeyProcess;
+                    data.Location = p.Location;
+                    if (p.IsDonateProcess == true)
+                    {
+                        data.IsDonateProcess = true;
+                        data.RealDonation = 0;
+                        data.TargetDonation = p.TargetDonation;
+                    }
+
+                    if (p.IsParticipant == true)
+                    {
+                        data.IsParticipant = true;
+                        data.RealParticipant = 0;
+                        data.TargetParticipant = p.TargetParticipant;
+                    }
 
                     await this._context.Process.AddAsync(data);
                     if (await this._context.SaveChangesAsync() > 0)
