@@ -234,7 +234,10 @@ namespace SVCW.Services
                     return res;
                 }
                 user.Username = req.Username ?? user.Username;
-                user.Password = BCrypt.Net.BCrypt.HashPassword(req.Password) ?? user.Password;
+                if(req.Password!= null)
+                {
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(req.Password) ?? user.Password;
+                }
                 user.FullName = req.FullName ?? user.FullName;
                 user.Phone = req.Phone ?? user.Phone;
                 user.Status = req.Status ?? user.Status;
