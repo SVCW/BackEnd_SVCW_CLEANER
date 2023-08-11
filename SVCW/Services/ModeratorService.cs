@@ -129,7 +129,7 @@ namespace SVCW.Services
                 }
                 else
                 {
-                    throw new Exception("Login moderator fail");
+                    throw new Exception("Lỗi khi đăng nhập do tên đăng nhập hoặc password không đúng");
                 }
             }
             catch (Exception ex)

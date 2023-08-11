@@ -75,6 +75,7 @@ namespace SVCW.Services
                 {
                     check.NumberLike += 1;
                 }
+                this._context.Activity.Update(check);
                 return await this._context.SaveChangesAsync() > 0;
             }
             catch
@@ -99,6 +100,7 @@ namespace SVCW.Services
                 {
                     check.NumberLike -= 1;
                 }
+                this._context.Activity.Update(check);
                 return await this._context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
