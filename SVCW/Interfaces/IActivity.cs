@@ -23,5 +23,6 @@ namespace SVCW.Interfaces
         Task<List<Activity>> getActivityAfterEndDate();
         Task<List<Activity>> getActivityBeforeEndDate();
         Task<List<Activity>> getActivityBeforeStartDate();
+        Task<List<Activity>> getActivityBeforeStartDateUser(string userId);
     }
 }

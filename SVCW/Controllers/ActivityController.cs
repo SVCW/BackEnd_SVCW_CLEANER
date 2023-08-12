@@ -308,6 +308,26 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        /// <summary>
+        /// chiến dịch đã diễn ra
+        /// </summary>
+        /// <returns></returns>
+        [Route("get-activity-after-enddate-user")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityAfterEndDateUser(string userId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityBeforeStartDateUser(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         [Route("get-activity-by-userId")]
         [HttpGet]
         public async Task<IActionResult> getActivityUser(string userId)
