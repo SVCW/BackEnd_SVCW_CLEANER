@@ -329,6 +329,42 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<Activity>> getActivityBeforeStartDateUser(string userId)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now && x.UserId.Equals(userId))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<List<Activity>> getActivityFanpage(string fanpageId)
         {
             try
