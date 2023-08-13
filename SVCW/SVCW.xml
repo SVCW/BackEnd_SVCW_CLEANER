@@ -88,6 +88,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:SVCW.Controllers.ActivityController.getActivityAfterEndDateUser(System.String)">
+            <summary>
+            chiến dịch đã diễn ra
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SVCW.Controllers.CommentController.getComment">
             <summary>
             admin, moderator

@@ -16,6 +16,21 @@ namespace SVCW.Services
         {
             try
             {
+                var v = await this._context.Vote.Where(x=>x.UserId.Equals(vote.UserId) && x.UserVoteId.Equals(vote.UserVoteId)).FirstOrDefaultAsync();
+                if (v != null)
+                {
+                    v.IsLike= true;
+                    this._context.Vote.Update(v);
+                    await this._context.SaveChangesAsync();
+                    var check = await this._context.User.Where(x => x.UserId.Equals(vote.UserVoteId)).FirstOrDefaultAsync();
+                    if (check != null)
+                    {
+                        check.NumberLike += 1;
+                        this._context.User.Update(check);
+                        await this._context.SaveChangesAsync();
+                    }
+                    return v;
+                }
                 var vte = new Vote();
                 vte.VoteId = "VOTE"+Guid.NewGuid().ToString().Substring(0,6);
                 vte.UserVoteId = vote.UserVoteId;
@@ -39,6 +54,7 @@ namespace SVCW.Services
                         if (check != null)
                         {
                             check.NumberLike += 1;
+                            this._context.User.Update(check);
                             await this._context.SaveChangesAsync();
                         }
                     }
@@ -48,6 +64,7 @@ namespace SVCW.Services
                         if (check != null)
                         {
                             check.NumberDislike += 1;
+                            this._context.User.Update(check);
                             await this._context.SaveChangesAsync();
                         }
                     }
@@ -74,8 +91,10 @@ namespace SVCW.Services
                     {
                         check1.NumberDislike -= 1;
                         check1.NumberLike -= 1;
+                        this._context.User.Update(check1);
                         await this._context.SaveChangesAsync();
                     }
+                    this._context.Vote.Update(check);
                     await this._context.SaveChangesAsync();
                     return check;
                 }
