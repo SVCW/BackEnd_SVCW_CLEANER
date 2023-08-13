@@ -120,6 +120,14 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:SVCW.Controllers.EmailController.sendEmail(SVCW.DTOs.Email.SendEmailReqDTO)">
+            <summary>
+            example: {"sendTo": "","subject": "Great party yesterday!","body": "<i>I drank waaaayyy too much! :D</i>"}
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SVCW.Controllers.EmailController.sendEmailTamplate(SVCW.DTOs.Email.SendEmailWithTamplateReqDTO)" -->
         <member name="M:SVCW.Controllers.FanpageController.delete(System.String)">
             <summary>
             admin, moderator
