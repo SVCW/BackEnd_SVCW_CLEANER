@@ -587,7 +587,11 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.OrderByDescending(x => x.NumberLike).Where(x=>x.Status.Equals("Active")).Take(3).ToListAsync();
+                var check = await this.context.Activity
+                    .Include(x=>x.Media)
+                    .Include(x=>x.User)
+                    .Include(x=>x.Fanpage)
+                    .OrderByDescending(x => x.NumberLike).Where(x=>x.Status.Equals("Active")).Take(3).ToListAsync();
                 if (check != null)
                 {
                     return check;
