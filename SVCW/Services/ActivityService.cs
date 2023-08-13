@@ -226,7 +226,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.EndDate < DateTime.Now)
+                var check = await this.context.Activity.Where(x => x.EndDate < DateTime.Now && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
@@ -261,7 +261,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.EndDate > DateTime.Now && x.StartDate<DateTime.Now)
+                var check = await this.context.Activity.Where(x => x.EndDate > DateTime.Now && x.StartDate<DateTime.Now && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
@@ -297,7 +297,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now)
+                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
@@ -333,7 +333,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now && x.UserId.Equals(userId))
+                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now && x.UserId.Equals(userId) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
@@ -369,7 +369,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.FanpageId.Equals(fanpageId))
+                var check = await this.context.Activity.Where(x => x.FanpageId.Equals(fanpageId) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
@@ -407,7 +407,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.UserId.Equals(userId))
+                var check = await this.context.Activity.Where(x => x.UserId.Equals(userId) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
@@ -587,7 +587,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.OrderByDescending(x => x.NumberLike).Take(3).ToListAsync();
+                var check = await this.context.Activity.OrderByDescending(x => x.NumberLike && x.Status.Equals("Active")).Take(3).ToListAsync();
                 if (check != null)
                 {
                     return check;
