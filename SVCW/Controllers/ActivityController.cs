@@ -216,6 +216,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("search")]
+        [HttpGet]
+        public async Task<IActionResult> search(string search)
+        {
+            ResponseAPI<SearchResultDTO> responseAPI = new ResponseAPI<SearchResultDTO>();
+            try
+            {
+                responseAPI.Data = await this.service.search(search);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         [Route("get-activity-user")]
         [HttpGet]
         public async Task<IActionResult> getUser(int pageSize, int PageLoad)

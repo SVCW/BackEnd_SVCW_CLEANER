@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Ocsp;
 using SVCW.DTOs.Activities;
 using SVCW.DTOs.Config;
 using SVCW.Interfaces;
 using SVCW.Models;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace SVCW.Services
 {
@@ -574,6 +576,78 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     return check;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<SearchResultDTO> search(string searchContent)
+        {
+            try
+            {
+                var result = new SearchResultDTO();
+                var check = await this.context.Activity
+                    .Where(x => x.Title.Contains(searchContent) && x.Status.Equals("Active"))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+                result.activities = check;
+
+                var check2 = await this.context.Fanpage.Where(x => x.FanpageName.Contains(searchContent) && x.Status.Equals("Active"))
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.InverseReply)
+                                .ThenInclude(x => x.User)
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.FollowFanpage)
+                    .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
+                        .ThenInclude(x => x.User)
+                    //.Include(x => x.FanpageNavigation)
+                    .ToListAsync();
+
+                result.fanpages = check2;
+
+                var user = await this.context.User
+                   .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                   .Include(u => u.Fanpage)                                            // Include the related fanpage
+                   .Include(u => u.Donation)
+                   .Include(u => u.FollowJoinAvtivity)
+                   .Include(u => u.AchivementUser)
+                   .Include(u => u.Report)
+                   .Include(u => u.BankAccount)
+                   .Include(u => u.Like)
+                   .Include(u => u.VoteUserVote)
+                   .Include(u => u.AchivementUser)
+                       .ThenInclude(u => u.Achivement)
+                   .Include(u => u.FollowFanpage)
+                       .ThenInclude(u => u.Fanpage)
+                   .Where(u => u.FullName.Contains(searchContent) || u.Username.Contains(searchContent))
+                   .ToListAsync();
+                result.users = user;
+                if (result != null)
+                {
+                    return result;
                 }
                 return null;
             }
