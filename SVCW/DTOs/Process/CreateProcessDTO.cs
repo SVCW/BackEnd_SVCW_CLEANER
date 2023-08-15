@@ -17,7 +17,7 @@ namespace SVCW.DTOs.Process
         public string ProcessTypeId { get; set; }
         public bool? IsKeyProcess { get; set; }
         public int? ProcessNo { get; set; }
-        public string Location { get; set; }
+        public string? Location { get; set; }
         public int? TargetParticipant { get; set; }
         public int? RealParticipant { get; set; }
         public bool? IsDonateProcess { get; set; }
