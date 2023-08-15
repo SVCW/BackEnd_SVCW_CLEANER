@@ -58,7 +58,7 @@ namespace SVCW.Services
                 activity.CreateAt= DateTime.Now;
                 activity.StartDate = dto.StartDate;
                 activity.EndDate = dto.EndDate;
-                activity.Location= dto.Location;
+                activity.Location= dto.Location ?? "";
                 activity.NumberJoin = 0;
                 activity.NumberLike= 0;
                 activity.ShareLink = "chưa làm dc";
