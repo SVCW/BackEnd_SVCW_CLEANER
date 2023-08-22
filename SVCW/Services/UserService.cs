@@ -375,9 +375,9 @@ namespace SVCW.Services
                 var res = new CommonUserRes();
 
                 var user = await this._context.User
-                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
-                        .ThenInclude(x=>x.Comment)
-                            .ThenInclude(x=>x.User)
+                    //.Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
+                    //    .ThenInclude(x=>x.Comment)
+                    //        .ThenInclude(x=>x.User)
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
                         .ThenInclude(x => x.Like.Where(a=>a.Status))
                             .ThenInclude(x => x.User)
@@ -388,7 +388,15 @@ namespace SVCW.Services
                             .ThenInclude(x=>x.User)
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
                         .ThenInclude(x => x.Donation)
-
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                            .ThenInclude(x => x.Media)
                     .Include(u => u.Fanpage)                                            // Include the related fanpage
                     .Include(u => u.Donation)
                     .Include(u => u.FollowJoinAvtivity)
@@ -430,13 +438,24 @@ namespace SVCW.Services
             {
                 var check = await this._context.User.Where(x=>x.Username.Equals(dto.username))
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
-                        .ThenInclude(x => x.Comment)
-                            .ThenInclude(x => x.User)
-                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
                         .ThenInclude(x => x.Like.Where(a => a.Status))
                             .ThenInclude(x => x.User)
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
                         .ThenInclude(x => x.Media)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.FollowJoinAvtivity)
+                            .ThenInclude(x => x.User)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Donation)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                            .ThenInclude(x => x.Media)
                     .Include(u => u.Fanpage)                                            // Include the related fanpage
                     .Include(u => u.Donation)
                     .Include(u => u.Comment)
