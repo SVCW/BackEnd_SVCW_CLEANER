@@ -131,7 +131,6 @@ namespace SVCW.Services
                 if (check != null)
                 {
                     check.Status = "InActive";
-
                     this.context.Activity.Update(check);
 
                     await this.context.SaveChangesAsync();
@@ -200,7 +199,8 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.FollowJoinAvtivity
-                    .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                    .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId))
+                    .FirstOrDefaultAsync();
                 if(check != null)
                 {
                     check.IsFollow = true;
