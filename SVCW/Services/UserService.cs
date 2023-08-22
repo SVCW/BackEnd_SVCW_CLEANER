@@ -383,6 +383,12 @@ namespace SVCW.Services
                             .ThenInclude(x => x.User)
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
                         .ThenInclude(x=>x.Media)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.FollowJoinAvtivity)
+                            .ThenInclude(x=>x.User)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Donation)
+
                     .Include(u => u.Fanpage)                                            // Include the related fanpage
                     .Include(u => u.Donation)
                     .Include(u => u.FollowJoinAvtivity)
