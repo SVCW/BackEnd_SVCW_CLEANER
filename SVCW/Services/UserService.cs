@@ -124,7 +124,6 @@ namespace SVCW.Services
                 user.NumberDislike = 0;
                 user.NumberActivityJoin = 0;
                 user.NumberActivitySuccess = 0;
-
                 // build data return
                 res.user = user;
 
@@ -391,9 +390,10 @@ namespace SVCW.Services
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
                         .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                             .ThenInclude(x => x.User)
-                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
-                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
-                            .ThenInclude(x => x.User)
+                    .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
+                        .ThenInclude(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                            .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                                .ThenInclude(x => x.User)
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
                         .ThenInclude(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                             .ThenInclude(x => x.Media)
@@ -421,6 +421,7 @@ namespace SVCW.Services
                 res.user = user;
                 res.resultCode = SVCWCode.SUCCESS;
                 res.resultMsg = "Success";
+
                 return res;
             } catch (Exception ex)
             {
