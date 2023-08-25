@@ -335,7 +335,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Activity.Where(x => x.StartDate > DateTime.Now && x.UserId.Equals(userId) && x.Status.Equals("Active"))
+                var check = await this.context.Activity.Where(x => x.EndDate < DateTime.Now && x.UserId.Equals(userId) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
