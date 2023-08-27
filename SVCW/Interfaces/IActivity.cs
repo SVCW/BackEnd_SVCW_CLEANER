@@ -24,6 +24,6 @@ namespace SVCW.Interfaces
         Task<List<Activity>> getActivityBeforeEndDate();
         Task<List<Activity>> getActivityBeforeStartDate();
         Task<List<Activity>> getActivityBeforeStartDateUser(string userId);
-        Task<SearchResultDTO> search(SearchDTO searchContent);
+        Task<SearchResultDTO> search(string searchContent);
     }
 }
