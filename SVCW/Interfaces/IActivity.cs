@@ -9,7 +9,7 @@ namespace SVCW.Interfaces
         Task<Activity> updateActivity(ActivityUpdateDTO dto);
         Task<Activity> getById(string id);
         Task<List<Activity>> getAll(int pageSize, int PageLoad);
-        Task<List<Activity>> getByTitle(string title);
+        Task<List<Activity>> getByTitle(SearchDTO title);
         Task<List<Activity>> getForUser(int pageSize, int PageLoad);
         Task<List<Activity>> getActivityUser(string userId);
         Task<List<Activity>> getActivityFanpage(string fanpageId);
@@ -24,6 +24,6 @@ namespace SVCW.Interfaces
         Task<List<Activity>> getActivityBeforeEndDate();
         Task<List<Activity>> getActivityBeforeStartDate();
         Task<List<Activity>> getActivityBeforeStartDateUser(string userId);
-        Task<SearchResultDTO> search(string searchContent);
+        Task<SearchResultDTO> search(SearchDTO searchContent);
     }
 }

@@ -43,7 +43,7 @@
             <param name="upAchivement"></param>
             <returns></returns>
         </member>
-        <member name="M:SVCW.Controllers.AchivementController.DeleteFood(System.Collections.Generic.List{System.String})">
+        <member name="M:SVCW.Controllers.AchivementController.DeleteFood(System.String)">
             <summary>
             admin, moderator
             </summary>
