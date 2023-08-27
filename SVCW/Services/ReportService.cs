@@ -37,10 +37,13 @@ namespace SVCW.Services
             try
             {
                 var check = await this._context.Report
-                    .Include(x=>x.Activity)
-                    .Include(x=>x.ReportType)
-                    .Include(x=>x.User)
-                    .OrderByDescending(x=>x.Datetime).ThenBy(x=>x.ReportTypeId)
+                    .Include(x => x.Activity)
+                        .ThenInclude(x=>x.User)
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.Fanpage)
+                    .Include(x => x.ReportType)
+                    .Include(x => x.User)
+                    .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
                     .ToListAsync();
                 return check;
             }
@@ -57,6 +60,9 @@ namespace SVCW.Services
                 var check = await this._context.Report
                     .Where(x=>x.ReportTypeId.Equals(reportType))
                     .Include(x => x.Activity)
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.Fanpage)
                     .Include(x => x.ReportType)
                     .Include(x => x.User)
                     .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
