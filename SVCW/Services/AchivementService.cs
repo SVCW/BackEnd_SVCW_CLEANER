@@ -12,20 +12,17 @@ namespace SVCW.Services
         {
             this.context = context;
         }
-        public async Task<bool> DeleteAchivement(List<string> achivementId)
+        public async Task<bool> DeleteAchivement(string achivementId)
         {
             try
             {
-                List<Achivement> achivement = await this.context.Achivement
-                    .Where(x => achivementId.Contains(x.AchivementId))
-                    .ToListAsync();
-                if (achivement != null && achivement.Count > 0)
+                var achivement = await this.context.Achivement
+                    .Where(x => achivementId.Equals(x.AchivementId))
+                    .FirstOrDefaultAsync();
+                if (achivement != null)
                 {
-
-                    for (int i = 0; i < achivement.Count; i++)
-                    {
-                        achivement[i].Status = false;
-                    }
+                    achivement.Status = false;
+                    this.context.Achivement.Update(achivement);
                     await this.context.SaveChangesAsync();
                     return true;
                 }
@@ -44,15 +41,7 @@ namespace SVCW.Services
         {
             try
             {
-                var data = await this.context.Achivement.Where(x => x.Status && x.AchivementId.Equals(achivementId)).
-                    Select(x => new Achivement
-                    {
-                        AchivementId = x.AchivementId,
-                        AchivementLogo = x.AchivementLogo,
-                        Description = x.Description,
-                        CreateAt = x.CreateAt,
-                        Status = x.Status,
-                    }).ToListAsync();
+                var data = await this.context.Achivement.Where(x => x.Status && x.AchivementId.Equals(achivementId)).ToListAsync();
                 if (data.Count > 0 && data != null)
                     return data;
                 else throw new ArgumentException();
@@ -68,14 +57,6 @@ namespace SVCW.Services
             try
             {
                 var data = await this.context.Achivement.Where(x => x.Status)
-                    .Select(x => new Achivement
-                    {
-                       AchivementId= x.AchivementId,
-                       AchivementLogo= x.AchivementLogo,
-                       Description= x.Description,
-                       CreateAt= x.CreateAt,
-                       Status= x.Status,
-                    })
                     .ToListAsync();
                 return data;
             }

@@ -136,7 +136,7 @@ namespace SVCW.Controllers
         /// <returns></returns>
         [Route("delete-achivement-by-id")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteFood([FromQuery] List<string> achivementId)
+        public async Task<IActionResult> DeleteFood(string achivementId)
         {
             ResponseAPI<List<Achivement>> responseAPI = new ResponseAPI<List<Achivement>>();
             try

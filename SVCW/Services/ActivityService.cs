@@ -548,12 +548,12 @@ namespace SVCW.Services
             }
         }
 
-        public async Task<List<Activity>> getByTitle(string title)
+        public async Task<List<Activity>> getByTitle(SearchDTO title)
         {
             try
             {
                 var check = await this.context.Activity
-                    .Where(x => x.Title.Contains(title) && x.Status.Equals("Active"))
+                    .Where(x => x.Title.Contains(title.search) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
@@ -585,13 +585,13 @@ namespace SVCW.Services
             }
         }
 
-        public async Task<SearchResultDTO> search(string searchContent)
+        public async Task<SearchResultDTO> search(SearchDTO searchContent)
         {
             try
             {
                 var result = new SearchResultDTO();
                 var check = await this.context.Activity
-                    .Where(x => x.Title.Contains(searchContent) && x.Status.Equals("Active"))
+                    .Where(x => x.Title.Contains(searchContent.search) && x.Status.Equals("Active"))
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
@@ -612,7 +612,7 @@ namespace SVCW.Services
                     .ToListAsync();
                 result.activities = check;
 
-                var check2 = await this.context.Fanpage.Where(x => x.FanpageName.Contains(searchContent) && x.Status.Equals("Active"))
+                var check2 = await this.context.Fanpage.Where(x => x.FanpageName.Contains(searchContent.search) && x.Status.Equals("Active"))
                     .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
                         .ThenInclude(x => x.Comment.Where(b => b.ReplyId == null).OrderByDescending(x => x.Datetime))
                             .ThenInclude(x => x.InverseReply)
@@ -642,7 +642,7 @@ namespace SVCW.Services
                        .ThenInclude(u => u.Achivement)
                    .Include(u => u.FollowFanpage)
                        .ThenInclude(u => u.Fanpage)
-                   .Where(u => u.FullName.Contains(searchContent) || u.Username.Contains(searchContent))
+                   .Where(u => u.FullName.Contains(searchContent.search) || u.Username.Contains(searchContent.search))
                    .ToListAsync();
                 result.users = user;
                 if (result != null)

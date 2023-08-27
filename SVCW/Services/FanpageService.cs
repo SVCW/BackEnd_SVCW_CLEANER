@@ -77,7 +77,7 @@ namespace SVCW.Services
                     {
                         db.Status = true;
                         this._context.FollowFanpage.Update(db);
-                        await this._context.SaveChangesAsync();
+                        return await this._context.SaveChangesAsync() > 0;
                     }
                     
                 }
