@@ -169,7 +169,7 @@ namespace SVCW.Services
                                 {
                                     if (x.RealParticipant <= x.TargetParticipant)
                                     {
-                                        x.RealParticipant += 1;
+                                        x.RealParticipant -= 1;
                                         this.context.Process.Update(x);
                                         await this.context.SaveChangesAsync();
                                     }
