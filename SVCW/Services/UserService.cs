@@ -174,14 +174,18 @@ namespace SVCW.Services
                 // get user data
                 var user = await this._context.User.Where(x => x.Email.Equals(req.Email)).FirstOrDefaultAsync();
 
-                if (user.Status.Equals("Banned"))
+                if(user!= null)
                 {
-                    var check = await this._context.BanUser.Where(x=>x.UserId.Equals(user.UserId)).FirstOrDefaultAsync();
-                    res.resultCode = SVCWCode.BANNED;
-                    res.resultMsg = "User bị khóa tài khoản với lý do "+ check.ReasonBan;
-                    res.isBan = true;
-                    return res;
+                    if (user.Status.Equals("Banned"))
+                    {
+                        var check = await this._context.BanUser.Where(x => x.UserId.Equals(user.UserId)).FirstOrDefaultAsync();
+                        res.resultCode = SVCWCode.BANNED;
+                        res.resultMsg = "User bị khóa tài khoản với lý do " + check.ReasonBan;
+                        res.isBan = true;
+                        return res;
+                    }
                 }
+                
 
                 if (user == null)
                 {
