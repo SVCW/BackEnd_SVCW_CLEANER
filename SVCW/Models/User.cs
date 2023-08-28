@@ -15,6 +15,7 @@ namespace SVCW.Models
         {
             AchivementUser = new HashSet<AchivementUser>();
             Activity = new HashSet<Activity>();
+            BanUser = new HashSet<BanUser>();
             BankAccount = new HashSet<BankAccount>();
             Comment = new HashSet<Comment>();
             Donation = new HashSet<Donation>();
@@ -83,6 +84,8 @@ namespace SVCW.Models
         public virtual ICollection<AchivementUser> AchivementUser { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<Activity> Activity { get; set; }
+        [InverseProperty("User")]
+        public virtual ICollection<BanUser> BanUser { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<BankAccount> BankAccount { get; set; }
         [InverseProperty("User")]

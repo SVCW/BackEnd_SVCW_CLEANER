@@ -43,6 +43,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[BanUser]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Comment]",
          "ObjectType": 0
       },

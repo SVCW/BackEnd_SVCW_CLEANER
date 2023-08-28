@@ -237,5 +237,39 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+
+        [Route("ban-user")]
+        [HttpPut]
+        public async Task<IActionResult> banUser(BanDTO req)
+        {
+            ResponseAPI<CommonUserRes> responseAPI = new ResponseAPI<CommonUserRes>();
+            try
+            {
+                responseAPI.Data = await this.service.banUser(req);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("un-ban-user")]
+        [HttpPut]
+        public async Task<IActionResult> unBanUser(string userId)
+        {
+            ResponseAPI<CommonUserRes> responseAPI = new ResponseAPI<CommonUserRes>();
+            try
+            {
+                responseAPI.Data = await this.service.unBanUser(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
     }
 }
