@@ -7,6 +7,9 @@ namespace SVCW.DTOs.Common
         [Display(Name = "Unknown Error")]
         Unknown = -1,
 
+        [Display(Name = "Unknown Error")]
+        BANNED = -2,
+
         [Display(Name = "Success")]
         SUCCESS = 0,
 

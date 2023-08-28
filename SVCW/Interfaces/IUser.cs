@@ -20,5 +20,7 @@ namespace SVCW.Interfaces
         Task<User> Login(LoginDTO dto);
         Task<JwtTokenDto> LoginUserName(LoginDTO dto);
         Task<ProfileDTO> checkProfile(string userId);
+        Task<CommonUserRes> banUser(BanDTO req);
+        Task<bool> unBanUser(string userId);
     }
 }

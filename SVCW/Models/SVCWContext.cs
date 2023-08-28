@@ -23,6 +23,7 @@ namespace SVCW.Models
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityResult> ActivityResult { get; set; }
         public virtual DbSet<Admin> Admin { get; set; }
+        public virtual DbSet<BanUser> BanUser { get; set; }
         public virtual DbSet<BankAccount> BankAccount { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<Donation> Donation { get; set; }
@@ -97,6 +98,15 @@ namespace SVCW.Models
                     .HasForeignKey(d => d.ActivityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ActivityResult_Activity");
+            });
+
+            modelBuilder.Entity<BanUser>(entity =>
+            {
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.BanUser)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_BanUser_User");
             });
 
             modelBuilder.Entity<BankAccount>(entity =>

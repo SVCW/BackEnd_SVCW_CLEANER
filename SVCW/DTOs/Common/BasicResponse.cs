@@ -6,6 +6,7 @@
 		public SVCWCode resultCode;
 		public string resultMsg;
 		public bool? isModer;
+		public bool? isBan;
     }
 }
 

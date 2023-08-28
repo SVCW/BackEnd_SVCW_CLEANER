@@ -174,6 +174,15 @@ namespace SVCW.Services
                 // get user data
                 var user = await this._context.User.Where(x => x.Email.Equals(req.Email)).FirstOrDefaultAsync();
 
+                if (user.Status.Equals("Banned"))
+                {
+                    var check = await this._context.BanUser.Where(x=>x.UserId.Equals(user.UserId)).FirstOrDefaultAsync();
+                    res.resultCode = SVCWCode.BANNED;
+                    res.resultMsg = "User bị khóa tài khoản với lý do "+ check.ReasonBan;
+                    res.isBan = true;
+                    return res;
+                }
+
                 if (user == null)
                 {
                     res.resultCode = SVCWCode.FirstTLogin;
@@ -283,6 +292,7 @@ namespace SVCW.Services
                     .Include(u => u.Report)
                     .Include(u => u.BankAccount)
                     .Include(u => u.Like)
+                    .Include(u => u.BanUser.Where(x => x.Status))
                     .Include(u => u.VoteUserVote)// Include the related fanpage
                     .ToListAsync();
 
@@ -408,6 +418,7 @@ namespace SVCW.Services
                         .ThenInclude(u=>u.Achivement)
                     .Include(u=>u.FollowFanpage)
                         .ThenInclude(u=>u.Fanpage)
+                    .Include(u => u.BanUser.Where(x => x.Status))
                     .Where(u => u.UserId.Equals(req.UserId))
                     .FirstOrDefaultAsync();
 
@@ -437,7 +448,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.User.Where(x=>x.Username.Equals(dto.username))
+                var check = await this._context.User.Where(x=>x.Username.Equals(dto.username) )
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
                         .ThenInclude(x => x.Like.Where(a => a.Status))
                             .ThenInclude(x => x.User)
@@ -469,6 +480,7 @@ namespace SVCW.Services
                         .ThenInclude(u => u.Achivement)
                     .Include(u => u.FollowFanpage)
                         .ThenInclude(u => u.Fanpage)
+                    .Include(u=>u.BanUser.Where(x=>x.Status))
                     .FirstOrDefaultAsync();
                 if (check == null)
                 {
@@ -536,6 +548,89 @@ namespace SVCW.Services
                 else
                 {
                     return null;
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<CommonUserRes> banUser(BanDTO req)
+        {
+            try
+            {
+                var res = new CommonUserRes();
+
+                var check = await this._context.User.Where(x => x.UserId.Equals(req.userId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.Status = "Banned";
+                    this._context.User.Update(check);
+                    if(await this._context.SaveChangesAsync() > 0)
+                    {
+                        var ban = new BanUser();
+                        ban.UserId = req.userId;
+                        ban.ReasonBan = req.reasonBan;
+                        ban.Datetime = DateTime.Now;
+                        ban.Status = true;
+                        ban.BanId = "BAN"+Guid.NewGuid().ToString().Substring(0,7);
+                        await this._context.BanUser.AddAsync(ban);
+                        this._context.SaveChangesAsync();
+
+                        res.user = check;
+                        res.resultCode = SVCWCode.SUCCESS;
+                        res.resultMsg = "Success";
+                        res.isBan = true;
+                        return res;
+
+                    }
+                    else
+                    {
+                        res.resultCode = SVCWCode.Unknown;
+                        res.resultMsg = "Lỗi hệ thống!";
+                        return res;
+                    }
+                }
+                else
+                {
+                    res.resultCode = SVCWCode.UserNotExist;
+                    res.resultMsg = "User không tồn tại trong hệ thống!";
+                    return res;
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Ex:" + ex.Message);
+                var res = new CommonUserRes();
+                res.resultCode = SVCWCode.Unknown;
+                res.resultMsg = "Lỗi hệ thống!";
+                return res;
+            }
+        }
+
+        public async Task<bool> unBanUser(string userId)
+        {
+            try
+            {
+                var check = await this._context.User.Where(x => x.UserId.Equals(userId)).FirstOrDefaultAsync();
+                var checkban = await this._context.BanUser.Where(x => x.UserId.Equals(userId) && x.Status).ToListAsync();
+                if (checkban != null)
+                {
+                    foreach(var item in checkban)
+                    {
+                        item.Status = false;
+                        this._context.BanUser.Update(item);
+                        await this._context.SaveChangesAsync();
+                    }
+                    check.Status = "Active";
+                    this._context.User.Update(check);
+                    return await this._context.SaveChangesAsync() > 0;
+                }
+                else
+                {
+                    check.Status = "Active";
+                    this._context.User.Update(check);
+                    return await this._context.SaveChangesAsync() > 0;
                 }
             }catch(Exception ex)
             {
