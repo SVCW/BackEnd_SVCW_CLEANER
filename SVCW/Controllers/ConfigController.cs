@@ -57,7 +57,6 @@ namespace SVCW.Controllers
         [HttpPost]
         public async Task<IActionResult> getConfigForUser(configDTO dto)
         {
-
             ResponseAPI<ProcessConfigDTO> responseAPI = new ResponseAPI<ProcessConfigDTO>();
             try
             {
