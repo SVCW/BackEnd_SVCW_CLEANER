@@ -204,7 +204,7 @@ namespace SVCW.Services
                     data.ActivityResultId = null;
                     data.ProcessNo = p.ProcessNo;
                     data.IsKeyProcess = p.IsKeyProcess;
-                    data.Location = p.Location;
+                    data.Location = p.Location ?? "none";
                     if (p.IsDonateProcess == true)
                     {
                         data.IsDonateProcess = true;
