@@ -201,7 +201,7 @@ namespace SVCW.Controllers
             }
         }
         [Route("get-activity-title")]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> getTitle([FromQuery] SearchDTO title)
         {
             ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
@@ -216,8 +216,8 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
-        [Route("search/{search}")]
-        [HttpGet]
+        [Route("search")]
+        [HttpPost]
         public async Task<IActionResult> search(string search)
         {
             ResponseAPI<SearchResultDTO> responseAPI = new ResponseAPI<SearchResultDTO>();

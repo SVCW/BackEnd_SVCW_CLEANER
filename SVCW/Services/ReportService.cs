@@ -53,6 +53,52 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<Report>> getAllReport2(int typeSort)
+        {
+            try
+            {
+                int date = -1;
+                switch (typeSort)
+                {
+                    case 0:
+                        var All = await this._context.Report
+                                    .Include(x => x.Activity)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Activity)
+                                        .ThenInclude(x => x.Fanpage)
+                                    .Include(x => x.ReportType)
+                                    .Include(x => x.User)
+                                    .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
+                                    .ToListAsync();
+                        return All;
+                    case 1:
+                        date = -1; 
+                        break;
+                    case 2:
+                        date = -7;
+                        break;
+                    case 3:
+                        date = -30;
+                        break;
+                }
+                var check = await this._context.Report
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Activity)
+                        .ThenInclude(x => x.Fanpage)
+                    .Include(x => x.ReportType)
+                    .Include(x => x.User)
+                    .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
+                    .Where(x=>x.Datetime < DateTime.Now && x.Datetime > DateTime.Now.AddDays(-1))
+                    .ToListAsync();
+                return check;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<List<Report>> GetReportByType(string reportType)
         {
             try

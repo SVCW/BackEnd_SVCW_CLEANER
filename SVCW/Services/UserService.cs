@@ -180,7 +180,7 @@ namespace SVCW.Services
                     {
                         var check = await this._context.BanUser.Where(x => x.UserId.Equals(user.UserId)).FirstOrDefaultAsync();
                         res.resultCode = SVCWCode.BANNED;
-                        res.resultMsg = "User bị khóa tài khoản với lý do " + check.ReasonBan;
+                        res.resultMsg = "Tài khoản của bạn đã bị khóa với lý do là " + check.ReasonBan;
                         res.isBan = true;
                         return res;
                     }
