@@ -34,6 +34,37 @@ namespace SVCW.Controllers
             }
         }
 
+        /// <summary>
+        /// hàm get all nhưng có theo ngày tháng năm
+        /// </summary>
+        /// <param name="type"> 
+        /// type = 0 như getAll bình thường 
+        /// 
+        /// type = 1 sort theo  24h trước 
+        /// 
+        /// type = 2 sort theo 1 tuần trước 
+        /// 
+        /// type = 3 sort theo 30 ngày trước
+        /// </param>
+        /// <returns>
+        /// </returns>
+        [Route("get-all-report-sort")]
+        [HttpGet]
+        public async Task<IActionResult> getAllReport2(int type)
+        {
+            ResponseAPI<List<Report>> responseAPI = new ResponseAPI<List<Report>>();
+            try
+            {
+                responseAPI.Data = await this.service.getAllReport2(type);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("get-all-report-by-type")]
         [HttpGet]
         public async Task<IActionResult> GetReportByType(string reportType)

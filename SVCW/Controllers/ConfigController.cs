@@ -60,7 +60,7 @@ namespace SVCW.Controllers
             ResponseAPI<ProcessConfigDTO> responseAPI = new ResponseAPI<ProcessConfigDTO>();
             try
             {
-                responseAPI.Data = this.Service.getConfig(dto);
+                responseAPI.Data = this.Service.getConfigForUser(dto);
                 return Ok(responseAPI);
             }
             catch (Exception ex)

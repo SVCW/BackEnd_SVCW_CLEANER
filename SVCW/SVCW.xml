@@ -172,6 +172,22 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:SVCW.Controllers.ReportController.getAllReport2(System.Int32)">
+            <summary>
+            hàm get all nhưng có theo ngày tháng năm
+            </summary>
+            <param name="type"> 
+            type = 0 như getAll bình thường 
+            
+            type = 1 sort theo  24h trước 
+            
+            type = 2 sort theo 1 tuần trước 
+            
+            type = 3 sort theo 30 ngày trước
+            </param>
+            <returns>
+            </returns>
+        </member>
         <member name="M:SVCW.Controllers.ReportTypeController.GetAllAchivement">
             <summary>
             admin, moderator

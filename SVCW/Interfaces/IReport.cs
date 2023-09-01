@@ -11,6 +11,8 @@ namespace SVCW.Interfaces
 		Task<Report> updateReport(ReportDTO updatedReport);
 		Task<bool> deleteReport(string rpID);
 		Task<List<Report>> GetReportByType(string reportType);
-	}
+		Task<List<Report>> getAllReport2(int typeSort);
+
+    }
 }
 

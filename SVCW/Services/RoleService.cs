@@ -44,7 +44,7 @@ namespace SVCW.Services
             {
                 var check = await this._context.Role.Where(x => x.RoleId.Equals(id)).FirstOrDefaultAsync();
                 check.Status = false;
-
+                this._context.Role.Update(check);
                 await this._context.SaveChangesAsync();
                 return check;
             }catch(Exception ex)
@@ -91,7 +91,9 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.Role.ToListAsync();
+                var check = await this._context.Role
+                    .Where(x=>x.Status)
+                    .ToListAsync();
                 if (check != null)
                 {
                     return check;
