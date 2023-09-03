@@ -26,9 +26,9 @@ namespace SVCW.Models
         public string Description { get; set; }
         [Column("datetime", TypeName = "datetime")]
         public DateTime Datetime { get; set; }
-        [Column("startDate", TypeName = "date")]
+        [Column("startDate", TypeName = "datetime")]
         public DateTime? StartDate { get; set; }
-        [Column("endDate", TypeName = "date")]
+        [Column("endDate", TypeName = "datetime")]
         public DateTime? EndDate { get; set; }
         [Column("status")]
         public bool Status { get; set; }

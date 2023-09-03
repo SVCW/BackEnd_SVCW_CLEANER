@@ -119,7 +119,7 @@ namespace SVCW.Services
                 var check = await this._context.Activity.Where(x => x.ActivityId.Equals(process.ActivityId)).FirstOrDefaultAsync();
                 if (check != null)
                 {
-                    if(process.StartDate< check.CreateAt || process.EndDate > check.EndDate)
+                    if(process.StartDate <= check.CreateAt || process.EndDate >= check.EndDate)
                     {
                         throw new Exception("datetime is not valid");
                     }
@@ -144,6 +144,9 @@ namespace SVCW.Services
                     data.IsDonateProcess = true;
                     data.RealDonation= 0;
                     data.TargetDonation = process.TargetDonation;
+                    check.TargetDonation += process.TargetDonation;
+                    this._context.Activity.Update(check);
+                    await this._context.SaveChangesAsync();
                 }
 
                 if(process.IsParticipant == true)
@@ -184,7 +187,7 @@ namespace SVCW.Services
                 foreach(var item in process)
                 {
                     var actmp = await this._context.Activity.Where(x => x.ActivityId.Equals(item.ActivityId)).FirstOrDefaultAsync();
-                    if(item.StartDate < actmp.CreateAt || item.EndDate > actmp.EndDate)
+                    if(item.StartDate <= actmp.CreateAt || item.EndDate >= actmp.EndDate)
                     {
                         throw new Exception("date time is not valid");
                     }
