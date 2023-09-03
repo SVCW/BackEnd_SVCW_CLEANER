@@ -62,9 +62,9 @@ namespace SVCW.Services
                 activity.NumberJoin = 0;
                 activity.NumberLike= 0;
                 activity.ShareLink = "chưa làm dc";
-                activity.TargetDonation = dto.TargetDonation;
+                activity.TargetDonation = 0;
                 activity.UserId= dto.UserId;
-                activity.Status = "Active";
+                activity.Status = "Pending";
                 activity.RealDonation = 0;
                 if (dto.isFanpageAvtivity)
                 {
@@ -895,6 +895,108 @@ namespace SVCW.Services
                 return null;
                
             }catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        public async Task<Activity> activePending(string id)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id)).FirstOrDefaultAsync();
+                if(check != null)
+                {
+                    check.Status = "Active";
+                    this.context.Activity.Update(check);
+                    if(await this.context.SaveChangesAsync() > 0)
+                    {
+                        return check;
+                    }
+                    else
+                    {
+                        throw new Exception("fail active pending");
+                    }
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Activity> reActive(string id)
+        {
+
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.ActivityId.Equals(id))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.Donation)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity)
+                    .Include(x => x.Media)
+                    .Include(x => x.BankAccount)
+                    .OrderByDescending(x => x.CreateAt)
+                    .FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.Status = "Active";
+                    this.context.Activity.Update(check);
+                    if (await this.context.SaveChangesAsync() > 0)
+                    {
+                        return check;
+                    }
+                    else
+                    {
+                        throw new Exception("fail active pending");
+                    }
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityPending()
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.Status.Equals("Pending"))
+                    .Include(x => x.Media)
+                    .Include(x => x.Process)
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .OrderByDescending(x=>x.CreateAt)
+                    .ToListAsync();
+                if(check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("mot found");
+                }
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
