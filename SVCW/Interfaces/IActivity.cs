@@ -15,11 +15,14 @@ namespace SVCW.Interfaces
         Task<List<Activity>> getActivityFanpage(string fanpageId);
         Task<Activity> delete(string id);
         Task<Activity> deleteAdmin(string id);
+        Task<Activity> activePending(string id);
+        Task<Activity> reActive(string id);
         Task<bool> followActivity(string activityId, string userId);
         Task<bool> unFollowActivity(string activityId, string userId);
         Task<bool> joinActivity(string activityId, string userId);
         Task<bool> disJoinActivity(string activityId, string userId);
         Task<List<Activity>> getDataLoginPage();
+        Task<List<Activity>> getActivityPending();
         Task<List<Activity>> getActivityAfterEndDate();
         Task<List<Activity>> getActivityBeforeEndDate();
         Task<List<Activity>> getActivityBeforeStartDate();

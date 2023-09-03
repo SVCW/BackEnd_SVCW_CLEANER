@@ -210,6 +210,10 @@ namespace SVCW.Services
                         data.IsDonateProcess = true;
                         data.RealDonation = 0;
                         data.TargetDonation = p.TargetDonation;
+                        var check = await this._context.Activity.Where(x => x.ActivityId.Equals(p.ActivityId)).FirstOrDefaultAsync();
+                        check.TargetDonation += p.TargetDonation;
+                        this._context.Activity.Update(check);
+                        await this._context.SaveChangesAsync();
                     }
 
                     if (p.IsParticipant == true)

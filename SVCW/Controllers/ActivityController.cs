@@ -102,6 +102,40 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("active-activity-pending")]
+        [HttpPut]
+        public async Task<IActionResult> pending(string activityId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.activePending(activityId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("reActive-activity")]
+        [HttpPut]
+        public async Task<IActionResult> reActive(string activityId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.reActive(activityId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
         [Route("update-activity")]
         [HttpPut]
         public async Task<IActionResult> update(ActivityUpdateDTO dto)
@@ -149,6 +183,27 @@ namespace SVCW.Controllers
             try
             {
                 responseAPI.Data = await this.service.delete(id);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        /// <summary>
+        /// Pending activity
+        /// </summary>
+        /// <returns></returns>
+        [Route("get-activity-pending")]
+        [HttpGet]
+        public async Task<IActionResult> getPending()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = this.service.getActivityPending();
                 return Ok(responseAPI);
             }
             catch (Exception ex)
