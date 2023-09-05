@@ -57,6 +57,12 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:SVCW.Controllers.ActivityController.getPending">
+            <summary>
+            Pending activity
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SVCW.Controllers.ActivityController.getall(System.Int32,System.Int32)">
             <summary>
             admin, moderator

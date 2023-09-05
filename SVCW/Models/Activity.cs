@@ -37,9 +37,9 @@ namespace SVCW.Models
         [Column("createAt", TypeName = "datetime")]
         public DateTime CreateAt { get; set; }
         [Column("startDate", TypeName = "datetime")]
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         [Column("endDate", TypeName = "datetime")]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
         [Column("location")]
         public string Location { get; set; }
         [Column("numberLike")]
