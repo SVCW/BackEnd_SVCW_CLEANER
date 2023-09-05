@@ -257,7 +257,7 @@ namespace SVCW.Controllers
         }
         [Route("get-activity-title")]
         [HttpPost]
-        public async Task<IActionResult> getTitle([FromQuery] SearchDTO title)
+        public async Task<IActionResult> getTitle(SearchDTO title)
         {
             ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
             try
@@ -273,12 +273,12 @@ namespace SVCW.Controllers
         }
         [Route("search")]
         [HttpPost]
-        public async Task<IActionResult> search(string search)
+        public async Task<IActionResult> search(SearchDTO title)
         {
             ResponseAPI<SearchResultDTO> responseAPI = new ResponseAPI<SearchResultDTO>();
             try
             {
-                responseAPI.Data = await this.service.search(search);
+                responseAPI.Data = await this.service.search(title);
                 return Ok(responseAPI);
             }
             catch (Exception ex)

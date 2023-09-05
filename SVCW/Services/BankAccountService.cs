@@ -89,6 +89,7 @@ namespace SVCW.Services
                 var check = await this._context.BankAccount.Where(x=>x.BankAccountId.Equals(bankId)).FirstOrDefaultAsync();
                 var check1 = await this._context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 check.Activity.Add(check1);
+                this._context.Update(check);
                 return await this._context.SaveChangesAsync()>0;
             }
             catch (Exception ex)
