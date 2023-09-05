@@ -420,7 +420,7 @@ namespace SVCW.Services
                     .Include(u => u.VoteUserVote)
                     .Include(u=>u.AchivementUser)
                         .ThenInclude(u=>u.Achivement)
-                    .Include(u=>u.FollowFanpage)
+                    .Include(u=>u.FollowFanpage.Where(x=>x.Status))
                         .ThenInclude(u=>u.Fanpage)
                     .Include(u => u.BanUser.Where(x => x.Status))
                     .Where(u => u.UserId.Equals(req.UserId))
@@ -482,7 +482,7 @@ namespace SVCW.Services
                     .Include(u => u.VoteUserVote)
                     .Include(u => u.AchivementUser)
                         .ThenInclude(u => u.Achivement)
-                    .Include(u => u.FollowFanpage)
+                    .Include(u => u.FollowFanpage.Where(x => x.Status))
                         .ThenInclude(u => u.Fanpage)
                     .Include(u=>u.BanUser.Where(x=>x.Status))
                     .FirstOrDefaultAsync();
