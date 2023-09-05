@@ -56,8 +56,8 @@ namespace SVCW.Services
                 activity.Title= dto.Title;
                 activity.Description= dto.Description;
                 activity.CreateAt= DateTime.Now;
-                activity.StartDate = dto.StartDate;
-                activity.EndDate = dto.EndDate;
+                activity.StartDate = (DateTime)dto.StartDate;
+                activity.EndDate = (DateTime)dto.EndDate;
                 activity.Location= dto.Location ?? "";
                 activity.NumberJoin = 0;
                 activity.NumberLike= 0;
@@ -882,9 +882,8 @@ namespace SVCW.Services
                 var check = await this.context.Activity.Where(x => x.ActivityId == dto.ActivityId).FirstOrDefaultAsync();
                 check.Title = dto.Title;
                 check.Description = dto.Description;
-                check.StartDate = dto.StartDate;
-                check.EndDate = dto.EndDate;
-                check.StartDate = dto.StartDate;
+                check.StartDate = (DateTime)dto.StartDate;
+                check.EndDate = (DateTime)dto.EndDate;
                 check.Location = dto.Location;
                 check.TargetDonation = dto.TargetDonation;
                 this.context.Activity.Update(check);

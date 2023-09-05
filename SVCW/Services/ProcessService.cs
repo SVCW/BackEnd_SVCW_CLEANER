@@ -119,7 +119,7 @@ namespace SVCW.Services
                 var check = await this._context.Activity.Where(x => x.ActivityId.Equals(process.ActivityId)).FirstOrDefaultAsync();
                 if (check != null)
                 {
-                    if(process.StartDate <= check.CreateAt || process.EndDate >= check.EndDate)
+                    if(process.StartDate < check.CreateAt && process.EndDate > check.EndDate)
                     {
                         throw new Exception("datetime is not valid");
                     }
@@ -131,8 +131,8 @@ namespace SVCW.Services
                 data.Description = process.Description;
                 data.Status = true; 
                 data.Datetime = DateTime.Now;
-                data.StartDate = process.StartDate ?? null;
-                data.EndDate = process.EndDate ?? null;
+                data.StartDate = process.StartDate;
+                data.EndDate = process.EndDate;
                 data.ActivityId = process.ActivityId;
                 data.ProcessTypeId = process.ProcessTypeId;
                 data.ActivityResultId = null;
@@ -187,12 +187,12 @@ namespace SVCW.Services
                 foreach(var item in process)
                 {
                     var actmp = await this._context.Activity.Where(x => x.ActivityId.Equals(item.ActivityId)).FirstOrDefaultAsync();
-                    if(item.StartDate <= actmp.CreateAt || item.EndDate >= actmp.EndDate)
+                    if (item.StartDate.Date < actmp.CreateAt.Date && item.EndDate.Date > actmp.EndDate.Date)
                     {
-                        throw new Exception("date time is not valid");
+                        throw new Exception("Ngày tháng không hợp lệ");
                     }
                 }
-                foreach(var p in process)
+                foreach (var p in process)
                 {
                     var data = new Process();
                     data.ProcessId = "PRC" + Guid.NewGuid().ToString().Substring(0, 7);
@@ -200,8 +200,8 @@ namespace SVCW.Services
                     data.Description = p.Description;
                     data.Status = true;
                     data.Datetime = DateTime.Now;
-                    data.StartDate = p.StartDate ?? null;
-                    data.EndDate = p.EndDate ?? null;
+                    data.StartDate = p.StartDate ;
+                    data.EndDate = p.EndDate;
                     data.ActivityId = p.ActivityId;
                     data.ProcessTypeId = p.ProcessTypeId;
                     data.ActivityResultId = null;
