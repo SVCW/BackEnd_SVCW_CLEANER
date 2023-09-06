@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
 using SVCW.DTOs.Donations;
 using SVCW.Interfaces;
 using SVCW.Models;
+using System.Globalization;
 
 namespace SVCW.Services
 {
@@ -28,7 +30,9 @@ namespace SVCW.Services
                         }
                         if((p.RealDonation + dto.Amount) > p.TargetDonation)
                         {
-                            throw new Exception("Chiến dịch chỉ còn thiếu: " + (p.TargetDonation - p.RealDonation) +", bạn vui lòng hãy quyên góp đúng số tiền nhé");
+                            decimal d = ((decimal)(p.TargetDonation - p.RealDonation));
+                            string formattedNumber = d.ToString("#,##0", CultureInfo.InvariantCulture);
+                            throw new Exception("Chiến dịch chỉ còn thiếu: " + formattedNumber +" bạn vui lòng hãy quyên góp đúng số tiền nhé");
                         }
                     }
                 }
