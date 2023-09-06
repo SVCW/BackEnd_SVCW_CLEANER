@@ -1111,7 +1111,6 @@ namespace SVCW.Services
             try
             {
                 var check = await this.context.Process.Where(x => x.ActivityId.Equals(activityId) && x.ProcessTypeId.Equals("pt003") && x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
-                    .Include(x=>x.FollowJoinAvtivity.Where(x=>x.IsJoin.Equals("Join")))
                     .ToListAsync();
                 if(check != null && check.Count>0)
                 {
@@ -1120,7 +1119,7 @@ namespace SVCW.Services
                         if(x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
                         {
                             var participant = await this.context.FollowJoinAvtivity.Where(a => a.ActivityId.Equals(activityId) && a.UserId.Equals(userId) && a.IsJoin.Equals("Join")).ToListAsync();
-                            if (participant != null)
+                            if (participant != null && participant.Count > 0)
                             {
                                 foreach(var u in participant)
                                 {
