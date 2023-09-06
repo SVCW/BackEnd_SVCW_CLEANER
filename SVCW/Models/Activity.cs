@@ -20,6 +20,7 @@ namespace SVCW.Models
             Like = new HashSet<Like>();
             Media = new HashSet<Media>();
             Process = new HashSet<Process>();
+            RejectActivity = new HashSet<RejectActivity>();
             Report = new HashSet<Report>();
             BankAccount = new HashSet<BankAccount>();
         }
@@ -92,6 +93,8 @@ namespace SVCW.Models
         public virtual ICollection<Media> Media { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<Process> Process { get; set; }
+        [InverseProperty("Activity")]
+        public virtual ICollection<RejectActivity> RejectActivity { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<Report> Report { get; set; }
 

@@ -3,6 +3,7 @@ using SVCW.DTOs;
 using SVCW.DTOs.Achivements;
 using SVCW.Interfaces;
 using SVCW.Models;
+using IronBarCode;
 
 namespace SVCW.Controllers
 {

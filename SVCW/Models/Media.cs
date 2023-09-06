@@ -27,10 +27,16 @@ namespace SVCW.Models
         [Column("processId")]
         [StringLength(10)]
         public string ProcessId { get; set; }
+        [Column("activityResultId")]
+        [StringLength(10)]
+        public string ActivityResultId { get; set; }
 
         [ForeignKey("ActivityId")]
         [InverseProperty("Media")]
         public virtual Activity Activity { get; set; }
+        [ForeignKey("ActivityResultId")]
+        [InverseProperty("Media")]
+        public virtual ActivityResult ActivityResult { get; set; }
         [ForeignKey("ProcessId")]
         [InverseProperty("Media")]
         public virtual Process Process { get; set; }

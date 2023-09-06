@@ -93,7 +93,7 @@ namespace SVCW.Services
                         result.numberComment++;
                     }
 
-                    var join = await this.context.FollowJoinAvtivity.Where(x => x.ActivityId.Equals(p.ActivityId) && x.IsJoin == true).ToListAsync();
+                    var join = await this.context.FollowJoinAvtivity.Where(x => x.ActivityId.Equals(p.ActivityId) && x.IsJoin.Equals("success")).ToListAsync();
                     foreach(var j in join)
                     {
                         result.numberJoin++;

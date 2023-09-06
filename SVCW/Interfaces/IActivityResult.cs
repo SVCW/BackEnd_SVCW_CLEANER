@@ -9,5 +9,6 @@ namespace SVCW.Interfaces
         Task<ActivityResult> update(ActivityResultUpdateDTO dto);
         Task<List<ActivityResult>> getAll();
         Task<List<ActivityResult>> getForActivity(string activityId);
+        Task<ActivityResultDTO> getForActivityv2(string activityId);
     }
 }
