@@ -24,11 +24,11 @@ namespace SVCW.Services
                     {
                         if(DateTime.Now < p.StartDate || DateTime.Now >= p.EndDate)
                         {
-                            throw new Exception("bạn chưa thể quyên góp cho chiến dịch này");
+                            throw new Exception("Bạn chưa thể quyên góp cho chiến dịch này");
                         }
                         if((p.RealDonation + dto.Amount) > p.TargetDonation)
                         {
-                            throw new Exception("bạn chỉ có thể quyên góp tối đa: " + (p.TargetDonation - p.RealDonation));
+                            throw new Exception("Chiến dịch chỉ còn thiếu: " + (p.TargetDonation - p.RealDonation) +", bạn vui lòng hãy quyên góp đúng số tiền nhé");
                         }
                     }
                 }
