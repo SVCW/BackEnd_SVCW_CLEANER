@@ -12,6 +12,7 @@ namespace SVCW.Models
     {
         public ActivityResult()
         {
+            Media = new HashSet<Media>();
             Process = new HashSet<Process>();
         }
 
@@ -31,10 +32,16 @@ namespace SVCW.Models
         [Column("activityId")]
         [StringLength(10)]
         public string ActivityId { get; set; }
+        [Column("totalAmount", TypeName = "decimal(18, 0)")]
+        public decimal? TotalAmount { get; set; }
+        [Column("resultDocument")]
+        public string ResultDocument { get; set; }
 
         [ForeignKey("ActivityId")]
         [InverseProperty("ActivityResult")]
         public virtual Activity Activity { get; set; }
+        [InverseProperty("ActivityResult")]
+        public virtual ICollection<Media> Media { get; set; }
         [InverseProperty("ActivityResult")]
         public virtual ICollection<Process> Process { get; set; }
     }

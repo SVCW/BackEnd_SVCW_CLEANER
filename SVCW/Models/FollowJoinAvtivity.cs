@@ -19,15 +19,23 @@ namespace SVCW.Models
         [StringLength(10)]
         public string ActivityId { get; set; }
         [Column("isJoin")]
-        public bool? IsJoin { get; set; }
+        [StringLength(50)]
+        public string IsJoin { get; set; }
         [Column("isFollow")]
         public bool? IsFollow { get; set; }
         [Column("datetime", TypeName = "datetime")]
         public DateTime Datetime { get; set; }
+        [Key]
+        [Column("processId")]
+        [StringLength(10)]
+        public string ProcessId { get; set; }
 
         [ForeignKey("ActivityId")]
         [InverseProperty("FollowJoinAvtivity")]
         public virtual Activity Activity { get; set; }
+        [ForeignKey("ProcessId")]
+        [InverseProperty("FollowJoinAvtivity")]
+        public virtual Process Process { get; set; }
         [ForeignKey("UserId")]
         [InverseProperty("FollowJoinAvtivity")]
         public virtual User User { get; set; }

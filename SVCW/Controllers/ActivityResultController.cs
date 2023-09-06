@@ -86,5 +86,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+
+        [Route("get-activityresult-activity-v2")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityV2(string activityId)
+        {
+            ResponseAPI<List<ActivityResult>> responseAPI = new ResponseAPI<List<ActivityResult>>();
+            try
+            {
+                responseAPI.Data = await this.service.getForActivityv2(activityId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace SVCW.Models
     {
         public Process()
         {
+            FollowJoinAvtivity = new HashSet<FollowJoinAvtivity>();
             Media = new HashSet<Media>();
         }
 
@@ -27,9 +28,9 @@ namespace SVCW.Models
         [Column("datetime", TypeName = "datetime")]
         public DateTime Datetime { get; set; }
         [Column("startDate", TypeName = "datetime")]
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         [Column("endDate", TypeName = "datetime")]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
         [Column("status")]
         public bool Status { get; set; }
         [Column("activityId")]
@@ -69,6 +70,8 @@ namespace SVCW.Models
         [ForeignKey("ProcessTypeId")]
         [InverseProperty("Process")]
         public virtual ProcessType ProcessType { get; set; }
+        [InverseProperty("Process")]
+        public virtual ICollection<FollowJoinAvtivity> FollowJoinAvtivity { get; set; }
         [InverseProperty("Process")]
         public virtual ICollection<Media> Media { get; set; }
     }

@@ -4,6 +4,7 @@ using SVCW.DTOs.Activities;
 using SVCW.DTOs.Config;
 using SVCW.Interfaces;
 using SVCW.Models;
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Xml.Linq;
@@ -58,7 +59,7 @@ namespace SVCW.Services
                 activity.CreateAt= DateTime.Now;
                 activity.StartDate = (DateTime)dto.StartDate;
                 activity.EndDate = (DateTime)dto.EndDate;
-                activity.Location= dto.Location ?? "";
+                activity.Location= dto.Location ?? "online";
                 activity.NumberJoin = 0;
                 activity.NumberLike= 0;
                 activity.ShareLink = "chưa làm dc";
@@ -154,7 +155,7 @@ namespace SVCW.Services
                 var check = await this.context.FollowJoinAvtivity.Where(x=>x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if(check != null)
                 {
-                    check.IsJoin = false;
+                    check.IsJoin = "unJoin";
                     check.IsFollow = false;
                     this.context.FollowJoinAvtivity.Update(check);
                     await this.context.SaveChangesAsync();
@@ -211,7 +212,7 @@ namespace SVCW.Services
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
-                follow.IsJoin = false;
+                follow.IsJoin = "unJoin";
                 follow.IsFollow= true;
                 follow.Datetime = DateTime.Now;
 
@@ -757,6 +758,7 @@ namespace SVCW.Services
         {
             try
             {
+                string tmpProcess = null;
                 var ac = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
                 if (ac != null)
                 {
@@ -770,7 +772,7 @@ namespace SVCW.Services
                                 {
                                     throw new Exception("đã đủ người tham gia hoạt động, bạn hãy chờ hoạt động lần sau (nếu có)");
                                 }
-
+                                tmpProcess = x.ProcessId;
                             }
                             else
                             {
@@ -783,8 +785,9 @@ namespace SVCW.Services
                     .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (check != null)
                 {
-                    check.IsJoin = true;
+                    check.IsJoin = "Join";
                     check.IsFollow = true;
+                    check.ProcessId = tmpProcess;
                     this.context.FollowJoinAvtivity.Update(check);
                     await this.context.SaveChangesAsync();
                     var c2 = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
@@ -813,16 +816,18 @@ namespace SVCW.Services
                         }
                     }
 
-                    return await this.context.SaveChangesAsync() > 0;
+                    return true;
                 }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
-                follow.IsJoin = true;
+                follow.IsJoin = "Join";
                 follow.IsFollow = true;
+                follow.ProcessId = tmpProcess;
                 follow.Datetime = DateTime.Now;
 
                 await this.context.FollowJoinAvtivity.AddAsync(follow);
+                await this.context.SaveChangesAsync();
 
                 var check2 = await this.context.Activity.Where(x=>x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 check2.NumberJoin += 1;
@@ -848,7 +853,7 @@ namespace SVCW.Services
                         }
                     }
                 }
-                return await this.context.SaveChangesAsync() > 0;
+                return true;
             }
             catch (Exception ex)
             {
@@ -954,6 +959,17 @@ namespace SVCW.Services
                     this.context.Activity.Update(check);
                     if (await this.context.SaveChangesAsync() > 0)
                     {
+                        var rej = await this.context.RejectActivity.Where(x => x.ActivityId.Equals(check.ActivityId)).ToListAsync();
+                        if (rej != null)
+                        {
+
+                            foreach(var x in rej)
+                            {
+                                x.Status = false;
+                                this.context.RejectActivity.Update(x);
+                                await this.context.SaveChangesAsync();
+                            }
+                        }
                         return check;
                     }
                     else
@@ -990,9 +1006,180 @@ namespace SVCW.Services
                 }
                 else
                 {
-                    throw new Exception("mot found");
+                    throw new Exception("not found");
                 }
             }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Activity> rejectActivity(RejectActivityDTO dto)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.ActivityId.Equals(dto.activityId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.Status = "Reject";
+                    this.context.Activity.Update(check);
+                    if (await this.context.SaveChangesAsync() > 0)
+                    {
+                        var rej = new RejectActivity();
+                        rej.ActivityId = dto.activityId;
+                        rej.Reason = dto.reasonReject;
+                        rej.Datetime = DateTime.Now;
+                        rej.Status = true;
+                        rej.RejectId = "RJA" + Guid.NewGuid().ToString().Substring(0, 7);
+
+                        await this.context.RejectActivity.AddAsync(rej);
+                        await this.context.SaveChangesAsync();
+
+                        return check;
+                    }
+                    else
+                    {
+                        throw new Exception("fail reject");
+                    }
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityReject(string userId)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.Status.Equals("Reject") && x.UserId.Equals(userId))
+                    .Include(x => x.Media)
+                    .Include(x => x.Process)
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityRejectAdmin()
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.Status.Equals("Reject"))
+                    .Include(x => x.Media)
+                    .Include(x => x.Process)
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> checkIn(string activityId, string userId)
+        {
+            try
+            {
+                var check = await this.context.Process.Where(x => x.ActivityId.Equals(activityId) && x.ProcessTypeId.Equals("pt003") && x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
+                    .Include(x=>x.FollowJoinAvtivity.Where(x=>x.IsJoin.Equals("Join")))
+                    .ToListAsync();
+                if(check != null && check.Count>0)
+                {
+                    foreach(var x in check)
+                    {
+                        if(x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
+                        {
+                            var participant = await this.context.FollowJoinAvtivity.Where(a => a.ActivityId.Equals(activityId) && a.UserId.Equals(userId) && a.IsJoin.Equals("Join")).ToListAsync();
+                            if (participant != null)
+                            {
+                                foreach(var u in participant)
+                                {
+                                    u.IsJoin = "success";
+                                    this.context.FollowJoinAvtivity.Update(u);
+                                    await this.context.SaveChangesAsync();
+                                }
+                                var user = await this.context.User.Where(v => v.UserId.Equals(userId)).FirstOrDefaultAsync();
+                                user.NumberActivityJoin += 1;
+                                this.context.User.Update(user);
+                                await this.context.SaveChangesAsync();
+                                return true;
+                            }
+                            else
+                            {
+                                throw new Exception("tình nguyện viên không đăng kí tham gia chiến dịch");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Hoạt động này đang không diễn ra hoặc đã kết thúc");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Chiến dịch không có hoạt động cần điểm danh");
+                }
+                return false;
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Activity> checkQR(string activityId)
+        {
+            try
+            {
+                var check = await this.context.Process.Where(x => x.ActivityId.Equals(activityId) && x.ProcessTypeId.Equals("pt003") && x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
+                    .ToListAsync();
+                if(check != null)
+                {
+                    var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                    if(activity != null)
+                    {
+                        return activity;
+                    }
+                    else
+                    {
+                        throw new Exception("not found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("chiến dịch không có hoạt động cần điểm danh");
+                }
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

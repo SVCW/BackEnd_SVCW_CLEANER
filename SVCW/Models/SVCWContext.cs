@@ -35,6 +35,7 @@ namespace SVCW.Models
         public virtual DbSet<Notification> Notification { get; set; }
         public virtual DbSet<Process> Process { get; set; }
         public virtual DbSet<ProcessType> ProcessType { get; set; }
+        public virtual DbSet<RejectActivity> RejectActivity { get; set; }
         public virtual DbSet<Report> Report { get; set; }
         public virtual DbSet<ReportType> ReportType { get; set; }
         public virtual DbSet<Role> Role { get; set; }
@@ -197,13 +198,19 @@ namespace SVCW.Models
 
             modelBuilder.Entity<FollowJoinAvtivity>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.ActivityId });
+                entity.HasKey(e => new { e.UserId, e.ActivityId, e.ProcessId });
 
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.FollowJoinAvtivity)
                     .HasForeignKey(d => d.ActivityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FollowJoinAvtivity_Activity");
+
+                entity.HasOne(d => d.Process)
+                    .WithMany(p => p.FollowJoinAvtivity)
+                    .HasForeignKey(d => d.ProcessId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FollowJoinAvtivity_Process");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.FollowJoinAvtivity)
@@ -236,6 +243,11 @@ namespace SVCW.Models
                     .HasForeignKey(d => d.ActivityId)
                     .HasConstraintName("FK_Media_Activity");
 
+                entity.HasOne(d => d.ActivityResult)
+                    .WithMany(p => p.Media)
+                    .HasForeignKey(d => d.ActivityResultId)
+                    .HasConstraintName("FK_Media_ActivityResult");
+
                 entity.HasOne(d => d.Process)
                     .WithMany(p => p.Media)
                     .HasForeignKey(d => d.ProcessId)
@@ -267,6 +279,15 @@ namespace SVCW.Models
                     .WithMany(p => p.Process)
                     .HasForeignKey(d => d.ProcessTypeId)
                     .HasConstraintName("FK_Process_ProcessType");
+            });
+
+            modelBuilder.Entity<RejectActivity>(entity =>
+            {
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.RejectActivity)
+                    .HasForeignKey(d => d.ActivityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RejectActivity_Activity");
             });
 
             modelBuilder.Entity<Report>(entity =>
