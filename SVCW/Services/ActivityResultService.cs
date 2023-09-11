@@ -126,6 +126,7 @@ namespace SVCW.Services
                         .ThenInclude(x=>x.User)
                     .Include(x => x.ActivityResult)
                     .Include(x => x.FollowJoinAvtivity)
+                        .ThenInclude(x=>x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
                     .FirstOrDefaultAsync();
