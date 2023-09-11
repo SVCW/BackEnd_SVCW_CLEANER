@@ -1119,6 +1119,11 @@ namespace SVCW.Services
                         if(x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
                         {
                             var participant = await this.context.FollowJoinAvtivity.Where(a => a.ActivityId.Equals(activityId) && a.UserId.Equals(userId) && a.IsJoin.Equals("Join")).ToListAsync();
+                            var participant1 = await this.context.FollowJoinAvtivity.Where(a => a.ActivityId.Equals(activityId) && a.UserId.Equals(userId) && a.IsJoin.Equals("success")).ToListAsync();
+                            if (participant1 != null && participant1.Count > 0)
+                            {
+                                throw new Exception("Tình nguyện viên đã điểm danh");
+                            }
                             if (participant != null && participant.Count > 0)
                             {
                                 foreach(var u in participant)
@@ -1135,7 +1140,7 @@ namespace SVCW.Services
                             }
                             else
                             {
-                                throw new Exception("tình nguyện viên không đăng kí tham gia chiến dịch");
+                                throw new Exception("Tình nguyện viên không đăng kí tham gia chiến dịch");
                             }
                         }
                         else
