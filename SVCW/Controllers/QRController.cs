@@ -24,6 +24,8 @@ namespace SVCW.Controllers
         {
             try
             {
+                IronBarCode.License.LicenseKey = "IRONSUITE.QUYENJOKER0907.GMAIL.COM.26723-CA70657347-DI4XTTX-DUEYKHVX2IIK-IFAXJG4I6426-2K3ZWESGWNDP-FFNAW3AJCLIM-NB6WY2D4MIVW-CASOIUW63NRN-ONRHNO-T4FW7QSBQSKKUA-DEPLOYMENT.TRIAL-4Y5W2K.TRIAL.EXPIRES.12.OCT.2023";
+
                 ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
 
                 responseAPI.Data = await this.service.checkQR(activityId);
