@@ -17,7 +17,7 @@ namespace SVCW.Services
             try
             {
                 var result = new StatisticalUserDonateDTO();
-                var donate = await this.context.Donation.Where(x => x.UserId.Equals(userId) && x.PayDate >= start && x.PayDate <= end).ToListAsync();
+                var donate = await this.context.Donation.Where(x => x.UserId.Equals(userId) && x.PayDate >= start && x.PayDate <= end && x.Status.Equals("success")).ToListAsync();
                 result.TotalDonate = 0;
                 foreach( var donation in donate)
                 {
