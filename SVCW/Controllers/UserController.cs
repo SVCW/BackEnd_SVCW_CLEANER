@@ -22,12 +22,29 @@ namespace SVCW.Controllers
 
         [Route("get-statistic-profile")]
         [HttpGet]
-        public async Task<IActionResult> géttatistic(string userId)
+        public async Task<IActionResult> getStatistic(string userId)
         {
             ResponseAPI<ProfileDTO> responseAPI = new ResponseAPI<ProfileDTO>();
             try
             {
                 responseAPI.Data = await this.service.checkProfile(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("get-personal-schedule")]
+        [HttpGet]
+        public async Task<IActionResult> getSchedule(string userId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.personalSchedulev1(userId);
                 return Ok(responseAPI);
             }
             catch (Exception ex)
