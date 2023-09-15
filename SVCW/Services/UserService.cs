@@ -641,5 +641,69 @@ namespace SVCW.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<Activity>> personalSchedulev1(string userId)
+        {
+            try
+            {
+                var result = new List<Activity>();
+                var join = await this._context.FollowJoinAvtivity.Where(x=>x.UserId.Equals(userId) && x.IsFollow == true).ToListAsync();
+
+                if(join != null && join.Count>0)
+                {
+                    foreach(var item in join)
+                    {
+                        var activity = await this._context.Activity
+                            .Where(x=>x.Status.Equals("Active"))
+                            .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                                .ThenInclude(x => x.Media)
+                            .Include(x => x.ActivityResult)
+                            .Include(x => x.Media)
+                            .OrderByDescending(x => x.CreateAt)
+                            .FirstOrDefaultAsync();
+
+                        result.Add(activity);
+                    }
+                    return result;
+                }
+                else
+                {
+                    throw new Exception("Bạn chưa tham gia chiến dịch nào");
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> personalSchedulev2(string userId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var check = await this._context.Activity.Where(x => x.Status.Equals("Active"))
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.ActivityResult)
+                    .Include(x => x.FollowJoinAvtivity.Where(x => (x.IsJoin.Equals("Join") || x.IsJoin.Equals("success") || x.IsFollow == true) && x.UserId.Equals(userId)))
+                    .Include(x => x.Media)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("Bạn chưa tham gia chiến dịch nào trong khoảng thời gian từ: "+ startDate + " đến: " + endDate);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
