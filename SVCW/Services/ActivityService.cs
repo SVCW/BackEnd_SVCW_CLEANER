@@ -1136,6 +1136,40 @@ namespace SVCW.Services
                                 user.NumberActivityJoin += 1;
                                 this.context.User.Update(user);
                                 await this.context.SaveChangesAsync();
+
+                                if(user.NumberActivityJoin == 1)
+                                {
+                                    var acus = new AchivementUser();
+                                    acus.AchivementId = "AId7658264";
+                                    acus.UserId = user.UserId;
+                                    acus.EndDate = DateTime.MaxValue;
+
+                                    await this.context.AchivementUser.AddAsync(acus);
+
+                                    await this.context.SaveChangesAsync();
+                                }
+                                if (user.NumberActivityJoin == 5)
+                                {
+                                    var acus = new AchivementUser();
+                                    acus.AchivementId = "AIdf8af790";
+                                    acus.UserId = user.UserId;
+                                    acus.EndDate = DateTime.MaxValue;
+
+                                    await this.context.AchivementUser.AddAsync(acus);
+
+                                    await this.context.SaveChangesAsync();
+                                }
+                                if (user.NumberActivityJoin == 10)
+                                {
+                                    var acus = new AchivementUser();
+                                    acus.AchivementId = "AId998a9a6";
+                                    acus.UserId = user.UserId;
+                                    acus.EndDate = DateTime.MaxValue;
+
+                                    await this.context.AchivementUser.AddAsync(acus);
+
+                                    await this.context.SaveChangesAsync();
+                                }
                                 return true;
                             }
                             else
@@ -1181,6 +1215,101 @@ namespace SVCW.Services
                 else
                 {
                     throw new Exception("chiến dịch không có hoạt động cần điểm danh");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Activity> quitActivity(QuitActivityDTO dto)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.ActivityId.Equals(dto.activityId)).FirstOrDefaultAsync();
+                if (check != null)
+                {
+                    check.Status = "Quit";
+                    this.context.Activity.Update(check);
+                    if (await this.context.SaveChangesAsync() > 0)
+                    {
+                        var rej = new QuitActivity();
+                        rej.ActivityId = dto.activityId;
+                        rej.Reason = dto.reasonQuit;
+                        rej.CreateAt = DateTime.Now;
+                        rej.Status = true;
+                        rej.QuitActivityId = "QIT" + Guid.NewGuid().ToString().Substring(0, 7);
+
+                        await this.context.QuitActivity.AddAsync(rej);
+                        await this.context.SaveChangesAsync();
+
+                        return check;
+                    }
+                    else
+                    {
+                        throw new Exception("fail quit");
+                    }
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityQuit(string userId)
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.Status.Equals("Quit") && x.UserId.Equals(userId))
+                    .Include(x => x.Media)
+                    .Include(x => x.Process)
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x => x.QuitActivity)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Activity>> getActivityQuitAdmin()
+        {
+            try
+            {
+                var check = await this.context.Activity.Where(x => x.Status.Equals("Quit"))
+                    .Include(x => x.Media)
+                    .Include(x => x.Process)
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.User)
+                    .Include(x => x.Fanpage)
+                    .Include(x=>x.QuitActivity)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                else
+                {
+                    throw new Exception("not found");
                 }
             }
             catch (Exception ex)

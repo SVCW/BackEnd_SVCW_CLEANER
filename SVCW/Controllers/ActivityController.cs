@@ -68,6 +68,38 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("reject-Activity")]
+        [HttpPost]
+        public async Task<IActionResult> reject(RejectActivityDTO dto)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.rejectActivity(dto);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("quit-Activity")]
+        [HttpPost]
+        public async Task<IActionResult> quit(QuitActivityDTO dto)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.quitActivity(dto);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
 
         [Route("unfollow-activity")]
         [HttpPut]
@@ -424,6 +456,71 @@ namespace SVCW.Controllers
             try
             {
                 responseAPI.Data = await this.service.getActivityFanpage(fanpageId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+
+        [Route("get-activity-reject")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityReject(string userId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityReject(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("get-activity-reject-admin")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityRejectAdmin()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityRejectAdmin();
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("get-activity-quit")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityQuit(string userId)
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityQuit(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
+        [Route("get-activity-quit-admin")]
+        [HttpGet]
+        public async Task<IActionResult> getActivityQuitAdmin()
+        {
+            ResponseAPI<List<Activity>> responseAPI = new ResponseAPI<List<Activity>>();
+            try
+            {
+                responseAPI.Data = await this.service.getActivityQuitAdmin();
                 return Ok(responseAPI);
             }
             catch (Exception ex)

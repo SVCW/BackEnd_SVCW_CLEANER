@@ -18,6 +18,7 @@ namespace SVCW.Interfaces
         Task<Activity> activePending(string id);
         Task<Activity> reActive(string id);
         Task<Activity> rejectActivity(RejectActivityDTO dto);
+        Task<Activity> quitActivity(QuitActivityDTO dto);
         Task<bool> followActivity(string activityId, string userId);
         Task<bool> unFollowActivity(string activityId, string userId);
         Task<bool> joinActivity(string activityId, string userId);
@@ -30,6 +31,8 @@ namespace SVCW.Interfaces
         Task<List<Activity>> getActivityBeforeStartDateUser(string userId);
         Task<List<Activity>> getActivityReject(string userId);
         Task<List<Activity>> getActivityRejectAdmin();
+        Task<List<Activity>> getActivityQuit(string userId);
+        Task<List<Activity>> getActivityQuitAdmin();
         Task<SearchResultDTO> search(SearchDTO searchContent);
         Task<bool> checkIn(string activityId, string userId);
         Task<Activity> checkQR(string activityId);

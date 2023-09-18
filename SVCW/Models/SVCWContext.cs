@@ -35,6 +35,7 @@ namespace SVCW.Models
         public virtual DbSet<Notification> Notification { get; set; }
         public virtual DbSet<Process> Process { get; set; }
         public virtual DbSet<ProcessType> ProcessType { get; set; }
+        public virtual DbSet<QuitActivity> QuitActivity { get; set; }
         public virtual DbSet<RejectActivity> RejectActivity { get; set; }
         public virtual DbSet<Report> Report { get; set; }
         public virtual DbSet<ReportType> ReportType { get; set; }
@@ -281,6 +282,15 @@ namespace SVCW.Models
                     .HasConstraintName("FK_Process_ProcessType");
             });
 
+            modelBuilder.Entity<QuitActivity>(entity =>
+            {
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.QuitActivity)
+                    .HasForeignKey(d => d.ActivityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_QuitActivity_Activity");
+            });
+
             modelBuilder.Entity<RejectActivity>(entity =>
             {
                 entity.HasOne(d => d.Activity)
@@ -295,7 +305,6 @@ namespace SVCW.Models
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Report)
                     .HasForeignKey(d => d.ActivityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Report_Activity");
 
                 entity.HasOne(d => d.ReportType)

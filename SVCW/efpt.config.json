@@ -87,6 +87,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[QuitActivity]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[RejectActivity]",
          "ObjectType": 0
       },

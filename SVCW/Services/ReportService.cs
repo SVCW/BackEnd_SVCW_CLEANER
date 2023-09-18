@@ -134,8 +134,15 @@ namespace SVCW.Services
                 report.Description = newReport.Description;
                 report.Status = false;
                 report.UserId = newReport.UserId;
-                report.ActivityId = newReport.ActivityId;
+                if(newReport.ActivityId != null)
+                {
+                    report.ActivityId = newReport.ActivityId;
+                }
                 report.Datetime = DateTime.Now;
+                if(newReport.UserReportId != null) 
+                {
+                    report.UserReportId= newReport.UserReportId;
+                }
 
                 await this._context.Report.AddAsync(report);
                 await this._context.SaveChangesAsync();
