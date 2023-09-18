@@ -119,8 +119,32 @@ namespace SVCW.Services
                 }
 
                 return result;
-            }catch(Exception ex) { throw new Exception(); }
+            }catch(Exception ex) { throw new Exception(ex.Message); }
         }
 
+        public async Task<StatisticalAdminDTO> getByTime(DateTime start, DateTime end)
+        {
+            try
+            {
+                var result = new StatisticalAdminDTO();
+                result.start = start;
+                result.end = end;
+                result.newMor = 0;
+                result.newUser = 0;
+                var check = await this.context.User.Where(x=>x.CreateAt <= end && x.CreateAt >= start).ToListAsync();
+                foreach(var item in check)
+                {
+                    if (item.UserId.Contains("MDR"))
+                    {
+                        result.newMor++;
+                    }
+                    if (item.UserId.Contains("USR"))
+                    {
+                        result.newUser++;
+                    }
+                }
+                return result;
+            }catch(Exception ex) { throw new Exception(ex.Message); }
+        }
     }
 }

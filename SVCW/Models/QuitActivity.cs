@@ -8,26 +8,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SVCW.Models
 {
-    public partial class RejectActivity
+    public partial class QuitActivity
     {
         [Key]
-        [Column("rejectId")]
+        [Column("quitActivityId")]
         [StringLength(10)]
-        public string RejectId { get; set; }
+        public string QuitActivityId { get; set; }
         [Required]
         [Column("activityId")]
         [StringLength(10)]
         public string ActivityId { get; set; }
-        [Required]
         [Column("reason")]
         public string Reason { get; set; }
-        [Column("datetime", TypeName = "datetime")]
-        public DateTime Datetime { get; set; }
+        [Column("createAt", TypeName = "datetime")]
+        public DateTime CreateAt { get; set; }
         [Column("status")]
         public bool Status { get; set; }
 
         [ForeignKey("ActivityId")]
-        [InverseProperty("RejectActivity")]
+        [InverseProperty("QuitActivity")]
         public virtual Activity Activity { get; set; }
     }
 }

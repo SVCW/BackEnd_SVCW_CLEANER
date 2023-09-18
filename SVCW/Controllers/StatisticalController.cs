@@ -65,5 +65,21 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("statistical-admin")]
+        [HttpPost]
+        public async Task<IActionResult> getAdmin(DateTime start, DateTime end)
+        {
+            ResponseAPI<StatisticalDonateDTO> responseAPI = new ResponseAPI<StatisticalDonateDTO>();
+            try
+            {
+                responseAPI.Data = await this.service.getByTime(start, end);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
     }
 }

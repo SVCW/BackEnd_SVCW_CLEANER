@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SVCW.Models;
 using SVCW.Services;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SVCW.Controllers
 {
@@ -13,6 +16,8 @@ namespace SVCW.Controllers
         protected readonly SVCWContext context;
         //private readonly double _exchangeRate;
         private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
+
         public string URL_VNPAY_REFUND;
         public string VNPAY_TMNCODE = "QEXW80Z4";
         public string VNPAY_HASH_SECRECT = "GVVBRNETROHVFHCFGWHXHZFKXQHMRQZC";
@@ -26,6 +31,7 @@ namespace SVCW.Controllers
         {
             _configuration = configuration;
             this.context = context;
+            _httpClient = new HttpClient();
         }
 
         /// <summary>
@@ -262,6 +268,67 @@ namespace SVCW.Controllers
         //    }*/
         //    //display.InnerHtml = "<b>VNPAY RESPONSE:</b> " + strData;
         //}
+        //[HttpPost]
+        //[Route("refund")]
+        //public async Task<IActionResult> Refund([FromBody] RefundRequestModel requestModel)
+        //{
+        //    try
+        //    {
+        //        // Đọc thông tin cấu hình từ appsettings.json
+        //        string merchantId = "QEXW80Z4";
+        //        string apiKey = _configuration["VNPay:ApiKey"];
+        //        string secretKey = _configuration["VnPay:HashSecret"];
+        //        string refundUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
+        //        // Tạo dữ liệu yêu cầu hoàn tiền
+        //        Dictionary<string, string> requestData = new Dictionary<string, string>
+        //        {
+        //            { "vnp_TmnCode", merchantId },
+        //            { "vnp_ApiKey", apiKey },
+        //            { "vnp_TransactionNo", requestModel.TransactionNo }, // Số giao dịch cần hoàn tiền
+        //            { "vnp_Amount", requestModel.Amount.ToString() }, // Số tiền hoàn tiền (đơn vị: đồng)
+        //            { "vnp_Command", "refund" }, // Lệnh hoàn tiền
+        //        };
+
+        //        // Tạo chuỗi xác thực dữ liệu yêu cầu
+        //        string sortedData = string.Join("&", requestData.OrderBy(x => x.Key).Select(x => $"{x.Key}={x.Value}"));
+        //        string checksum = GetHmacSHA512(secretKey, sortedData);
+
+        //        requestData.Add("vnp_SecureHash", checksum);
+
+        //        // Gửi yêu cầu HTTP POST đến VNPay
+        //        var content = new FormUrlEncodedContent(requestData);
+        //        var response = await _httpClient.PostAsync(refundUrl, content);
+
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            string responseContent = await response.Content.ReadAsStringAsync();
+        //            return Ok(responseContent);
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Lỗi khi gửi yêu cầu hoàn tiền.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, "Lỗi trong quá trình xử lý yêu cầu hoàn tiền: " + ex.Message);
+        //    }
+        //}
+
+        //// Hàm tính chuỗi HMAC-SHA512
+        //private static string GetHmacSHA512(string key, string data)
+        //{
+        //    using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(key)))
+        //    {
+        //        byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
+        //        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+        //    }
+        //}
+        //public class RefundRequestModel
+        //{
+        //    public string TransactionNo { get; set; }
+        //    public decimal Amount { get; set; }
+        //}
     }
 }
