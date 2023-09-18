@@ -661,7 +661,7 @@ namespace SVCW.Services
                    .Include(u => u.Donation)
                    .Include(u => u.FollowJoinAvtivity)
                    .Include(u => u.AchivementUser)
-                   .Include(u => u.Report)
+                   .Include(u => u.ReportUser)
                    .Include(u => u.BankAccount)
                    .Include(u => u.Like)
                    .Include(u => u.VoteUserVote)
