@@ -152,6 +152,19 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if (activity.Status.Equals("Pending"))
+                {
+                    throw new Exception("Chiến dịch chưa được duyệt");
+                }
+                if (activity.Status.Equals("Reject"))
+                {
+                    throw new Exception("Chiến dịch bị từ chối");
+                }
+                if (activity.Status.Equals("Quit"))
+                {
+                    throw new Exception("Chiến dịch đã bị chủ sở hữu hủy sớm nên bạn không thể thực hiện hành động này");
+                }
                 var check = await this.context.FollowJoinAvtivity.Where(x=>x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if(check != null)
                 {
@@ -199,6 +212,19 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if (activity.Status.Equals("Pending"))
+                {
+                    throw new Exception("Chiến dịch chưa được duyệt");
+                }
+                if (activity.Status.Equals("Reject"))
+                {
+                    throw new Exception("Chiến dịch bị từ chối");
+                }
+                if (activity.Status.Equals("Quit"))
+                {
+                    throw new Exception("Chiến dịch đã bị chủ sở hữu hủy sớm nên bạn không thể thực hiện hành động này");
+                }
                 var check = await this.context.FollowJoinAvtivity
                     .Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId))
                     .FirstOrDefaultAsync();
@@ -758,6 +784,19 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if (activity.Status.Equals("Pending"))
+                {
+                    throw new Exception("Chiến dịch chưa được duyệt");
+                }
+                if (activity.Status.Equals("Reject"))
+                {
+                    throw new Exception("Chiến dịch bị từ chối");
+                }
+                if (activity.Status.Equals("Quit"))
+                {
+                    throw new Exception("Chiến dịch đã bị chủ sở hữu hủy sớm nên bạn không thể thực hiện hành động này");
+                }
                 string tmpProcess = null;
                 var ac = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
                 if (ac != null)
@@ -865,6 +904,19 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                if (activity.Status.Equals("Pending"))
+                {
+                    throw new Exception("Chiến dịch chưa được duyệt");
+                }
+                if (activity.Status.Equals("Reject"))
+                {
+                    throw new Exception("Chiến dịch bị từ chối");
+                }
+                if (activity.Status.Equals("Quit"))
+                {
+                    throw new Exception("Chiến dịch đã bị chủ sở hữu hủy sớm nên bạn không thể thực hiện hành động này");
+                }
                 var check = await this.context.FollowJoinAvtivity.Where(x => x.UserId.Equals(userId) && x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (check != null)
                 {
