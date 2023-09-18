@@ -314,10 +314,15 @@ namespace SVCW.Models
                     .HasConstraintName("FK_report_ReportType");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Report)
+                    .WithMany(p => p.ReportUser)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_report_User");
+
+                entity.HasOne(d => d.UserReport)
+                    .WithMany(p => p.ReportUserReport)
+                    .HasForeignKey(d => d.UserReportId)
+                    .HasConstraintName("FK_Report_User1");
             });
 
             modelBuilder.Entity<User>(entity =>

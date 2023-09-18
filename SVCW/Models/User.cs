@@ -23,7 +23,8 @@ namespace SVCW.Models
             FollowJoinAvtivity = new HashSet<FollowJoinAvtivity>();
             Like = new HashSet<Like>();
             Notification = new HashSet<Notification>();
-            Report = new HashSet<Report>();
+            ReportUser = new HashSet<Report>();
+            ReportUserReport = new HashSet<Report>();
             UserSearch = new HashSet<UserSearch>();
             VoteUser = new HashSet<Vote>();
             VoteUserVote = new HashSet<Vote>();
@@ -101,7 +102,9 @@ namespace SVCW.Models
         [InverseProperty("User")]
         public virtual ICollection<Notification> Notification { get; set; }
         [InverseProperty("User")]
-        public virtual ICollection<Report> Report { get; set; }
+        public virtual ICollection<Report> ReportUser { get; set; }
+        [InverseProperty("UserReport")]
+        public virtual ICollection<Report> ReportUserReport { get; set; }
         [InverseProperty("User")]
         public virtual ICollection<UserSearch> UserSearch { get; set; }
         [InverseProperty("User")]

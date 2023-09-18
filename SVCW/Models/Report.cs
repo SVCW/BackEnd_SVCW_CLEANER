@@ -49,7 +49,10 @@ namespace SVCW.Models
         [InverseProperty("Report")]
         public virtual ReportType ReportType { get; set; }
         [ForeignKey("UserId")]
-        [InverseProperty("Report")]
+        [InverseProperty("ReportUser")]
         public virtual User User { get; set; }
+        [ForeignKey("UserReportId")]
+        [InverseProperty("ReportUserReport")]
+        public virtual User UserReport { get; set; }
     }
 }

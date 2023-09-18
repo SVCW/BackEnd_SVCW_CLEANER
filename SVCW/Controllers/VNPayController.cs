@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SVCW.Interfaces;
 using SVCW.Models;
 using SVCW.Services;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,6 +19,7 @@ namespace SVCW.Controllers
         //private readonly double _exchangeRate;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public string URL_VNPAY_REFUND;
         public string VNPAY_TMNCODE = "QEXW80Z4";
@@ -27,11 +30,12 @@ namespace SVCW.Controllers
         /// 
         /// </summary>
         /// <param name="configuration"></param>
-        public VNPayController(IConfiguration configuration, SVCWContext context)
+        public VNPayController(IConfiguration configuration, SVCWContext context , IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
             this.context = context;
             _httpClient = new HttpClient();
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <summary>
@@ -142,6 +146,7 @@ namespace SVCW.Controllers
                 String vnp_SecureHash = Request.Query["vnp_SecureHash"];
                 bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
                 var vnp_OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
+                var vnp_TransDate = vnpay.GetResponseData("vnp_PayDate");
                 //Guid companyId = Guid.Parse(vnp_OrderInfo);
                 status = "success";
 
@@ -149,6 +154,7 @@ namespace SVCW.Controllers
                 var check = await this.context.Donation.Where(x=>x.TaxVnpay.Equals(taxVNPay)).FirstOrDefaultAsync();
                 check.Status = status;
                 check.PayDate= DateTime.Now;
+                check.VnpTransDate = vnp_TransDate;
                 this.context.Donation.Update(check);
                 
                 await this.context.SaveChangesAsync();
@@ -173,162 +179,67 @@ namespace SVCW.Controllers
         }
 
 
-        //[HttpPost("Refund-money")]
-        //public async Task<IActionResult> Refund(string IDVNPay, string OrderId, DateTime payDate, float Amount, string info, string ip, string user)
-        //{
-        //    /*var vnpay_api_url = URL_VNPAY_REFUND;
-        //    var vnpHashSecret = VNPAY_HASH_SECRECT;
-        //    string vnp_TmnCode = VNPAY_TMNCODE;
-        //    var vnpay = new VnPayLibrary();
-        //    var createDate = DateTime.Now;
-        //    var strDatax = "";*/
+        [HttpPost("Refund-money")]
+        public async Task<IActionResult> Refund(string activityId)
+        {
+            var vnp_Api = "http://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
+            var vnp_HashSecret = _configuration["VnPay:HashSecret"]; //Secret KEy
+            var vnp_TmnCode = _configuration["VnPay:TmnCode"]; // Terminal Id
+            var vnpay = new VnPayLibrary();
 
-        //    var vnp_Api = _configuration["VnPay:vnp_Api"];
-        //    var vnp_HashSecret = _configuration["VnPay:HashSecret"]; //Secret KEy
-        //    var vnp_TmnCode = _configuration["VnPay:TmnCode"]; // Terminal Id
-        //    var vnpay = new VnPayLibrary();
+            var strDatax = "";
 
-        //    var strDatax = "";
+            try
+            {
+                //lấy data các bên đã ủng hộ
+                var donate = await this.context.Donation.Where(x => x.ActivityId.Equals(activityId) && x.Status.Equals("success")).ToListAsync();
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
+                foreach(var donation in donate)
+                {
+                    // xử lý hoàn tiền VNPay
+                    var vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    var vnp_RequestId = DateTime.Now.Ticks.ToString();
 
-        //    try
-        //    {
-        //        var vnp_RequestId = DateTime.Now.Ticks.ToString(); //Mã hệ thống merchant tự sinh ứng với mỗi yêu cầu hoàn tiền giao dịch. Mã này là duy nhất dùng để phân biệt các yêu cầu truy vấn giao dịch. Không được trùng lặp trong ngày.
-        //        var vnp_Version = VnPayLibrary.VERSION; //2.1.0
-        //        var vnp_Command = "refund";
-        //        var vnp_TransactionType = "02";
-        //        var vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
-        //        var vnp_Amount = Convert.ToInt64(Amount) * 100;
-        //        var vnp_TxnRef = OrderId; // Mã giao dịch thanh toán tham chiếu
-        //        var vnp_OrderInfo = "Hoan tien giao dich:" + OrderId;
-        //        var vnp_TransactionNo = ""; //Giả sử giá trị của vnp_TransactionNo không được ghi nhận tại hệ thống của merchant.
-        //        var vnp_TransactionDate = payDate;
-        //        var vnp_CreateDate = DateTime.Now.ToString("yyyyMMddHHmmss");
-        //        var vnp_CreateBy = user;
-        //        var vnp_IpAddr = ip;
-        //        var signData = vnp_RequestId + "|" + vnp_Version + "|" + vnp_Command + "|" + vnp_TmnCode + "|" + vnp_TransactionStatus + "|" + vnp_TxnRef + "|" + vnp_Amount + "|" + vnp_TransactionNo + "|" + vnp_TransactionDate + "|" + vnp_CreateBy + "|" + vnp_CreateDate + "|" + vnp_IpAddr + "|" + vnp_OrderInfo;
-        //        var vnp_SecureHash = Utils.HmacSHA512(vnp_HashSecret, signData);
+                    vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION.ToString());
+                    vnpay.AddRequestData("vnp_Command", "refund");
+                    vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode.ToString());
+                    vnpay.AddRequestData("vnp_TransactionType", "02");
+                    vnpay.AddRequestData("vnp_CreateBy", "Hệ thống Student Volunteer");
+                    vnpay.AddRequestData("vnp_TxnRef", donation.TaxVnpay);
+                    vnpay.AddRequestData("vnp_Amount", donation.Amount+"00");
+                    vnpay.AddRequestData("vnp_OrderInfo", "Hoàn tiền từ chiến dịch: "+ activity.Title);
+                    vnpay.AddRequestData("vnp_TransDate", donation.VnpTransDate);
+                    vnpay.AddRequestData("vnp_CreateDate", vnp_CreateDate);
+                    vnpay.AddRequestData("vnp_IpAddr", "1");
 
-        //        // Console.WriteLine(signData + "giá trị 1");
-        //        //Console.WriteLine(vnp_SecureHash + "kq nè");
-        //        var rfData = new
-        //        {
-        //            vnp_RequestId = vnp_RequestId,
-        //            vnp_Version = vnp_Version,
-        //            vnp_Command = vnp_Command,
-        //            vnp_TmnCode = vnp_TmnCode,
-        //            vnp_TransactionType = vnp_TransactionType,
-        //            vnp_TransactionStatus = vnp_TransactionStatus,
-        //            vnp_TxnRef = vnp_TxnRef,
-        //            vnp_Amount = vnp_Amount,
-        //            vnp_OrderInfo = vnp_OrderInfo,
-        //            vnp_TransactionNo = vnp_TransactionNo,
-        //            vnp_TransactionDate = vnp_TransactionDate,
-        //            vnp_CreateBy = vnp_CreateBy,
-        //            vnp_CreateDate = vnp_CreateDate,
-        //            vnp_IpAddr = vnp_IpAddr,
-        //            vnp_SecureHash = vnp_SecureHash
+                    var refundtUrl = vnpay.CreateRequestUrl(vnp_Api, vnp_HashSecret);
 
-
-        //        };
-
-        //        // string strDatax = "";
-
-        //        var refundtUrl = vnpay.CreateRequestUrl(vnp_Api, vnp_HashSecret);
-
-        //        // var jsonData = new Serialize(rfData);
-        //        var request = (HttpWebRequest)WebRequest.Create(refundtUrl);
-        //        request.AutomaticDecompression = DecompressionMethods.GZip;
-        //        using (var response = (HttpWebResponse)request.GetResponse())
-        //        using (var stream = response.GetResponseStream())
-        //            if (stream != null)
-        //                using (var reader = new StreamReader(stream))
-        //                {
-        //                    strDatax = reader.ReadToEnd();
-        //                }
-        //        return Redirect(vnp_RequestId + "|" + vnp_Version + "|" + vnp_Command + "|" + vnp_TmnCode + "|" + vnp_TransactionStatus + "|" + vnp_TxnRef + "|" + vnp_Amount + "|" + vnp_TransactionNo + "|" + vnp_TransactionDate + "|" + vnp_CreateBy + "|" + vnp_CreateDate + "|" + vnp_IpAddr + "|" + vnp_OrderInfo);
-        //        // display.InnerHtml = "<b>VNPAY RESPONSE:</b> " + strDatax;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Có lỗi sảy ra trong quá trình hoàn tiền:" + ex);
-        //    }
-        //    /*var httpWebRequest = (HttpWebRequest)WebRequest.Create(vnp_Api);
-        //    httpWebRequest.ContentType = "application/json";
-        //    httpWebRequest.Method = "POST";
-
-        //    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-        //    {
-        //        streamWriter.Write(jsonData);
-        //    }
-        //    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-        //    var strData = "";
-        //    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-        //    {
-        //        strData = streamReader.ReadToEnd();
-        //    }*/
-        //    //display.InnerHtml = "<b>VNPAY RESPONSE:</b> " + strData;
-        //}
-        //[HttpPost]
-        //[Route("refund")]
-        //public async Task<IActionResult> Refund([FromBody] RefundRequestModel requestModel)
-        //{
-        //    try
-        //    {
-        //        // Đọc thông tin cấu hình từ appsettings.json
-        //        string merchantId = "QEXW80Z4";
-        //        string apiKey = _configuration["VNPay:ApiKey"];
-        //        string secretKey = _configuration["VnPay:HashSecret"];
-        //        string refundUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
-
-        //        // Tạo dữ liệu yêu cầu hoàn tiền
-        //        Dictionary<string, string> requestData = new Dictionary<string, string>
-        //        {
-        //            { "vnp_TmnCode", merchantId },
-        //            { "vnp_ApiKey", apiKey },
-        //            { "vnp_TransactionNo", requestModel.TransactionNo }, // Số giao dịch cần hoàn tiền
-        //            { "vnp_Amount", requestModel.Amount.ToString() }, // Số tiền hoàn tiền (đơn vị: đồng)
-        //            { "vnp_Command", "refund" }, // Lệnh hoàn tiền
-        //        };
-
-        //        // Tạo chuỗi xác thực dữ liệu yêu cầu
-        //        string sortedData = string.Join("&", requestData.OrderBy(x => x.Key).Select(x => $"{x.Key}={x.Value}"));
-        //        string checksum = GetHmacSHA512(secretKey, sortedData);
-
-        //        requestData.Add("vnp_SecureHash", checksum);
-
-        //        // Gửi yêu cầu HTTP POST đến VNPay
-        //        var content = new FormUrlEncodedContent(requestData);
-        //        var response = await _httpClient.PostAsync(refundUrl, content);
-
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            string responseContent = await response.Content.ReadAsStringAsync();
-        //            return Ok(responseContent);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Lỗi khi gửi yêu cầu hoàn tiền.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "Lỗi trong quá trình xử lý yêu cầu hoàn tiền: " + ex.Message);
-        //    }
-        //}
-
-        //// Hàm tính chuỗi HMAC-SHA512
-        //private static string GetHmacSHA512(string key, string data)
-        //{
-        //    using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(key)))
-        //    {
-        //        byte[] hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
-        //        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-        //    }
-        //}
-        //public class RefundRequestModel
-        //{
-        //    public string TransactionNo { get; set; }
-        //    public decimal Amount { get; set; }
-        //}
+                    var request = (HttpWebRequest)WebRequest.Create(refundtUrl);
+                    request.AutomaticDecompression = DecompressionMethods.GZip;
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                    using (var stream = response.GetResponseStream())
+                        if (stream != null)
+                            using (var reader = new StreamReader(stream))
+                            {
+                                strDatax = reader.ReadToEnd();
+                            }
+                    if (strDatax.Contains("ResponseCode=00"))
+                    {
+                        donation.Status = "refund";
+                        this.context.Donation.Update(donation);
+                        await this.context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        throw new Exception("Lỗi trong quá trình hoàn tiền");
+                    }
+                }  
+                return Ok("Đã hoàn tiền thành công chiến dịch: " + activity.Title);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Có lỗi sảy ra trong quá trình hoàn tiền:" + ex);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SVCW.Controllers;
 using SVCW.Interfaces;
 using SVCW.Models;
 using SVCW.Services;
@@ -47,7 +48,8 @@ builder.Services.AddScoped<IEmail, EmailService>();
 
 
 
-
+builder.Services.AddHttpClient();
+builder.Services.AddTransient<VNPayController>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(Options =>
 {
     Options.TokenValidationParameters = new TokenValidationParameters
