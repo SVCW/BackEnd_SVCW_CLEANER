@@ -152,7 +152,7 @@ namespace SVCW.Services
         {
             try
             {
-                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(dto.ActivityId)).FirstOrDefaultAsync();
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (activity.Status.Equals("Pending"))
                 {
                     throw new Exception("Chiến dịch chưa được duyệt");
@@ -212,7 +212,7 @@ namespace SVCW.Services
         {
             try
             {
-                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(dto.ActivityId)).FirstOrDefaultAsync();
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (activity.Status.Equals("Pending"))
                 {
                     throw new Exception("Chiến dịch chưa được duyệt");
@@ -784,7 +784,7 @@ namespace SVCW.Services
         {
             try
             {
-                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(dto.ActivityId)).FirstOrDefaultAsync();
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (activity.Status.Equals("Pending"))
                 {
                     throw new Exception("Chiến dịch chưa được duyệt");
@@ -904,7 +904,7 @@ namespace SVCW.Services
         {
             try
             {
-                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(dto.ActivityId)).FirstOrDefaultAsync();
+                var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 if (activity.Status.Equals("Pending"))
                 {
                     throw new Exception("Chiến dịch chưa được duyệt");

@@ -18,6 +18,19 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this._context.Activity.Where(x => x.ActivityId.Equals(comment.ActivityId)).FirstOrDefaultAsync();
+                if (activity.Status.Equals("Pending"))
+                {
+                    throw new Exception("Chiến dịch chưa được duyệt");
+                }
+                if (activity.Status.Equals("Reject"))
+                {
+                    throw new Exception("Chiến dịch bị từ chối");
+                }
+                if (activity.Status.Equals("Quit"))
+                {
+                    throw new Exception("Chiến dịch đã bị chủ sở hữu hủy sớm nên bạn không thể thực hiện hành động này");
+                }
                 var cmt = new Comment();
                 cmt.Status = true;
                 cmt.UserId = comment.UserId;
@@ -126,6 +139,19 @@ namespace SVCW.Services
         {
             try
             {
+                var activity = await this._context.Activity.Where(x => x.ActivityId.Equals(reply.ActivityId)).FirstOrDefaultAsync();
+                if (activity.Status.Equals("Pending"))
+                {
+                    throw new Exception("Chiến dịch chưa được duyệt");
+                }
+                if (activity.Status.Equals("Reject"))
+                {
+                    throw new Exception("Chiến dịch bị từ chối");
+                }
+                if (activity.Status.Equals("Quit"))
+                {
+                    throw new Exception("Chiến dịch đã bị chủ sở hữu hủy sớm nên bạn không thể thực hiện hành động này");
+                }
                 var rep = new Comment();
 
                 rep.Status = true;
