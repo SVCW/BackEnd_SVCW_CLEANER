@@ -847,7 +847,6 @@ namespace SVCW.Services
                 {
                     check.IsJoin = "Join";
                     check.IsFollow = true;
-                    check.ProcessId = tmpProcess;
                     this.context.FollowJoinAvtivity.Update(check);
                     await this.context.SaveChangesAsync();
                     var c2 = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
