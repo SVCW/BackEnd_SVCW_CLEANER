@@ -12,6 +12,7 @@ using SVCW.Models;
 using Microsoft.IdentityModel.Tokens;
 using SVCW.DTOs.JWT;
 using System.Security.Principal;
+using SVCW.DTOs.Email;
 
 namespace SVCW.Services
 {
@@ -20,10 +21,13 @@ namespace SVCW.Services
         private readonly SVCWContext _context;
 
         private readonly IConfiguration _config;
-        public UserService(SVCWContext context, IConfiguration config)
+
+        private readonly IEmail _service;
+        public UserService(SVCWContext context, IConfiguration config, IEmail service)
         {
             _context = context;
             _config = config;
+            this._service = service;
         }
         public string GenerateJSONWebToken(User user)
         {
@@ -581,12 +585,17 @@ namespace SVCW.Services
                         await this._context.BanUser.AddAsync(ban);
                         this._context.SaveChangesAsync();
 
+                        var email = new SendEmailReqDTO();
+                        email.sendTo = check.Email;
+                        email.subject = "Tài khoản của bạn đã bị vô hiệu hóa trên hệ thống SVCW";
+                        email.body = "<!DOCTYPE html>\r\n<html lang=\"vi\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title>Tài khoản của bạn đã bị vô hiệu hóa </title>\r\n    <style>\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n        }\r\n\r\n        .container {\r\n            max-width: 600px;\r\n            margin: 0 auto;\r\n            padding: 20px;\r\n            border: 1px solid #ccc;\r\n            border-radius: 5px;\r\n        }\r\n\r\n        .header {\r\n            background-color: #FFC107;\r\n            color: #fff;\r\n            text-align: center;\r\n            padding: 10px;\r\n        }\r\n\r\n        .content {\r\n            padding: 20px;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"container\">\r\n    <div class=\"header\">\r\n        <h1>Tài khoản bị vô hiệu hóa</h1>\r\n    </div>\r\n    <div class=\"content\">\r\n        <p>Xin chào " + check.Email + ",</p>\r\n        <p>Chúng tôi hy vọng bạn đang có một ngày tốt lành.</p>\r\n        <p>Chúng tôi xin thông báo rằng tài khoản " + check.Email + " đã bị vô hiệu hóa với lí do "+ ban.ReasonBan+". Do đó, chúng tôi sẽ khóa tài khoản của bạn.</p>\r\n        <p></p>\r\n        <p>Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua địa chỉ email svcw.company@gmail.com</p>\r\n        <p>Xin cảm ơn bạn và chúc bạn có một ngày tốt lành.</p>\r\n        <p>Trân trọng,<br>Hệ thống SVCW</p>\r\n    </div>\r\n</div>\r\n</body>\r\n</html>\r\n";
+                        _service.sendEmail(email);
+
                         res.user = check;
                         res.resultCode = SVCWCode.SUCCESS;
                         res.resultMsg = "Success";
                         res.isBan = true;
                         return res;
-
                     }
                     else
                     {
@@ -626,6 +635,13 @@ namespace SVCW.Services
                         this._context.BanUser.Update(item);
                         await this._context.SaveChangesAsync();
                     }
+
+                    var email = new SendEmailReqDTO();
+                    email.sendTo = check.Email;
+                    email.subject = "Tài khoản của bạn đã được kích hoạt trên hệ thống SVCW";
+                    email.body = "<!DOCTYPE html>\r\n<html lang=\"vi\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title>Tài khoản của bạn đã được kích hoạt </title>\r\n    <style>\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n        }\r\n\r\n        .container {\r\n            max-width: 600px;\r\n            margin: 0 auto;\r\n            padding: 20px;\r\n            border: 1px solid #ccc;\r\n            border-radius: 5px;\r\n        }\r\n\r\n        .header {\r\n            background-color: #FFC107;\r\n            color: #fff;\r\n            text-align: center;\r\n            padding: 10px;\r\n        }\r\n\r\n        .content {\r\n            padding: 20px;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"container\">\r\n    <div class=\"header\">\r\n        <h1>Tài khoản đã được kích hoạt</h1>\r\n    </div>\r\n    <div class=\"content\">\r\n        <p>Xin chào " + check.Email + ",</p>\r\n        <p>Chúng tôi hy vọng bạn đang có một ngày tốt lành.</p>\r\n        <p>Chúng tôi xin thông báo rằng tài khoản " + check.Email + " đã được kích hoạt </p>\r\n        <p></p>\r\n        <p>Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua địa chỉ email svcw.company@gmail.com</p>\r\n        <p>Xin cảm ơn bạn và chúc bạn có một ngày tốt lành.</p>\r\n        <p>Trân trọng,<br>Hệ thống SVCW</p>\r\n    </div>\r\n</div>\r\n</body>\r\n</html>\r\n";
+                    _service.sendEmail(email);
+
                     check.Status = "Active";
                     this._context.User.Update(check);
                     return await this._context.SaveChangesAsync() > 0;
