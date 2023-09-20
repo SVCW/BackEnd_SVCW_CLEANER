@@ -235,12 +235,33 @@ namespace SVCW.Services
                     await this.context.SaveChangesAsync();
                     return true;
                 }
+                var process = await this.context.Process.Where(x => x.ActivityId.Equals(activityId)).ToListAsync();
+                string tmpProcess = null;
+                if (process != null && process.Count >0)
+                {
+                    foreach(var x in process)
+                    {
+                        if(x.StartDate  <= DateTime.Now && x.EndDate>= DateTime.Now)
+                        {
+                            tmpProcess = x.ProcessId;
+                            break;
+                        }
+                    }
+                }
                 var follow = new FollowJoinAvtivity();
                 follow.UserId = userId;
                 follow.ActivityId = activityId;
                 follow.IsJoin = "unJoin";
                 follow.IsFollow= true;
                 follow.Datetime = DateTime.Now;
+                if(tmpProcess != null)
+                {
+                    follow.ProcessId = tmpProcess;
+                }
+                else
+                {
+                    throw new Exception("có lỗi xảy ra trong quá trình theo dõi chiến dịch do chiến dịch không có hoạt động nào");
+                }
 
                 await this.context.FollowJoinAvtivity.AddAsync(follow);
                 await this.context.SaveChangesAsync();
@@ -1019,6 +1040,16 @@ namespace SVCW.Services
                             {
                                 x.Status = false;
                                 this.context.RejectActivity.Update(x);
+                                await this.context.SaveChangesAsync();
+                            }
+                        }
+                        var quit = await this.context.QuitActivity.Where(x => x.ActivityId.Equals(check.ActivityId)).ToListAsync();
+                        if (quit != null)
+                        {
+                            foreach(var x in quit)
+                            {
+                                x.Status = false;
+                                this.context.QuitActivity.Update(x);
                                 await this.context.SaveChangesAsync();
                             }
                         }
