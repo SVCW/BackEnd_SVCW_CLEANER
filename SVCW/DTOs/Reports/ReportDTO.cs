@@ -16,7 +16,7 @@ namespace SVCW.DTOs.Reports
 		public bool Status { get; set; }
 		public string UserId { get; set; }
         public string? UserReportId { get; set; }
-        public string ActivityId { get; set; }
+        public string? ActivityId { get; set; }
     }
 }
 
