@@ -1,5 +1,6 @@
 ﻿using SVCW.DTOs.Admin_Moderator.Moderator;
 using SVCW.Models;
+using System.Threading.Tasks;
 
 namespace SVCW.Interfaces
 {
@@ -11,5 +12,6 @@ namespace SVCW.Interfaces
         Task<User> create(CreateModerator dto);
         Task<User> update(updateModerator dto);
         Task<User> delete(string id);
+        Task<List<User>> getAllInActive();
     }
 }
