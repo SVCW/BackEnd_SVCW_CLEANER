@@ -1,3 +1,4 @@
+using Firebase.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IEmail, EmailService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<VNPayController>();
+//builder.Services.AddSingleton<FirebaseStorage>(sp => new FirebaseStorage("gs://svcw-4866f.appspot.com"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(Options =>
 {
     Options.TokenValidationParameters = new TokenValidationParameters

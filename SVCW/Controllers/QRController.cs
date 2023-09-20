@@ -1,4 +1,5 @@
-﻿using IronBarCode;
+﻿using Firebase.Storage;
+using IronBarCode;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SVCW.DTOs;
@@ -20,7 +21,7 @@ namespace SVCW.Controllers
 
         [Route("QR")]
         [HttpGet]
-        public async Task<IActionResult> QR(string activityId)
+        public async Task<IActionResult> QR(string activityId/*, [FromServices] FirebaseStorage storage*/)
         {
             try
             {
@@ -36,6 +37,22 @@ namespace SVCW.Controllers
 
                     var tempFileName = Path.GetTempFileName() + ".png";
                     barcode.SaveAsPng(tempFileName);
+
+                    //var storageFileName = "qr_codes/" + activityId + ".png";
+
+                    //// Tải tệp lên Firebase Storage
+                    //using (var stream = new FileStream(tempFileName, FileMode.Open))
+                    //{
+                    //    await storage.Child(storageFileName).PutAsync(stream);
+                    //}
+
+                    //// Lấy URL của tệp vừa tải lên Firebase Storage
+                    //var imageUrl = await storage.Child(storageFileName).GetDownloadUrlAsync();
+
+                    //// Xóa tệp tạm trên máy chủ
+                    //System.IO.File.Delete(tempFileName);
+
+                    //return Ok(new { imageUrl });
 
                     byte[] fileContents = System.IO.File.ReadAllBytes(tempFileName);
                     var response = File(fileContents, "image/png", "QR.png");
