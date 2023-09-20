@@ -34,6 +34,22 @@ namespace SVCW.Controllers
             }
         }
 
+        [Route("get-inActive")]
+        [HttpGet]
+        public async Task<IActionResult> getInactive()
+        {
+            ResponseAPI<List<User>> responseAPI = new ResponseAPI<List<User>>();
+            try
+            {
+                responseAPI.Data = await this.service.getAllInActive();
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         [Route("get-byId")]
         [HttpGet]
         public async Task<IActionResult> getbyId(string id)
