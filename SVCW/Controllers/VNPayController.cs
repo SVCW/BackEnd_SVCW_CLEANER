@@ -193,6 +193,10 @@ namespace SVCW.Controllers
             {
                 //lấy data các bên đã ủng hộ
                 var donate = await this.context.Donation.Where(x => x.ActivityId.Equals(activityId) && x.Status.Equals("success")).ToListAsync();
+                if(donate == null ||   donate.Count == 0)
+                {
+                    return Ok("Chiến dịch không có khoản ủng hộ cân hoàn tiền");
+                }
                 var activity = await this.context.Activity.Where(x => x.ActivityId.Equals(activityId)).FirstOrDefaultAsync();
                 foreach(var donation in donate)
                 {
