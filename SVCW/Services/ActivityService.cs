@@ -241,11 +241,8 @@ namespace SVCW.Services
                 {
                     foreach(var x in process)
                     {
-                        if(x.StartDate  <= DateTime.Now && x.EndDate>= DateTime.Now)
-                        {
                             tmpProcess = x.ProcessId;
                             break;
-                        }
                     }
                 }
                 var follow = new FollowJoinAvtivity();

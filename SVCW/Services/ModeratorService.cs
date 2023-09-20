@@ -101,6 +101,23 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<User>> getAllInActive()
+        {
+            try
+            {
+                var check = await this._context.User.Where(x => x.UserId.Contains("MDR") &&  x.Status.Equals("InActive")).ToListAsync();
+                if (check != null)
+                {
+                    return check;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<User> getModerator(string id)
         {
             try
@@ -125,6 +142,10 @@ namespace SVCW.Services
                 var check = await this._context.User.Where(x=>x.Username.Equals(dto.Username) && x.Password.Equals(dto.Password)).FirstOrDefaultAsync();
                 if(check != null)
                 {
+                    if (!check.Status.Equals("Active"))
+                    {
+                        throw new Exception("tài khoản của bạn đã không còn hoạt động trong hệ thống");
+                    }
                     return check;
                 }
                 else
