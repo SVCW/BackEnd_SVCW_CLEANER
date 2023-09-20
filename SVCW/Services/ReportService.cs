@@ -43,6 +43,7 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Fanpage)
                     .Include(x => x.ReportType)
                     .Include(x => x.User)
+                    .Include(x=>x.UserReport)
                     .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
                     .ToListAsync();
                 return check;
@@ -68,6 +69,7 @@ namespace SVCW.Services
                                         .ThenInclude(x => x.Fanpage)
                                     .Include(x => x.ReportType)
                                     .Include(x => x.User)
+                                    .Include(x => x.UserReport)
                                     .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
                                     .ToListAsync();
                         return All;
@@ -88,6 +90,7 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Fanpage)
                     .Include(x => x.ReportType)
                     .Include(x => x.User)
+                    .Include(x => x.UserReport)
                     .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
                     .Where(x=>x.Datetime < DateTime.Now && x.Datetime > DateTime.Now.AddDays(-1))
                     .ToListAsync();
@@ -111,6 +114,7 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Fanpage)
                     .Include(x => x.ReportType)
                     .Include(x => x.User)
+                    .Include(x => x.UserReport)
                     .OrderByDescending(x => x.Datetime).ThenBy(x => x.ReportTypeId)
                     .ToListAsync();
                 return check;
