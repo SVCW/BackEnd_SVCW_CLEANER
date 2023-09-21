@@ -66,7 +66,7 @@ namespace SVCW.Services
                             config.activityJoin = (int)check.NumberActivityJoin;
                             config.target = adConfig.NumberActivityJoinSuccess1;
                             config.message = "bạn đã tham gia " +check.NumberActivityJoin +" chiến dịch " +
-                                "\n và chiến dịch có quyên góp tối đa bạn có thể tạo là: " + adConfig.maxTargetDonate1;
+                                "\n và chiến dịch có quyên góp tối đa bạn có thể tạo là: " + (decimal)adConfig.maxTargetDonate1;
                         }
                         if (check.NumberActivityJoin >= adConfig.NumberActivityJoinSuccess2)
                         {
@@ -76,7 +76,7 @@ namespace SVCW.Services
                             config.activityJoin = (int)check.NumberActivityJoin;
                             config.target = adConfig.NumberActivityJoinSuccess2;
                             config.message = "bạn đã tham gia " + check.NumberActivityJoin + " chiến dịch " +
-                                "\n và chiến dịch có quyên góp tối đa bạn có thể tạo là: " + adConfig.maxTargetDonate2;
+                                "\n và chiến dịch có quyên góp tối đa bạn có thể tạo là: " + (decimal)adConfig.maxTargetDonate2;
                         }
                         if (check.NumberActivityJoin >= adConfig.NumberActivityJoinSuccess3)
                         {
@@ -86,7 +86,7 @@ namespace SVCW.Services
                             config.activityJoin = (int)check.NumberActivityJoin;
                             config.target = adConfig.NumberActivityJoinSuccess3;
                             config.message = "bạn đã tham gia " + check.NumberActivityJoin + " chiến dịch " +
-                                "\n và chiến dịch có quyên góp tối đa bạn có thể tạo là: " + adConfig.maxTargetDonate3;
+                                "\n và chiến dịch có quyên góp tối đa bạn có thể tạo là: " + (decimal)adConfig.maxTargetDonate3;
                         }
                     }
                 }
@@ -98,7 +98,7 @@ namespace SVCW.Services
                     config.maxDonate = adConfig.maxTargetDonate3;
                     config.activityJoin = (int)check.NumberActivityJoin;
                     config.target = adConfig.NumberActivityJoinSuccess3;
-                    config.message = "chiến dịch có quyên góp tối đa bạn có thể tạo là: " + adConfig.maxTargetDonate3;
+                    config.message = "chiến dịch có quyên góp tối đa bạn có thể tạo là: " + (decimal)adConfig.maxTargetDonate3;
                 }
                 
                 return config;
