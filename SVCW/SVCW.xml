@@ -304,7 +304,7 @@
             <param name="req"></param>
             <returns></returns>
         </member>
-        <member name="M:SVCW.Controllers.VNPayController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,SVCW.Models.SVCWContext,System.Net.Http.IHttpClientFactory)">
+        <member name="M:SVCW.Controllers.VNPayController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,SVCW.Models.SVCWContext,System.Net.Http.IHttpClientFactory,SVCW.Interfaces.IEmail)">
             <summary>
             
             </summary>

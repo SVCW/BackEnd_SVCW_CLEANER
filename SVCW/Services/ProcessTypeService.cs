@@ -83,7 +83,11 @@ namespace SVCW.Services
             }
             catch (Exception ex)
             {
-                return false;
+                if (ex.InnerException.Message.Contains("duplicate"))
+                {
+                    throw new Exception("Loại hoạt động đã có trong hệ thống");
+                }
+                throw new Exception(ex.Message);
             }
         }
 

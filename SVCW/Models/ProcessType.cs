@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SVCW.Models
 {
+    [Index("ProcessTypeName", Name = "IX_ProcessType", IsUnique = true)]
     public partial class ProcessType
     {
         public ProcessType()
@@ -21,6 +22,7 @@ namespace SVCW.Models
         public string ProcessTypeId { get; set; }
         [Required]
         [Column("processTypeName")]
+        [StringLength(256)]
         public string ProcessTypeName { get; set; }
         [Required]
         [Column("description")]

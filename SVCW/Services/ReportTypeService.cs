@@ -82,14 +82,25 @@ namespace SVCW.Services
 
         public async Task<bool> InsertReportType(ReportTypeDTO reportType)
         {
-            ReportType _reportType = new ReportType();
-            
-            _reportType.ReportTypeId = "RId" + Guid.NewGuid().ToString().Substring(0, 7);
-            _reportType.ReportTypeName = reportType.ReportTypeName;
-            _reportType.Status = reportType.Status;
-            await this.context.ReportType.AddAsync(_reportType);
-            this.context.SaveChanges();
-            return true;
+            try
+            {
+                ReportType _reportType = new ReportType();
+
+                _reportType.ReportTypeId = "RId" + Guid.NewGuid().ToString().Substring(0, 7);
+                _reportType.ReportTypeName = reportType.ReportTypeName;
+                _reportType.Status = reportType.Status;
+                await this.context.ReportType.AddAsync(_reportType);
+                this.context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                if (ex.InnerException.Message.Contains("duplicate"))
+                {
+                    throw new Exception("Loại báo cáo đã có trong hệ thống");
+                }
+                throw new Exception(ex.Message);
+            }   
         }
 
         public async Task<ReportType> SearchByNameReportType(string? reportTypeName)
