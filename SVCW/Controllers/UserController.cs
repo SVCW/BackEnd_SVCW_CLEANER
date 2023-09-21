@@ -70,6 +70,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("get-list-user")]
+        [HttpPost]
+        public async Task<IActionResult> getListUser(List<string> userId)
+        {
+            ResponseAPI<List<User>> responseAPI = new ResponseAPI<List<User>>();
+            try
+            {
+                responseAPI.Data = await this.service.getListUserByListUserId(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
 
         [Route("get-user-by-id")]
         [HttpGet]
