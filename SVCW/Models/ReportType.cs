@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SVCW.Models
 {
+    [Index("ReportTypeName", Name = "IX_ReportType", IsUnique = true)]
     public partial class ReportType
     {
         public ReportType()
@@ -21,6 +22,7 @@ namespace SVCW.Models
         public string ReportTypeId { get; set; }
         [Required]
         [Column("reportTypeName")]
+        [StringLength(256)]
         public string ReportTypeName { get; set; }
         [Column("status")]
         public bool Status { get; set; }
