@@ -25,7 +25,9 @@ namespace SVCW.Services
                     for (int i = 0; i < reportTypes.Count; i++)
                     {
                         reportTypes[i].Status = false;
+                        this.context.ReportType.Update(reportTypes[i]);
                     }
+                    
                     await this.context.SaveChangesAsync();
                     return true;
                 }
