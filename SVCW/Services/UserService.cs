@@ -721,5 +721,29 @@ namespace SVCW.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<User>> getListUserByListUserId(List<string> userId)
+        {
+            try
+            {
+                var result = new List<User>();
+                if (userId.Count > 0)
+                {
+                    foreach (var u in userId)
+                    {
+                        var check = await this._context.User.Where(x => x.UserId.Equals(u.ToString())).FirstOrDefaultAsync();
+                        result.Add(check);
+                    }
+                    return result;
+                }
+                else
+                {
+                    throw new Exception("null");
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

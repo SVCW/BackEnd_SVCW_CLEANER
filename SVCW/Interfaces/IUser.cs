@@ -11,6 +11,7 @@ namespace SVCW.Interfaces
         //geneneera token
         string GenerateJSONWebToken(User user);
         Task<List<User>> getAllUser();
+        Task<List<User>> getListUserByListUserId(List<string> userId);
         Task<CommonUserRes> getUserById(GetUserByIdReq req);
         Task<CommonUserRes> createUser(CreateUserReq req);
         Task<CommonUserRes> validateLoginUser(LoginReq req);
