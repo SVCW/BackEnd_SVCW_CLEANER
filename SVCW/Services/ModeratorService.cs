@@ -22,17 +22,17 @@ namespace SVCW.Services
                     check = await this._context.User.Where(x => x.Username.Equals(dto.Username)).FirstOrDefaultAsync();
                     if (check != null)
                     {
-                        throw new Exception("trùng username");
+                        throw new Exception("Trùng username");
                     }
                     check = await this._context.User.Where(x => x.Phone.Equals(dto.Phone)).FirstOrDefaultAsync();
                     if (check!=null)
                     {
-                        throw new Exception("trùng số điện thoại");
+                        throw new Exception("Trùng số điện thoại");
                     }
                 }
                 else
                 {
-                    throw new Exception("trùng email");
+                    throw new Exception("Trùng email");
                 }
                 var user = new User();
                 user.UserId = "MDR" + Guid.NewGuid().ToString().Substring(0, 7);
@@ -144,7 +144,7 @@ namespace SVCW.Services
                 {
                     if (!check.Status.Equals("Active"))
                     {
-                        throw new Exception("tài khoản của bạn đã không còn hoạt động trong hệ thống");
+                        throw new Exception("Tài khoản của bạn đã không còn hoạt động trong hệ thống");
                     }
                     return check;
                 }

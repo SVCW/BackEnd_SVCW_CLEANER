@@ -117,6 +117,7 @@ namespace SVCW.Services
                 user.FullName = req.FullName ?? "none";
                 user.Username = req.Email.Split("@")[0];
                 user.Password = req.Password ?? "PWD" + Guid.NewGuid().ToString().Substring(0, 7);
+                var tmpPass = user.Password;
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 user.Phone = req.Phone;
                 user.Gender = req.Gender ?? true;
@@ -143,6 +144,14 @@ namespace SVCW.Services
 
                 await this._context.User.AddAsync(user);
                 await this._context.SaveChangesAsync();
+
+                //build data sendEmail account
+
+                var mail = new SendEmailReqDTO();
+                mail.sendTo = user.Email;
+                mail.subject = "Tài khoản của bạn đã được đăng ký trên hệ thống SVCW";
+                mail.body = "<!DOCTYPE html>\r\n<html lang=\"vi\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title>Tài khoản của bạn đã được đăng ký lần đầu </title>\r\n    <style>\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n        }\r\n\r\n        .container {\r\n            max-width: 600px;\r\n            margin: 0 auto;\r\n            padding: 20px;\r\n            border: 1px solid #ccc;\r\n            border-radius: 5px;\r\n        }\r\n\r\n        .header {\r\n            background-color: #FFC107;\r\n            color: #fff;\r\n            text-align: center;\r\n            padding: 10px;\r\n        }\r\n\r\n        .content {\r\n            padding: 20px;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"container\">\r\n    <div class=\"header\">\r\n        <h1>Tài khoản của bạn đã được đăng ký</h1>\r\n    </div>\r\n    <div class=\"content\">\r\n        <p>Xin chào " + user.Email + ",</p>\r\n        <p>Chúng tôi hy vọng bạn đang có một ngày tốt lành.</p>\r\n        <p>Chúng tôi xin thông báo rằng tài khoản " + user.Email + " đã được tạo trên hệ thống. Do đó, chúng tôi xin gửi tới bạn thông tin tài khoản của bạn để bạn có thể đăng nhập vào hệ thống sau này.</p>\r\n        <p>Thông tin tài khoản của bạn:</p>\r\n<p>Username: "+user.Username+ "</p>\r\n<p>Password: "+tmpPass+"</p>\r\n        <p>Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua địa chỉ email svcw.company@gmail.com</p>\r\n        <p>Xin cảm ơn bạn và chúc bạn có một ngày tốt lành.</p>\r\n        <p>Trân trọng,<br>Hệ thống SVCW</p>\r\n    </div>\r\n</div>\r\n</body>\r\n</html>\r\n";
+                _service.sendEmail(mail);
 
                 res.resultCode = SVCWCode.SUCCESS;
                 res.resultMsg = "Tạo tài khoản thành công!";
@@ -545,6 +554,16 @@ namespace SVCW.Services
                     if (hihi == 0)
                     {
                         result.total = "1";
+                        var arUs = await this._context.AchivementUser.Where(x => x.UserId.Equals(check.UserId) && x.AchivementId.Equals("AId5e65637")).FirstOrDefaultAsync();
+                        if (arUs == null)
+                        {
+                            var archivement = new AchivementUser();
+                            archivement.AchivementId = "AId5e65637";
+                            archivement.UserId = check.UserId;
+                            archivement.EndDate = DateTime.MaxValue;
+                            await this._context.AchivementUser.AddAsync(archivement);
+                            await this._context.SaveChangesAsync();
+                        }
                     }
                     else
                     {

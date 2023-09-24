@@ -242,6 +242,41 @@ namespace SVCW.Controllers
                         email.subject = "Hoàn tiền cho chiến dịch " + activity.Title;
                         email.body = "<!DOCTYPE html>\r\n<html lang=\"vi\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title>Hoàn tiền cho chiến dịch "+activity.Title+"</title>\r\n    <style>\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n        }\r\n\r\n        .container {\r\n            max-width: 600px;\r\n            margin: 0 auto;\r\n            padding: 20px;\r\n            border: 1px solid #ccc;\r\n            border-radius: 5px;\r\n        }\r\n\r\n        .header {\r\n            background-color: #FFC107;\r\n            color: #fff;\r\n            text-align: center;\r\n            padding: 10px;\r\n        }\r\n\r\n        .content {\r\n            padding: 20px;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"container\">\r\n    <div class=\"header\">\r\n        <h1>Yêu Cầu Hoàn Tiền Cho Chiến Dịch</h1>\r\n    </div>\r\n    <div class=\"content\">\r\n        <p>Xin chào "+donation.Name+",</p>\r\n        <p>Chúng tôi hy vọng bạn đang có một ngày tốt lành.</p>\r\n        <p>Chúng tôi xin thông báo rằng chiến dịch "+activity.Title+ " đã gặp khó khăn và không thể tiếp tục hoạt động. Do đó, chúng tôi sẽ hoàn tiền cho chiến dịch này.</p>\r\n        <p>Xin vui lòng chờ trong thời gian xử lý. Đội ngũ hỗ trợ của chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để thực hiện quy trình hoàn tiền thành công.</p>\r\n        <p>Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua địa chỉ email svcw.company@gmail.com</p>\r\n        <p>Xin cảm ơn bạn và chúc bạn có một ngày tốt lành.</p>\r\n        <p>Trân trọng,<br>Hệ thống SVCW</p>\r\n    </div>\r\n</div>\r\n</body>\r\n</html>\r\n";
                         _emailService.sendEmail(email);
+
+                        if(activity.RealDonation>= donation.Amount)
+                        {
+                            activity.RealDonation -= donation.Amount;
+                            this.context.Activity.Update(activity);
+                            await this.context.SaveChangesAsync();
+
+                            bool flag = false;
+                            if (donate.Last().DonationId.Equals(donation.DonationId))
+                            {
+                                activity.RealDonation = 0;
+                                this.context.Activity.Update(activity);
+                                await this.context.SaveChangesAsync();
+                                flag = true;
+                            }
+                            var process = await this.context.Process.Where(x => x.ActivityId.Equals(activity.ActivityId)&&x.ProcessTypeId.Equals("pt001")).ToListAsync();
+                            foreach(var x in process)
+                            {
+                                if (x.RealDonation >= donation.Amount)
+                                {
+                                    x.RealDonation -= donation.Amount;
+                                    this.context.Process.Update(x);
+                                    await this.context.SaveChangesAsync();
+                                }
+                                if (flag)
+                                {
+                                    x.RealDonation = 0;
+                                    this.context.Process.Update(x);
+                                    await this.context.SaveChangesAsync();
+                                }
+
+                            }
+                        }
+                        
+                        
                     }
                     else
                     {
