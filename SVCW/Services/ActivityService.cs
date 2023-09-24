@@ -43,7 +43,7 @@ namespace SVCW.Services
                     }
                     if (dto.TargetDonation > donate)
                     {
-                        throw new Exception("số tiền quyên góp tối đa bạn có thể kêu gọi là: " + donate);
+                        throw new Exception("Số tiền quyên góp tối đa bạn có thể kêu gọi là: " + donate);
                     }
                 }
                 else if(user.Fanpage != null)
@@ -62,7 +62,7 @@ namespace SVCW.Services
                 activity.Location= dto.Location ?? "online";
                 activity.NumberJoin = 0;
                 activity.NumberLike= 0;
-                activity.ShareLink = "chưa làm dc";
+                activity.ShareLink = "https://svcw-studentsvolunteer.vercel.app/detailactivity/"+activity.ActivityId;
                 activity.TargetDonation = 0;
                 activity.UserId= dto.UserId;
                 activity.Status = "Pending";
@@ -827,13 +827,13 @@ namespace SVCW.Services
                             {
                                 if(x.RealParticipant >= x.TargetParticipant)
                                 {
-                                    throw new Exception("đã đủ người tham gia hoạt động, bạn hãy chờ hoạt động lần sau (nếu có)");
+                                    throw new Exception("Đã đủ người tham gia hoạt động, bạn hãy chờ hoạt động lần sau (nếu có)");
                                 }
                                 tmpProcess = x.ProcessId;
                             }
                             else
                             {
-                                throw new Exception("chưa tới hạn tham gia hoặc đã quá hạn");
+                                throw new Exception("Chưa tới hạn tham gia hoặc đã quá hạn");
                             }
                         }
                     }
@@ -1293,7 +1293,7 @@ namespace SVCW.Services
                 }
                 else
                 {
-                    throw new Exception("chiến dịch không có hoạt động cần điểm danh");
+                    throw new Exception("Chiến dịch không có hoạt động cần điểm danh");
                 }
             }
             catch (Exception ex)
