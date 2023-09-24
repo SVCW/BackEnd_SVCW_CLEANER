@@ -689,7 +689,7 @@ namespace SVCW.Services
                     foreach(var item in join)
                     {
                         var activity = await this._context.Activity
-                            .Where(x=>x.Status.Equals("Active"))
+                            .Where(x=>x.Status.Equals("Active") && x.ActivityId.Equals(item.ActivityId))
                             .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                                 .ThenInclude(x => x.Media)
                             .Include(x => x.ActivityResult)
