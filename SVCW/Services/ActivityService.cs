@@ -291,6 +291,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if(check != null)
@@ -326,6 +328,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
@@ -362,6 +366,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
@@ -398,6 +404,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
@@ -434,6 +442,8 @@ namespace SVCW.Services
                         .ThenInclude(x=>x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x=>x.CreateAt)
                     .ToListAsync();
                 if(check != null)
@@ -471,6 +481,8 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
@@ -513,6 +525,8 @@ namespace SVCW.Services
                         .ThenInclude(x => x.User)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x=>x.QuitActivity)
+                    .Include(x=>x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .Take(pageSize);
 
@@ -540,6 +554,8 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .Take(PageLoad*pageSize - pageSize);
                     foreach (var x in check)
@@ -579,6 +595,8 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .FirstOrDefaultAsync();
 
                 if (check != null)
@@ -615,7 +633,8 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
-                    
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 if (check != null)
@@ -653,6 +672,8 @@ namespace SVCW.Services
                     .Include(x => x.FollowJoinAvtivity)
                     .Include(x => x.Media)
                     .Include(x => x.BankAccount)
+                    .Include(x => x.QuitActivity)
+                    .Include(x => x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
                     .ToListAsync();
                 result.activities = check;
@@ -668,6 +689,7 @@ namespace SVCW.Services
                     .Include(x => x.FollowFanpage)
                     .Include(x => x.Activity.OrderByDescending(x => x.CreateAt))
                         .ThenInclude(x => x.User)
+
                     //.Include(x => x.FanpageNavigation)
                     .ToListAsync();
 
