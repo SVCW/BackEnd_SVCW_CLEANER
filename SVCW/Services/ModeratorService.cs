@@ -41,6 +41,7 @@ namespace SVCW.Services
                 user.FullName = dto.FullName ?? "none";
                 user.Username = dto.Username;
                 user.Password = dto.Password ?? "PWD" + Guid.NewGuid().ToString().Substring(0, 7);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 user.Phone = dto.Phone;
                 user.Gender = dto.Gender ?? true;
                 user.DateOfBirth = dto.DateOfBirth ?? DateTime.MinValue;
@@ -139,14 +140,25 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this._context.User.Where(x=>x.Username.Equals(dto.Username) && x.Password.Equals(dto.Password)).FirstOrDefaultAsync();
+                var check = await this._context.User.Where(x=>x.Username.Equals(dto.Username)).FirstOrDefaultAsync();
                 if(check != null)
                 {
                     if (!check.Status.Equals("Active"))
                     {
                         throw new Exception("Tài khoản của bạn đã không còn hoạt động trong hệ thống");
                     }
-                    return check;
+                    if (check.Password.Equals(dto.Password))
+                    {
+                        return check;
+                    }
+                    if (BCrypt.Net.BCrypt.Verify(dto.Password, check.Password))
+                    {
+                        return check;
+                    }
+                    else
+                    {
+                        throw new Exception("Sai mật khẩu!");
+                    }
                 }
                 else
                 {

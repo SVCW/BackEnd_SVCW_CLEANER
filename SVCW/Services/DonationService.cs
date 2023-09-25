@@ -59,7 +59,7 @@ namespace SVCW.Services
                 donate.Phone=dto.Phone;
                 donate.Name= dto.Name;
                 donate.IsAnonymous= dto.IsAnonymous;
-                donate.Status = "đã tạo, chưa thanh toán";
+                donate.Status = "Ủng hộ không thành công";
                 donate.ActivityId = dto.ActivityId;
                 donate.TaxVnpay = null;
                 var check = await this.context.User.Where(x=>x.Email.Equals(dto.Email)).FirstOrDefaultAsync();
