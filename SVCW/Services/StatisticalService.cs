@@ -26,7 +26,7 @@ namespace SVCW.Services
 
                 result.totalNumberActivityCreate = 0;
                 result.Donated = 0;
-                var donated = await this.context.Activity.Where(x => x.UserId.Equals(userId) && x.CreateAt >= start && x.CreateAt <= end).ToListAsync();
+                var donated = await this.context.Activity.Where(x => x.UserId.Equals(userId) && x.CreateAt >= start && x.CreateAt <= end && x.Status.Equals("Active")).ToListAsync();
                 foreach(var x in donated)
                 {
                     result.Donated += x.RealDonation;

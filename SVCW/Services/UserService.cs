@@ -553,7 +553,15 @@ namespace SVCW.Services
                     result.total = hihi.ToString();
                     if (hihi == 0)
                     {
-                        result.total = "1";
+                        result.total = "1";  
+                    }
+                    else
+                    {
+                        result.total = hihi.ToString();
+                    }
+
+                    if(result.total.ToString().Equals("1"))
+                    {
                         var arUs = await this._context.AchivementUser.Where(x => x.UserId.Equals(check.UserId) && x.AchivementId.Equals("AId5e65637")).FirstOrDefaultAsync();
                         if (arUs == null)
                         {
@@ -564,10 +572,6 @@ namespace SVCW.Services
                             await this._context.AchivementUser.AddAsync(archivement);
                             await this._context.SaveChangesAsync();
                         }
-                    }
-                    else
-                    {
-                        result.total = hihi.ToString();
                     }
                    
                     return result;
