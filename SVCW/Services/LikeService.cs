@@ -98,7 +98,10 @@ namespace SVCW.Services
                 var check = await this._context.Activity.Where(x => x.ActivityId.Equals(likeInfo.ActivityId)).FirstOrDefaultAsync();
                 if (check != null)
                 {
-                    check.NumberLike -= 1;
+                    if(check.NumberLike > 0)
+                    {
+                        check.NumberLike -= 1;
+                    }     
                 }
                 this._context.Activity.Update(check);
                 return await this._context.SaveChangesAsync() > 0;

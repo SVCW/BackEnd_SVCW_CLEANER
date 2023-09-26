@@ -425,7 +425,7 @@ namespace SVCW.Services
                         .ThenInclude(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                             .ThenInclude(x => x.Media)
                     .Include(u => u.Fanpage)                                            // Include the related fanpage
-                    .Include(u => u.Donation)
+                    .Include(u => u.Donation.OrderBy(x=>x.Datetime))
                     .Include(u => u.FollowJoinAvtivity)
                     .Include(u => u.ReportUser)
                     .Include(u => u.BankAccount)
