@@ -309,7 +309,7 @@ namespace SVCW.Services
                     .Include(u => u.ReportUser)
                     .Include(u => u.BankAccount)
                     .Include(u => u.Like)
-                    .Include(u => u.BanUser.Where(x => x.Status))
+                    .Include(u => u.BanUser)
                     .Include(u => u.VoteUserVote)// Include the related fanpage
                     .ToListAsync();
 
