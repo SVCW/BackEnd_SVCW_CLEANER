@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SVCW.DTOs.Config;
 using SVCW.DTOs.Process;
 using SVCW.DTOs.ProcessTypes;
 using SVCW.Interfaces;
@@ -183,7 +184,11 @@ namespace SVCW.Services
         {
             try
             {
+                var ad = new adminConfig();
+                var config = new ConfigService();
+                ad = config.GetAdminConfig();
                 var list = new List<Process>();
+                decimal donate = 0;
                 foreach(var item in process)
                 {
                     var actmp = await this._context.Activity.Where(x => x.ActivityId.Equals(item.ActivityId)).FirstOrDefaultAsync();
@@ -191,6 +196,31 @@ namespace SVCW.Services
                     {
                         throw new Exception("Ngày tháng không hợp lệ");
                     }
+                    if (item.ProcessTypeId.Equals("pt001"))
+                    {
+                        var ac = await this._context.Activity.Where(x => x.ActivityId.Equals(item.ActivityId)).FirstOrDefaultAsync();
+                        var user = await this._context.User.Where(x=>x.UserId.Equals(ac.UserId)).FirstOrDefaultAsync();
+                        if(ac.FanpageId == null)
+                        {
+                            if (user.NumberActivityJoin >= ad.NumberActivityJoinSuccess1)
+                            {
+                                donate = (decimal)ad.maxTargetDonate1;
+                            }
+                            if (user.NumberActivityJoin >= ad.NumberActivityJoinSuccess2)
+                            {
+                                donate = (decimal)ad.maxTargetDonate2;
+                            }
+                            if (user.NumberActivityJoin >= ad.NumberActivityJoinSuccess3)
+                            {
+                                donate = (decimal)ad.maxTargetDonate3;
+                            }
+                            if (item.TargetDonation > donate)
+                            {
+                                throw new Exception("Số tiền quyên góp tối đa bạn có thể kêu gọi là: " + donate);
+                            }
+                        }
+                    }
+
                 }
                 foreach (var p in process)
                 {
