@@ -119,7 +119,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "LAPTOP-8LC85HGU\\SQLEXPRESS.SVCW",
+   "UiHint": "svcw.SVCW",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
