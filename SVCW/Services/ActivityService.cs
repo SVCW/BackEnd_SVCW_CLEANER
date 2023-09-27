@@ -2,6 +2,7 @@
 using Org.BouncyCastle.Ocsp;
 using SVCW.DTOs.Activities;
 using SVCW.DTOs.Config;
+using SVCW.DTOs.Email;
 using SVCW.Interfaces;
 using SVCW.Models;
 using System;
@@ -14,9 +15,12 @@ namespace SVCW.Services
     public class ActivityService : IActivity
     {
         protected readonly SVCWContext context;
-        public ActivityService(SVCWContext context)
+
+        private readonly IEmail _service;
+        public ActivityService(SVCWContext context, IEmail service)
         {
             this.context = context;
+            _service = service;
         }
         public async Task<Activity> createActivity(ActivityCreateDTO dto)
         {
@@ -62,7 +66,7 @@ namespace SVCW.Services
                 activity.Location= dto.Location ?? "online";
                 activity.NumberJoin = 0;
                 activity.NumberLike= 0;
-                activity.ShareLink = "https://svcw-studentsvolunteer.vercel.app/detailactivity/"+activity.ActivityId;
+                activity.ShareLink = "https://wscv-fe-wscv-fe.vercel.app/detailactivity/" + activity.ActivityId;
                 activity.TargetDonation = 0;
                 activity.UserId= dto.UserId;
                 activity.Status = "Pending";
@@ -507,7 +511,7 @@ namespace SVCW.Services
                 var result = new List<Activity>();
                 if(PageLoad == 1)
                 {
-                    var check = this.context.Activity
+                    var check = await this.context.Activity
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
                         .ThenInclude(x => x.User)
                     .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
@@ -528,7 +532,7 @@ namespace SVCW.Services
                     .Include(x=>x.QuitActivity)
                     .Include(x=>x.RejectActivity)
                     .OrderByDescending(x => x.CreateAt)
-                    .Take(pageSize);
+                    .Take(pageSize).ToListAsync();
 
                     foreach (var c in check)
                     {
@@ -1355,6 +1359,29 @@ namespace SVCW.Services
                         await this.context.QuitActivity.AddAsync(rej);
                         await this.context.SaveChangesAsync();
 
+                        var flj = await this.context.FollowJoinAvtivity.Where(x=>x.ActivityId.Equals(dto.activityId) && x.IsFollow == true).ToListAsync();
+                        var dnt = await this.context.Donation.Where(x=>x.ActivityId.Equals(dto.activityId)).ToListAsync();
+                        if(flj.Count > 0 || dnt.Count > 0)
+                        {
+                            foreach(var f in flj)
+                            {
+                                var email = new SendEmailReqDTO();
+                                foreach (var d in dnt)
+                                {
+                                    email = new SendEmailReqDTO();
+                                    email.sendTo = d.Email;
+                                    email.subject = "Chiến dịch "+check.Title+" đã được chủ sở hữu dừng hoạt động trên hệ thống SVCW";
+                                    email.body = "<!DOCTYPE html>\r\n<html lang=\"vi\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title>Thông báo về chiến dịch bạn ủng hộ đã ngừng hoạt động </title>\r\n    <style>\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n        }\r\n\r\n        .container {\r\n            max-width: 600px;\r\n            margin: 0 auto;\r\n            padding: 20px;\r\n            border: 1px solid #ccc;\r\n            border-radius: 5px;\r\n        }\r\n\r\n        .header {\r\n            background-color: #FFC107;\r\n            color: #fff;\r\n            text-align: center;\r\n            padding: 10px;\r\n        }\r\n\r\n        .content {\r\n            padding: 20px;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"container\">\r\n    <div class=\"header\">\r\n        <h1>Chiến dịch "+check.Title+" đã ngừng hoạt động</h1>\r\n    </div>\r\n    <div class=\"content\">\r\n        <p>Xin chào " + d.Name + ",</p>\r\n        <p>Chúng tôi hy vọng bạn đang có một ngày tốt lành.</p>\r\n        <p>Chúng tôi xin thông báo rằng chiến dịch "+check.Title+" đã ngừng hoạt động với lý do: "+rej.Reason+" </p>\r\n        <p>Hệ thống SVCW sẽ hoàn trả lại số tiền mà bạn đã quyên góp cho chiến dịch này trong khoảng thời gian sớm nhất!</p>\r\n        <p>Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua địa chỉ email svcw.company@gmail.com</p>\r\n        <p>Xin cảm ơn bạn và chúc bạn có một ngày tốt lành.</p>\r\n        <p>Trân trọng,<br>Hệ thống SVCW</p>\r\n    </div>\r\n</div>\r\n</body>\r\n</html>\r\n";
+                                    _service.sendEmail(email);
+                                }
+                                var user = await this.context.User.Where(x => x.UserId.Equals(f.UserId)).FirstOrDefaultAsync();
+                                email = new SendEmailReqDTO();
+                                email.sendTo = user.Email;
+                                email.subject = "Chiến dịch " + check.Title + " đã được chủ sở hữu dừng hoạt động trên hệ thống SVCW";
+                                email.body = "<!DOCTYPE html>\r\n<html lang=\"vi\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <title>Thông báo về chiến dịch bạn tham gia, theo dõi đã ngừng hoạt động </title>\r\n    <style>\r\n        body {\r\n            font-family: Arial, sans-serif;\r\n        }\r\n\r\n        .container {\r\n            max-width: 600px;\r\n            margin: 0 auto;\r\n            padding: 20px;\r\n            border: 1px solid #ccc;\r\n            border-radius: 5px;\r\n        }\r\n\r\n        .header {\r\n            background-color: #FFC107;\r\n            color: #fff;\r\n            text-align: center;\r\n            padding: 10px;\r\n        }\r\n\r\n        .content {\r\n            padding: 20px;\r\n        }\r\n    </style>\r\n</head>\r\n<body>\r\n<div class=\"container\">\r\n    <div class=\"header\">\r\n        <h1>Chiến dịch " + check.Title + " đã ngừng hoạt động</h1>\r\n    </div>\r\n    <div class=\"content\">\r\n        <p>Xin chào " + user.Email + ",</p>\r\n        <p>Chúng tôi hy vọng bạn đang có một ngày tốt lành.</p>\r\n        <p>Chúng tôi xin thông báo rằng chiến dịch " + check.Title + " đã ngừng hoạt động với lý do: " + rej.Reason + " </p>\r\n        <p></p>\r\n        <p>Cảm ơn bạn đã quan tâm, theo dõi tới chiến dịch. Nếu bạn cần thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua địa chỉ email svcw.company@gmail.com</p>\r\n        <p>Xin cảm ơn bạn và chúc bạn có một ngày tốt lành.</p>\r\n        <p>Trân trọng,<br>Hệ thống SVCW</p>\r\n    </div>\r\n</div>\r\n</body>\r\n</html>\r\n";
+                                _service.sendEmail(email);
+                            }
+                        }
                         return check;
                     }
                     else
