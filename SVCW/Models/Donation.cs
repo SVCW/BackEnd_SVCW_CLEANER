@@ -47,7 +47,7 @@ namespace SVCW.Models
         public string UserId { get; set; }
         [Column("payDate", TypeName = "datetime")]
         public DateTime? PayDate { get; set; }
-        [Column("vnp_TransDate")]
+        [Column("vnpTransDate")]
         public string VnpTransDate { get; set; }
 
         [ForeignKey("ActivityId")]
