@@ -305,9 +305,6 @@ namespace SVCW.Services
                     .Include(u => u.FollowJoinAvtivity)
                     .Include(u => u.AchivementUser)
                         .ThenInclude(u => u.Achivement)
-                    .Include(u => u.Comment)
-                    .Include(u => u.ReportUser)
-                    .Include(u => u.BankAccount)
                     .Include(u => u.Like)
                     .Include(u => u.BanUser)
                     .Include(u => u.VoteUserVote)// Include the related fanpage
