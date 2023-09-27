@@ -484,17 +484,13 @@ namespace SVCW.Services
                             .ThenInclude(x => x.Media)
                     .Include(u => u.Fanpage)                                            // Include the related fanpage
                     .Include(u => u.Donation)
-                    .Include(u => u.Comment)
                     .Include(u => u.FollowJoinAvtivity)
-                    .Include(u => u.ReportUser)
-                    .Include(u => u.BankAccount)
-                    .Include(u => u.Like)
                     .Include(u => u.VoteUserVote)
                     .Include(u => u.AchivementUser)
                         .ThenInclude(u => u.Achivement)
                     .Include(u => u.FollowFanpage.Where(x => x.Status))
                         .ThenInclude(u => u.Fanpage)
-                    .Include(u=>u.BanUser.Where(x=>x.Status))
+                    .Include(u=>u.BanUser)
                     .FirstOrDefaultAsync();
                 if (check == null)
                 {
