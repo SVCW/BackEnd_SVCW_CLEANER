@@ -22,7 +22,7 @@ namespace SVCW.Services
                     check = await this._context.User.Where(x => x.Username.Equals(dto.Username)).FirstOrDefaultAsync();
                     if (check != null)
                     {
-                        throw new Exception("Trùng username");
+                        throw new Exception("Tên đăng nhập đã có trong hệ thống");
                     }
                     check = await this._context.User.Where(x => x.Phone.Equals(dto.Phone)).FirstOrDefaultAsync();
                     if (check!=null)
