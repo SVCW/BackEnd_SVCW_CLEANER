@@ -398,9 +398,7 @@ namespace SVCW.Services
                 var res = new CommonUserRes();
 
                 var user = await this._context.User
-                    //.Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
-                    //    .ThenInclude(x=>x.Comment)
-                    //        .ThenInclude(x=>x.User)
+                    .Where(u => u.UserId.Equals(req.UserId))
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active") || x.Status.Equals("Quit")))  // Include the related activities
                         .ThenInclude(x => x.Like.Where(a=>a.Status))
                             .ThenInclude(x => x.User)
@@ -424,16 +422,12 @@ namespace SVCW.Services
                     .Include(u => u.Fanpage)                                            // Include the related fanpage
                     .Include(u => u.Donation.OrderBy(x=>x.Datetime))
                     .Include(u => u.FollowJoinAvtivity)
-                    .Include(u => u.ReportUser)
-                    .Include(u => u.BankAccount)
-                    .Include(u => u.Like)
                     .Include(u => u.VoteUserVote)
                     .Include(u=>u.AchivementUser)
                         .ThenInclude(u=>u.Achivement)
                     .Include(u=>u.FollowFanpage.Where(x=>x.Status))
                         .ThenInclude(u=>u.Fanpage)
-                    .Include(u => u.BanUser.Where(x => x.Status))
-                    .Where(u => u.UserId.Equals(req.UserId))
+                    .Include(u => u.BanUser)
                     .FirstOrDefaultAsync();
 
                 if (user == null)
