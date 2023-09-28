@@ -28,7 +28,13 @@ namespace SVCW.Models
         [Column("userId")]
         [StringLength(10)]
         public string UserId { get; set; }
+        [Column("activityId")]
+        [StringLength(10)]
+        public string ActivityId { get; set; }
 
+        [ForeignKey("ActivityId")]
+        [InverseProperty("Notification")]
+        public virtual Activity Activity { get; set; }
         [ForeignKey("UserId")]
         [InverseProperty("Notification")]
         public virtual User User { get; set; }

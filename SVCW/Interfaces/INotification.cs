@@ -12,5 +12,6 @@ namespace SVCW.Interfaces
         Task<List<Notification>> GetUserNotis(string userId);
         Task<Notification> UpdateNoti(string notiId, NotificationDTO notiInfo);
         Task<bool> DeleteNoti(string notiId);
+        Task<List<Notification>> GetNotifications(string userId);
     }
 }

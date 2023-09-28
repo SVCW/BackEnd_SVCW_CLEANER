@@ -37,11 +37,61 @@ namespace SVCW.Services
                 cmt.CommentContent = comment.CommentContent;
                 cmt.CommentId = "CMT" + Guid.NewGuid().ToString().Substring(0, 7);
                 cmt.Datetime = DateTime.Now;
-                //cmt.UserId = comment.UserID;
                 cmt.ActivityId = comment.ActivityId;
 
                 await this._context.Comment.AddAsync(cmt);
                 await this._context.SaveChangesAsync();
+
+                var usercmt = await this._context.User.Where(x=>x.UserId.Equals(cmt.UserId)).FirstOrDefaultAsync();
+                var check = await this._context.Activity.Where(x=>x.ActivityId.Equals(cmt.ActivityId)).FirstOrDefaultAsync();
+                var flj = await this._context.FollowJoinAvtivity.Where(x=>x.ActivityId.Equals(cmt.ActivityId)).ToListAsync();
+                var noti = new Notification();
+
+                if(!check.UserId.Equals(cmt.UserId))
+                {
+                    // noti cho chủ sở hữu
+                    noti = new Notification();
+                    if (usercmt.FullName.Equals("none"))
+                    {
+                        noti.Title = usercmt.Username + " đã bình luận chiến dịch của bạn";
+                    }
+                    else
+                    {
+                        noti.Title = usercmt.FullName + " đã bình luận chiến dịch của bạn";
+                    }
+                    noti.NotificationContent = "Đã có tình nguyện viên bình luận chiến dịch của bạn";
+                    noti.Datetime = DateTime.Now;
+                    noti.UserId = check.UserId;
+                    noti.ActivityId = check.ActivityId;
+                    noti.Status = true;
+                    noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                    await this._context.Notification.AddAsync(noti);
+                    await this._context.SaveChangesAsync();
+                }
+
+                if (flj != null)
+                {
+                    foreach (var x in flj)
+                    {
+                        noti = new Notification();
+                        if (usercmt.FullName.Equals("none"))
+                        {
+                            noti.Title = usercmt.Username + " đã bình luận chiến dịch " + check.Title;
+                        }
+                        else
+                        {
+                            noti.Title = usercmt.FullName + " đã bình luận chiến dịch " + check.Title;
+                        }
+                        noti.NotificationContent = "Đã có tình nguyện viên bình luận chiến dịch mà bạn đã theo dõi hoặc tham gia";
+                        noti.Datetime = DateTime.Now;
+                        noti.UserId = x.UserId;
+                        noti.ActivityId = check.ActivityId;
+                        noti.Status = true;
+                        noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                        await this._context.Notification.AddAsync(noti);
+                        await this._context.SaveChangesAsync();
+                    }
+                }
                 return cmt;
             }
             catch (Exception ex)
@@ -164,6 +214,52 @@ namespace SVCW.Services
 
                 await this._context.Comment.AddAsync(rep);
                 await this._context.SaveChangesAsync();
+
+                var cmt = await this._context.Comment.Where(x=>x.CommentId.Equals(rep.ReplyId)).FirstOrDefaultAsync();
+                var usercmt = await this._context.User.Where(x => x.UserId.Equals(rep.UserId)).FirstOrDefaultAsync();
+                var check = await this._context.Activity.Where(x => x.ActivityId.Equals(rep.ActivityId)).FirstOrDefaultAsync();
+                var noti = new Notification();
+
+                if (!check.UserId.Equals(rep.UserId))
+                {
+                    // noti cho chủ sở hữu
+                    noti = new Notification();
+                    if (usercmt.FullName.Equals("none"))
+                    {
+                        noti.Title = usercmt.Username + " đã bình luận chiến dịch của bạn";
+                    }
+                    else
+                    {
+                        noti.Title = usercmt.FullName + " đã bình luận chiến dịch của bạn";
+                    }
+                    noti.NotificationContent = "Đã có tình nguyện viên bình luận chiến dịch của bạn";
+                    noti.Datetime = DateTime.Now;
+                    noti.UserId = check.UserId;
+                    noti.ActivityId = check.ActivityId;
+                    noti.Status = true;
+                    noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                    await this._context.Notification.AddAsync(noti);
+                    await this._context.SaveChangesAsync();
+                }
+                noti = new Notification();
+                if (usercmt.FullName.Equals("none"))
+                {
+                    noti.Title = usercmt.Username + " đã trả lời bình luận của bạn";
+                }
+                else
+                {
+                    noti.Title = usercmt.FullName + " đã trả lời bình luận của bạn";
+                }
+                noti.NotificationContent = "Đã có tình nguyện viên trả lời bình luận chiến dịch của bạn";
+                noti.Datetime = DateTime.Now;
+                noti.UserId = cmt.UserId;
+                noti.ActivityId = check.ActivityId;
+                noti.Status = true;
+                noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                await this._context.Notification.AddAsync(noti);
+                await this._context.SaveChangesAsync();
+
+
                 return rep;
             }
             catch (Exception ex)
