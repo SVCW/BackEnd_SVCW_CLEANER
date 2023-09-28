@@ -41,6 +41,7 @@ namespace SVCW.Services
             {
                 var noti = await this._context.Notification.Where(x=>x.UserId.Equals(userId))
                     .Include(x=>x.Activity)
+                    .OrderByDescending(x=>x.Datetime)
                     .ToListAsync();
                 if (noti != null)
                 {
