@@ -559,6 +559,15 @@ namespace SVCW.Services
                             archivement.EndDate = DateTime.MaxValue;
                             await this._context.AchivementUser.AddAsync(archivement);
                             await this._context.SaveChangesAsync();
+                            var noti = new Notification();
+                            noti.UserId = check.UserId;
+                            noti.Datetime = DateTime.Now;
+                            noti.Status = true;
+                            noti.Title = "Trao huy hiệu trên hệ thống SVCW";
+                            noti.NotificationContent = "Bạn đã nhận được huy hiệu sau khi đã cập nhật đủ thông tin cá nhân của mình, giờ đây trông bạn thật đáng tin cậy";
+                            noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                            await this._context.Notification.AddAsync(noti);
+                            await this._context.SaveChangesAsync();
                         }
                     }
                    
