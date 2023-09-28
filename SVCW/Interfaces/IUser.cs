@@ -24,6 +24,7 @@ namespace SVCW.Interfaces
         Task<CommonUserRes> banUser(BanDTO req);
         Task<bool> unBanUser(string userId);
         Task<List<Activity>> personalSchedulev1(string userId);
-//        Task<List<Activity>> personalSchedulev2(string userId,DateTime startDate, DateTime endDate);
+        //        Task<List<Activity>> personalSchedulev2(string userId,DateTime startDate, DateTime endDate);
+        Task<Profilev2DTO> getUserById1(string id);
     }
 }

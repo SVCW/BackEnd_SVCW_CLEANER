@@ -397,6 +397,8 @@ namespace SVCW.Services
             {
                 var res = new CommonUserRes();
 
+                this._context.Database.SetCommandTimeout(28000);
+
                 var user = await this._context.User
                     .Where(u => u.UserId.Equals(req.UserId))
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))  // Include the related activities
@@ -419,7 +421,7 @@ namespace SVCW.Services
                     .Include(u => u.Activity.OrderByDescending(x => x.CreateAt).Where(x => x.Status.Equals("Active")))
                         .ThenInclude(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
                             .ThenInclude(x => x.Media)
-                    .Include(u => u.Fanpage)                                            // Include the related fanpage
+                                         // Include the related fanpage
                     //.Include(u => u.Donation.OrderBy(x=>x.Datetime))
                     .Include(u => u.FollowJoinAvtivity)
                     .Include(u => u.VoteUserVote)
@@ -427,7 +429,6 @@ namespace SVCW.Services
                         .ThenInclude(u=>u.Achivement)
                     .Include(u=>u.FollowFanpage.Where(x=>x.Status))
                         .ThenInclude(u=>u.Fanpage)
-                    .Include(u => u.BanUser)
                     .FirstOrDefaultAsync();
 
                 if (user == null)
@@ -751,6 +752,51 @@ namespace SVCW.Services
                     throw new Exception("null");
                 }
             }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Profilev2DTO> getUserById1(string id)
+        {
+            try
+            {
+                var result = new Profilev2DTO();
+                var check = await this._context.User.Where(x => x.UserId.Equals(id))
+                    .Include(u => u.Fanpage)                                            // Include the related fanpage
+                    .Include(u => u.Donation)
+                    .Include(u => u.FollowJoinAvtivity)
+                    .Include(u => u.VoteUserVote)
+                    .Include(u => u.AchivementUser)
+                        .ThenInclude(u => u.Achivement)
+                    .Include(u => u.FollowFanpage.Where(x => x.Status))
+                        .ThenInclude(u => u.Fanpage)
+                    .Include(u => u.BanUser)
+                    .FirstOrDefaultAsync();
+
+                var activity = await this._context.Activity.Where(x => x.UserId.Equals(check.UserId) && x.Status.Equals("Active"))
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Comment.OrderByDescending(x => x.Datetime).Where(c => c.ReplyId == null).Take(3))
+                        .ThenInclude(x => x.InverseReply.OrderByDescending(x => x.Datetime))
+                            .ThenInclude(x => x.User)
+                    .Include(x => x.Like.Where(a => a.Status))
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Process.OrderBy(x => x.ProcessNo).Where(x => x.Status))
+                        .ThenInclude(x => x.Media)
+                    .Include(x => x.FollowJoinAvtivity)
+                        .ThenInclude(x => x.User)
+                    .Include(x => x.Media)
+                    .OrderByDescending(x => x.CreateAt)
+                    .ToListAsync();
+
+
+
+                result.user = check;
+                result.activity = activity;
+                return result;
+            }
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }

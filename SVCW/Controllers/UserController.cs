@@ -103,6 +103,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("get-user-by-idv2")]
+        [HttpGet]
+        public async Task<IActionResult> getUserByIdv2(string userId)
+        {
+            ResponseAPI<Profilev2DTO> responseAPI = new ResponseAPI<Profilev2DTO>();
+            try
+            {
+                responseAPI.Data = await this.service.getUserById1(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
 
         [Route("get-history-user")]
         [HttpGet]
