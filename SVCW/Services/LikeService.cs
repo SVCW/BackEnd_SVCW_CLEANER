@@ -47,6 +47,8 @@ namespace SVCW.Services
                     await this._context.Like.AddAsync(_like);
                     this._context.SaveChanges();
 
+
+
                     _listLikes.Add(_like);
                 }
                 return _listLikes;
@@ -76,7 +78,61 @@ namespace SVCW.Services
                     check.NumberLike += 1;
                 }
                 this._context.Activity.Update(check);
-                return await this._context.SaveChangesAsync() > 0;
+                await this._context.SaveChangesAsync();
+
+
+                var noti = new Notification();
+                // ai like 
+                var userlike = await this._context.User.Where(x=>x.UserId.Equals(_like.UserId)).FirstOrDefaultAsync();
+                // kiểm tra chủ sở hữu tự like chiến dịch
+                if (!userlike.UserId.Equals(check.UserId)) 
+                {
+                    // noti cho chủ sở hữu
+                    noti = new Notification();
+                    if (userlike.FullName.Equals("none"))
+                    {
+                        noti.Title = userlike.Username + " đã thích chiến dịch của bạn";
+                    }
+                    else
+                    {
+                        noti.Title = userlike.FullName + " đã thích chiến dịch của bạn";
+                    }
+                    noti.NotificationContent = "Đã có tình nguyện viên thích chiến dịch của bạn";
+                    noti.Datetime = DateTime.Now;
+                    noti.UserId = check.UserId;
+                    noti.ActivityId = check.ActivityId;
+                    noti.Status = true;
+                    noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                    await this._context.Notification.AddAsync(noti);
+                    await this._context.SaveChangesAsync();
+                }
+               
+                // noti cho những người khác
+                var flj = await this._context.FollowJoinAvtivity.Where(x=>x.ActivityId.Equals(_like.ActivityId) && x.IsFollow == true).ToListAsync();
+                if (flj != null)
+                {
+                    foreach(var x in flj)
+                    {
+                        noti = new Notification();
+                        if (userlike.FullName.Equals("none"))
+                        {
+                            noti.Title = userlike.Username + " đã thích chiến dịch "+check.Title;
+                        }
+                        else
+                        {
+                            noti.Title = userlike.FullName + " đã thích chiến dịch "+check.Title;
+                        }
+                        noti.NotificationContent = "Đã có tình nguyện viên thích chiến dịch mà bạn đã theo dõi hoặc tham gia";
+                        noti.Datetime = DateTime.Now;
+                        noti.UserId = x.UserId;
+                        noti.ActivityId = check.ActivityId;
+                        noti.Status = true;
+                        noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                        await this._context.Notification.AddAsync(noti);
+                        await this._context.SaveChangesAsync();
+                    }
+                }
+                return true;
             }
             catch
             {

@@ -791,7 +791,6 @@ namespace SVCW.Services
                     .ToListAsync();
 
 
-
                 result.user = check;
                 result.activity = activity;
                 return result;

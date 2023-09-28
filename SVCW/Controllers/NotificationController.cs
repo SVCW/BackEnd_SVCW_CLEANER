@@ -27,8 +27,7 @@ namespace SVCW.Controllers
             ResponseAPI<List<Notification>> responseAPI = new ResponseAPI<List<Notification>>();
             try
             {
-                responseAPI.Data = await this.service.GetUserNotis(userId);
-                responseAPI.Message = "Hihihi Phat test message";
+                responseAPI.Data = await this.service.GetNotifications(userId);
                 return Ok(responseAPI);
             }
             catch (Exception ex)

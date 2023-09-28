@@ -257,6 +257,11 @@ namespace SVCW.Models
 
             modelBuilder.Entity<Notification>(entity =>
             {
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.Notification)
+                    .HasForeignKey(d => d.ActivityId)
+                    .HasConstraintName("FK_Notification_Activity");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.UserId)

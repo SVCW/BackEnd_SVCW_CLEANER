@@ -35,6 +35,27 @@ namespace SVCW.Services
             }
         }
 
+        public async Task<List<Notification>> GetNotifications(string userId)
+        {
+            try
+            {
+                var noti = await this._context.Notification.Where(x=>x.UserId.Equals(userId))
+                    .Include(x=>x.Activity)
+                    .ToListAsync();
+                if (noti != null)
+                {
+                    return noti;
+                }
+                else
+                {
+                    throw new Exception("Không có thông báo");
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
         public Task<List<Notification>> GetUserNotis(string userId)
         {
             try
