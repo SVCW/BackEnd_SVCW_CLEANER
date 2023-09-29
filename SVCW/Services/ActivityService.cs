@@ -1225,7 +1225,7 @@ namespace SVCW.Services
         {
             try
             {
-                var check = await this.context.Process.Where(x => x.ActivityId.Equals(activityId) && x.ProcessTypeId.Equals("pt003") && x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now)
+                var check = await this.context.Process.Where(x => x.ActivityId.Equals(activityId) && x.ProcessTypeId.Equals("pt003"))
                     .ToListAsync();
                 if(check != null && check.Count>0)
                 {
