@@ -261,7 +261,26 @@ namespace SVCW.Services
                     await this._context.Notification.AddAsync(noti);
                     await this._context.SaveChangesAsync();
                 }
-                
+                if (!cmt.UserId.Equals(rep.UserId))
+                {
+                    noti = new Notification();
+                    if (usercmt.FullName.Equals("none"))
+                    {
+                        noti.Title = usercmt.Username + " đã trả lời bình luận của bạn";
+                    }
+                    else
+                    {
+                        noti.Title = usercmt.FullName + " đã trả lời bình luận của bạn";
+                    }
+                    noti.NotificationContent = "Đã có tình nguyện viên trả lời bình luận chiến dịch của bạn";
+                    noti.Datetime = DateTime.Now;
+                    noti.UserId = cmt.UserId;
+                    noti.ActivityId = check.ActivityId;
+                    noti.Status = true;
+                    noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                    await this._context.Notification.AddAsync(noti);
+                    await this._context.SaveChangesAsync();
+                }
 
                 return rep;
             }
