@@ -713,7 +713,7 @@ namespace SVCW.Services
                        .ThenInclude(u => u.Achivement)
                    .Include(u => u.FollowFanpage)
                        .ThenInclude(u => u.Fanpage)
-                   .Where(u => u.FullName.Contains(searchContent.search) || u.Username.Contains(searchContent.search))
+                   .Where(u => (u.FullName.Contains(searchContent.search) || u.Username.Contains(searchContent.search)) && u.UserId.Contains("USR") )
                    .ToListAsync();
                 result.users = user;
                 if (result != null)
