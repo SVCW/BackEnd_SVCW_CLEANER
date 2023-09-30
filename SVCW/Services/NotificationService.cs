@@ -57,12 +57,20 @@ namespace SVCW.Services
             }
         }
 
-        public Task<List<Notification>> GetUserNotis(string userId)
+        public async Task<List<Notification>> markAsReadAll(string userId)
         {
             try
             {
-                var notis = this._context.Notification.Where(noti => noti.UserId.Equals(userId)).ToListAsync();
-
+                var notis = await this._context.Notification.Where(noti => noti.UserId.Equals(userId)).ToListAsync();
+                if(notis != null)
+                {
+                    foreach (var item in notis)
+                    {
+                        item.Status = false;
+                        this._context.Notification.Update(item);
+                        await this._context.SaveChangesAsync();
+                    }
+                }
                 return notis;
             }
             catch (Exception ex)
@@ -79,10 +87,14 @@ namespace SVCW.Services
 
                 if (nt != null)
                 {
-                    nt.Status = true;
-                    this._context.SaveChanges();
+                    nt.Status = false;
+                    this._context.Notification.Update(nt);
+                    return await this._context.SaveChangesAsync() >0;
                 }
-                return true;
+                else
+                {
+                    throw new Exception("Lỗi hệ thống");
+                }
             }
             catch (Exception ex)
             {
