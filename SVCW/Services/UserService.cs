@@ -563,7 +563,7 @@ namespace SVCW.Services
                             noti.UserId = check.UserId;
                             noti.Datetime = DateTime.Now;
                             noti.Status = true;
-                            noti.Title = "Trao huy hiệu trên hệ thống SVCW";
+                            noti.Title = "Trao huy hiệu cập nhật đủ thông tin cá nhân";
                             noti.NotificationContent = "Bạn đã nhận được huy hiệu sau khi đã cập nhật đủ thông tin cá nhân của mình, giờ đây trông bạn thật đáng tin cậy";
                             noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
                             await this._context.Notification.AddAsync(noti);
