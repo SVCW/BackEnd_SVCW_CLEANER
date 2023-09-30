@@ -113,23 +113,26 @@ namespace SVCW.Services
                 {
                     foreach(var x in flj)
                     {
-                        noti = new Notification();
-                        if (userlike.FullName.Equals("none"))
+                        if (!x.UserId.Equals(check.UserId))
                         {
-                            noti.Title = userlike.Username + " đã thích chiến dịch "+check.Title;
+                            noti = new Notification();
+                            if (userlike.FullName.Equals("none"))
+                            {
+                                noti.Title = userlike.Username + " đã thích chiến dịch " + check.Title;
+                            }
+                            else
+                            {
+                                noti.Title = userlike.FullName + " đã thích chiến dịch " + check.Title;
+                            }
+                            noti.NotificationContent = "Đã có tình nguyện viên thích chiến dịch mà bạn đã theo dõi hoặc tham gia";
+                            noti.Datetime = DateTime.Now;
+                            noti.UserId = x.UserId;
+                            noti.ActivityId = check.ActivityId;
+                            noti.Status = true;
+                            noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
+                            await this._context.Notification.AddAsync(noti);
+                            await this._context.SaveChangesAsync();
                         }
-                        else
-                        {
-                            noti.Title = userlike.FullName + " đã thích chiến dịch "+check.Title;
-                        }
-                        noti.NotificationContent = "Đã có tình nguyện viên thích chiến dịch mà bạn đã theo dõi hoặc tham gia";
-                        noti.Datetime = DateTime.Now;
-                        noti.UserId = x.UserId;
-                        noti.ActivityId = check.ActivityId;
-                        noti.Status = true;
-                        noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
-                        await this._context.Notification.AddAsync(noti);
-                        await this._context.SaveChangesAsync();
                     }
                 }
                 return true;
