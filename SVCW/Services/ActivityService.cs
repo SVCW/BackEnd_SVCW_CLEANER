@@ -1259,7 +1259,7 @@ namespace SVCW.Services
                                     noti.UserId = user.UserId;
                                     noti.Datetime = DateTime.Now;
                                     noti.Status = true;
-                                    noti.Title = "Trao huy hiệu trên hệ thống SVCW";
+                                    noti.Title = "Trao tham gia chiến dịch đầu tiên";
                                     noti.NotificationContent = "Bạn đã nhận được huy hiệu sau khi tham gia thành công chiến dịch đầu tiên";
                                     noti.ActivityId = activityId;
                                     noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
@@ -1280,7 +1280,7 @@ namespace SVCW.Services
                                     noti.UserId = user.UserId;
                                     noti.Datetime = DateTime.Now;
                                     noti.Status = true;
-                                    noti.Title = "Trao huy hiệu trên hệ thống SVCW";
+                                    noti.Title = "Trao huy tham gia đủ 5 chiến dịch";
                                     noti.NotificationContent = "Bạn đã nhận được huy hiệu sau khi tham gia thành công chiến dịch thứ 5, bây giờ bạn có thể tạo chiến dịch cho bản thân mình";
                                     noti.ActivityId = activityId;
                                     noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
@@ -1301,7 +1301,7 @@ namespace SVCW.Services
                                     noti.UserId = user.UserId;
                                     noti.Datetime = DateTime.Now;
                                     noti.Status = true;
-                                    noti.Title = "Trao huy hiệu trên hệ thống SVCW";
+                                    noti.Title = "Trao huy hiệu tham gia đủ 10 chiến dịch";
                                     noti.NotificationContent = "Bạn đã nhận được huy hiệu sau khi tham gia thành công 10 chiến dịch trên hệ thống SVCW";
                                     noti.ActivityId = activityId;
                                     noti.NotificationId = "Noti" + Guid.NewGuid().ToString().Substring(0, 6);
