@@ -9,7 +9,7 @@ namespace SVCW.Interfaces
 	{
         Task<Notification> newNoti(NotificationDTO comment);
         Task<bool> markAsRead(string notiId);
-        Task<List<Notification>> GetUserNotis(string userId);
+        Task<List<Notification>> markAsReadAll(string userId);
         Task<Notification> UpdateNoti(string notiId, NotificationDTO notiInfo);
         Task<bool> DeleteNoti(string notiId);
         Task<List<Notification>> GetNotifications(string userId);

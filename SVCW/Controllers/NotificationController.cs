@@ -70,6 +70,22 @@ namespace SVCW.Controllers
                 return BadRequest(responseAPI);
             }
         }
+        [Route("mark-as-readAll")]
+        [HttpPut]
+        public async Task<IActionResult> markAsReadAll(string userId)
+        {
+            ResponseAPI<List<Notification>> responseAPI = new ResponseAPI<List<Notification>>();
+            try
+            {
+                responseAPI.Data = await this.service.markAsReadAll(userId);
+                return Ok(responseAPI);
+            }
+            catch (Exception ex)
+            {
+                responseAPI.Message = ex.Message;
+                return BadRequest(responseAPI);
+            }
+        }
         /// <summary>
         /// key nao update moi truyen nha
         /// </summary>
